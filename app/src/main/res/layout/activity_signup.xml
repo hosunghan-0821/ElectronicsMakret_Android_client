@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    tools:context=".Activity_signup">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/add"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+
+                android:id="@+id/title_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="회원가입"
+                android:textSize="30dp"
+                app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline1"
+                app:layout_constraintEnd_toStartOf="@+id/vertical_guideline1"
+                app:layout_constraintStart_toStartOf="@+id/vertical_guideline2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <EditText
+                android:id="@+id/login_new_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="아이디로 사용할 이메일"
+                android:inputType="textPersonName"
+                android:minHeight="48dp"
+                app:layout_constraintStart_toStartOf="@+id/vertical_guideline2"
+                app:layout_constraintTop_toTopOf="@+id/horizontal_guideline1" />
+
+
+            <TextView
+                android:id="@+id/login_email_verify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="이메일 유효성 관련 내용"
+                android:textSize="10dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/login_new_id"
+                app:layout_constraintStart_toStartOf="@+id/vertical_guideline2"
+                app:layout_constraintTop_toBottomOf="@+id/login_new_id" />
+
+            <EditText
+                android:id="@+id/login_email_verify_number"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+
+                android:hint="이메일인증 번호 입력"
+                android:inputType="textPersonName"
+                android:minHeight="48dp"
+
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@+id/vertical_guideline2"
+                app:layout_constraintTop_toBottomOf="@+id/login_email_verify" />
+
+            <TextView
+                android:id="@+id/verify_number_check_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/login_email_verify_number"
+                app:layout_constraintStart_toStartOf="@+id/vertical_guideline2"
+                app:layout_constraintTop_toBottomOf="@+id/login_email_verify_number" />
+
+            <TextView
+                android:id="@+id/verify_timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:textSize="13dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/login_email_verify_number"
+                app:layout_constraintStart_toEndOf="@+id/login_email_verify_number"
+                app:layout_constraintTop_toTopOf="@+id/login_email_verify_number"
+                app:layout_constraintVertical_bias="0.586" />
+
+            <EditText
+                android:id="@+id/login_new_password"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:ems="10"
+                android:hint="비밀번호"
+                android:inputType="textPassword"
+                android:minHeight="48dp"
+                app:layout_constraintStart_toStartOf="@+id/vertical_guideline2"
+                app:layout_constraintTop_toBottomOf="@+id/verify_number_check_text" />
+
+            <TextView
+                android:id="@+id/login_password_verify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="비밀번호 유효성"
+                android:textSize="12dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@+id/vertical_guideline2"
+                app:layout_constraintTop_toBottomOf="@+id/login_new_password" />
+
+            <EditText
+                android:id="@+id/login_new_password_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:ems="10"
+                android:hint="비밀번호 확인"
+                android:inputType="textPassword"
+                android:minHeight="48dp"
+                android:selectAllOnFocus="true"
+                app:layout_constraintStart_toStartOf="@+id/vertical_guideline2"
+                app:layout_constraintTop_toBottomOf="@+id/login_password_verify" />
+
+            <TextView
+                android:id="@+id/login_password_same"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+
+                android:textSize="12dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@+id/vertical_guideline2"
+                app:layout_constraintTop_toBottomOf="@+id/login_new_password_check" />
+
+            <EditText
+                android:id="@+id/login_nickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="사용할 닉네임"
+                android:inputType="textPersonName"
+                android:minHeight="48dp"
+                app:layout_constraintStart_toStartOf="@+id/vertical_guideline2"
+                app:layout_constraintTop_toBottomOf="@+id/login_password_same" />
+
+            <Button
+                android:id="@+id/email_send_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="인증"
+                app:layout_constraintBottom_toBottomOf="@+id/login_new_id"
+                app:layout_constraintEnd_toStartOf="@+id/vertical_guideline1"
+                app:layout_constraintStart_toEndOf="@+id/login_new_id"
+                app:layout_constraintTop_toTopOf="@+id/horizontal_guideline1" />
+
+            <TextView
+
+                android:id="@+id/policy1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:gravity="center"
+                android:inputType="textPersonName"
+                android:minHeight="48dp"
+                android:text="개인정보 수집 및 이용 동의"
+
+                android:textAlignment="center"
+                app:layout_constraintStart_toStartOf="@+id/vertical_guideline2"
+                app:layout_constraintTop_toTopOf="@+id/horizontal_guideline2"
+                tools:ignore="TouchTargetSizeCheck" />
+
+            <TextView
+
+                android:id="@+id/policy2"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="5dp"
+                android:ems="10"
+                android:gravity="center"
+
+
+                android:inputType="textPersonName"
+                android:minHeight="48dp"
+
+                android:text="서비스 이용 약관"
+                app:layout_constraintStart_toStartOf="@+id/vertical_guideline2"
+                app:layout_constraintTop_toBottomOf="@+id/policy1"
+                tools:ignore="TouchTargetSizeCheck" />
+
+            <Button
+                android:id="@+id/signup_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginBottom="50dp"
+                android:text="회원가입"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/vertical_guideline1"
+                app:layout_constraintStart_toStartOf="@+id/vertical_guideline2"
+                app:layout_constraintTop_toBottomOf="@+id/policy2" />
+
+            <Button
+
+                android:id="@+id/find_verify_number_check_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:text="인증확인"
+                android:visibility="gone"
+
+                app:layout_constraintBottom_toBottomOf="@+id/login_email_verify_number"
+                app:layout_constraintEnd_toStartOf="@+id/vertical_guideline1"
+                app:layout_constraintStart_toEndOf="@+id/verify_timer"
+                app:layout_constraintTop_toTopOf="@+id/login_email_verify_number" />
+
+            <Button
+                android:id="@+id/nickname_check_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="중복확인"
+                app:layout_constraintBottom_toBottomOf="@+id/login_nickname"
+                app:layout_constraintEnd_toStartOf="@+id/vertical_guideline1"
+                app:layout_constraintStart_toEndOf="@+id/login_nickname" />
+
+            <CheckBox
+                android:id="@+id/policy_checkBox1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                app:layout_constraintStart_toEndOf="@+id/policy1"
+                app:layout_constraintTop_toTopOf="@+id/horizontal_guideline2"
+                tools:ignore="TouchTargetSizeCheck" />
+
+            <CheckBox
+                android:id="@+id/policy_checkBox2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                app:layout_constraintStart_toEndOf="@+id/policy2"
+                app:layout_constraintTop_toBottomOf="@+id/policy_checkBox1"
+                tools:ignore="TouchTargetSizeCheck" />
+
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/vertical_guideline1"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.9" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/vertical_guideline2"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.1" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/horizontal_guideline1"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.2" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/horizontal_guideline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.7" />
+
+            <TextView
+                android:id="@+id/nickname_check_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@+id/login_nickname"
+                app:layout_constraintTop_toBottomOf="@+id/login_nickname" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
