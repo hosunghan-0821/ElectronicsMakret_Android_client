@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -15,6 +17,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ElectronicsMarket"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".Activity_post_write"
+            android:exported="false" />
+        <activity
+            android:name=".example"
+            android:exported="false" />
         <activity
             android:name=".Activity_change_password"
             android:exported="false" />

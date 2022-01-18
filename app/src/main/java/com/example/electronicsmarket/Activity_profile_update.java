@@ -493,6 +493,7 @@ public class Activity_profile_update extends AppCompatActivity {
         Log.e("123",uriFile.getPath().toString());
         RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), uriFile);
         MultipartBody.Part body= MultipartBody.Part.createFormData("upload",uriFile.getName(),reqFile);
+
         Log.e("123",uriFile.getPath());
         RetrofitService service = retrofit.create(RetrofitService.class);
         Call<MemberSignup> call2 = service.setProfile(body,"winsomed96@naver.com");

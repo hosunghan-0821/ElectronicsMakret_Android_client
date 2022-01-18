@@ -34,7 +34,7 @@ public class Activity_find_password extends AppCompatActivity {
     Thread thread;
     Handler handler;
     EditText findPasswordEmail,VerifyNumber;
-    TextView timerText,emailVerifyText;
+    TextView timerText,emailVerifyText,verifyNumberText;
     Button verifyBtn,findPasswordBtn;
     Retrofit retrofit;
     String verifyNum;
@@ -163,6 +163,10 @@ public class Activity_find_password extends AppCompatActivity {
                         }
                         else if(response.body().getIsSuccess().equals("아이디 존재")){
                             Log.e("123","들어옴123");
+
+                            verifyNumberText.setVisibility(View.VISIBLE);
+                            verifyBtn.setVisibility(View.VISIBLE);
+                            VerifyNumber.setVisibility(View.VISIBLE);
                             emailVerifyText.setVisibility(View.VISIBLE);
                             emailVerifyText.setText("메일 발송");
                             emailVerifyText.setTextColor(Color.BLUE);
@@ -229,6 +233,7 @@ public class Activity_find_password extends AppCompatActivity {
         findPasswordEmail=findViewById(R.id.find_password_id);
         VerifyNumber=findViewById(R.id.find_password__verify_number);
 
+        verifyNumberText=findViewById(R.id.verify_number_text);
         timerText=findViewById(R.id.find_verify_timer);
         emailVerifyText=findViewById(R.id.find_email_verify_text);
 
