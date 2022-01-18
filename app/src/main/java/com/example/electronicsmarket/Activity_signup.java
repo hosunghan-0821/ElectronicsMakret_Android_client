@@ -152,7 +152,6 @@ public class Activity_signup extends AppCompatActivity {
                 passwordRepeatCheckText.setText("비밀번호가 다릅니다");
                 passwordCheck=false;
             }
-
         }
     };
     TextWatcher passwordWatcher = new TextWatcher() {

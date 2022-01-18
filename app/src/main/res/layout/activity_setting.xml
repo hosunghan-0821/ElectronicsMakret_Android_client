@@ -99,16 +99,31 @@
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <Button
-        android:id="@+id/memberout_button"
+        android:layout_marginTop="10dp"
+        android:id="@+id/password_change_button"
+        android:layout_width="0dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="15dp"
-        android:layout_width="0dp"
-        android:text="회원탈퇴"
         android:layout_height="wrap_content"
+        android:text="비밀번호 변경"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logout_button">
+
+    </Button>
+
+    <Button
+        android:layout_marginTop="10dp"
+        android:id="@+id/memberout_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:text="회원탈퇴"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.157"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/password_change_button">
 
     </Button>
 
@@ -119,7 +134,7 @@
         android:id="@+id/button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="계정/정보 관리"
+        android:text="계정 정보"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_title" />

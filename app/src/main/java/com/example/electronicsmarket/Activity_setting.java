@@ -14,7 +14,7 @@ import android.widget.ImageView;
 public class Activity_setting extends AppCompatActivity {
 
     ImageView backImage;
-    Button logoutBtn,memberOutBtn;
+    Button logoutBtn,memberOutBtn,passwordChangeBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,13 +22,22 @@ public class Activity_setting extends AppCompatActivity {
         logoutBtn=findViewById(R.id.logout_button);
         backImage=findViewById(R.id.back_arrow);
         memberOutBtn=findViewById(R.id.memberout_button);
+        passwordChangeBtn=findViewById(R.id.password_change_button);
 
+        passwordChangeBtn.setOnClickListener(changePassword);
         memberOutBtn.setOnClickListener(memberOut);
         backImage.setOnClickListener(back);
         logoutBtn.setOnClickListener(logout);
 
 
     }
+    View.OnClickListener changePassword=new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(Activity_setting.this,Activity_change_password.class);
+            startActivity(intent);
+        }
+    };
 
     View.OnClickListener memberOut= new View.OnClickListener() {
         @Override

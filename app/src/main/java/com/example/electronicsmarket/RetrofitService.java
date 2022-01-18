@@ -26,7 +26,11 @@ public interface RetrofitService {
 
     @Multipart
     @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/signup/setProfile.php")
-    Call<MemberSignup> setProfile(@Part MultipartBody.Part image );
+    Call<MemberSignup> setProfile(@Part MultipartBody.Part image,@Query("email") String email );
+
+    @FormUrlEncoded
+    @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/signup/setProfileNickname.php")
+    Call<MemberSignup> setNickname(@Field("email") String email,@Field("nickname") String nickname);
 
     @FormUrlEncoded
     @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/emailVerify/findPassword.php")
@@ -35,6 +39,10 @@ public interface RetrofitService {
     @FormUrlEncoded
     @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/emailVerify/temporaryPassword.php")
     Call<PostEmail> newPassword( @Field("email") String email);
+
+    @FormUrlEncoded
+    @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/signup/deleteProfile.php")
+    Call<MemberSignup> deleteProfile(@Field("email") String email);
 
     @FormUrlEncoded
     @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/signup/{path}")

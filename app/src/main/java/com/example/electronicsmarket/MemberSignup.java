@@ -4,6 +4,16 @@ public class MemberSignup {
     private String nickname;
     private String message;
     public String imageRoute;
+    private boolean isSuccess;
+
+
+    public boolean isSuccess() {
+        return isSuccess;
+    }
+
+    public void setSuccess(boolean success) {
+        isSuccess = success;
+    }
 
     public String getMessage() {
         return message;

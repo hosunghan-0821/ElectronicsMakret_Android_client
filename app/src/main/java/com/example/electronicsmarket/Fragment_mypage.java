@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -42,12 +43,8 @@ public class Fragment_mypage extends Fragment  {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-
         View view =inflater.inflate(R.layout.fragment_mypage,container,false);
         variableInit(view);
-        setProfile(container.getContext());
-
-
 
         settingImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,8 +93,16 @@ public class Fragment_mypage extends Fragment  {
 
                 if(response.isSuccessful()&&response.body()!=null){
 
+                    Log.e("123","응답옴");
                   MemberSignup memberInfo=response.body();
                   nickname.setText(memberInfo.getNickname());
+                  String imageRoute= memberInfo.imageRoute;
+                  if(imageRoute.equals("")){
+                     circleImageView.setImageResource(R.drawable.ic_baseline_person_black);
+                  }
+                  else{
+                        Glide.with(context).load(imageRoute).into(circleImageView);
+                  }
 
                 }
             }
@@ -115,4 +120,11 @@ public class Fragment_mypage extends Fragment  {
         super.onViewCreated(view, savedInstanceState);
     }
 
+    @Override
+    public void onResume() {
+        Log.e("123","onresume");
+        setProfile(getContext());
+        super.onResume();
+
+    }
 }

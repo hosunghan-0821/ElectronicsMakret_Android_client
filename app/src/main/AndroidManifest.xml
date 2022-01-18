@@ -4,9 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -16,6 +15,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ElectronicsMarket"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".Activity_change_password"
+            android:exported="false" />
+        <activity
+            android:name=".Activity_member_info"
+            android:exported="false" />
         <activity
             android:name=".Activity_profile_update"
             android:exported="false" />
