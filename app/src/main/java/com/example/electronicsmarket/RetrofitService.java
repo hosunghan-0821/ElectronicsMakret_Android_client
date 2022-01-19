@@ -7,6 +7,7 @@ import java.util.List;
 import okhttp3.MultipartBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -81,7 +82,7 @@ public interface RetrofitService {
     @Multipart
     @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/example/multiImage.php")
     Call<MemberSignup> sendMultiImage(
-            @Part ArrayList<MultipartBody.Part> files, @Part("key") RequestBody param, @PartMap HashMap<String,RequestBody> params
+            @Part ArrayList<MultipartBody.Part> files, @Part ("hi") RequestBody param
             );
 
 }

@@ -11,10 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class Adapter_post_image extends RecyclerView.Adapter<Adapter_post_image.ImageViewholder>{
+public class Adapter_post_image extends RecyclerView.Adapter<Adapter_post_image.ImageViewholder> {
 
     private ArrayList<Data_post_image> imageList;
     Interface_post_listener listener;
+    ItemTouchHelperListener touchListener;
 
     public Adapter_post_image(ArrayList<Data_post_image> imageList) {
         this.imageList = imageList;
@@ -41,12 +42,14 @@ public class Adapter_post_image extends RecyclerView.Adapter<Adapter_post_image.
         return (null != imageList ? imageList.size() : 0);
     }
 
-    public void setRecordList(ArrayList<Data_post_image> imageList) {
+    public void setImageList(ArrayList<Data_post_image> imageList) {
         this.imageList = imageList;
     }
     public void setListener(Interface_post_listener listener){
         this.listener=listener;
     }
+
+
 
     public class ImageViewholder extends RecyclerView.ViewHolder {
 

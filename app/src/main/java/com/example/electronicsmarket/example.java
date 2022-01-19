@@ -140,37 +140,37 @@ public class example extends AppCompatActivity {
                           }
                           Log.e("123",String.valueOf(files));
                           //여기서 이제 한번에 보내보자
-                          RetrofitService service = retrofit.create(RetrofitService.class);
-                          Call<MemberSignup> call=service.sendMultiImage(files,textBody,requestMap);
-                          call.enqueue(new Callback<MemberSignup>() {
-                              @Override
-                              public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
-                                  Log.e("123","123");
-                              }
-
-                              @Override
-                              public void onFailure(Call<MemberSignup> call, Throwable t) {
-                                  Log.e("123","통신오류류");
-                             }
-                          });
+//                          RetrofitService service = retrofit.create(RetrofitService.class);
+//                          Call<MemberSignup> call=service.sendMultiImage(files);
+//                          call.enqueue(new Callback<MemberSignup>() {
+//                              @Override
+//                              public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+//                                  Log.e("123","123");
+//                              }
+//
+//                              @Override
+//                              public void onFailure(Call<MemberSignup> call, Throwable t) {
+//                                  Log.e("123","통신오류류");
+//                             }
+//                          });
 
                       }
                       else{
                           Log.e("123","456");
                           files.clear();
                           RetrofitService service = retrofit.create(RetrofitService.class);
-                          Call<MemberSignup> call=service.sendMultiImage(files,textBody,requestMap);
-                          call.enqueue(new Callback<MemberSignup>() {
-                              @Override
-                              public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
-                                  Log.e("123","123");
-                              }
-
-                              @Override
-                              public void onFailure(Call<MemberSignup> call, Throwable t) {
-                                  Log.e("123","통신오류류");
-                              }
-                          });
+//                          Call<MemberSignup> call=service.sendMultiImage(files);
+//                          call.enqueue(new Callback<MemberSignup>() {
+//                              @Override
+//                              public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+//                                  Log.e("123","123");
+//                              }
+//
+//                              @Override
+//                              public void onFailure(Call<MemberSignup> call, Throwable t) {
+//                                  Log.e("123","통신오류류");
+//                              }
+//                          });
 
                       }
                     }

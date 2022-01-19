@@ -88,7 +88,7 @@ public class Activity_change_password extends AppCompatActivity {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(Activity_change_password.this);
 
                                 builder.setTitle("비밀번호 변경 완료");
-                                builder.setMessage("재로그인 해주세요");
+                                builder.setMessage("재 로그인 해주세요");
                                 builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {

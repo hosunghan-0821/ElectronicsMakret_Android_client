@@ -93,7 +93,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:text="0/0"
+        android:text="0/5"
         android:textSize="15dp"
         app:layout_constraintEnd_toEndOf="@+id/post_write_image_choice_image"
         app:layout_constraintStart_toStartOf="@+id/post_write_image_choice_image"
