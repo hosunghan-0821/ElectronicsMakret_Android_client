@@ -15,7 +15,11 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.ImageDecoder;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
@@ -24,14 +28,21 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +50,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -53,7 +65,8 @@ public class Activity_post_write extends AppCompatActivity {
 
 
     private ItemTouchHelper mItemTouchHelper;
-
+    private String[] categoryItems={"카테고리 선택","스마트폰/주변기기","노트북/주변기기","PC부품","오디오/영상기기"};
+    private String[] sellTypeItems={"거래방법 선택","직거래","택배거래","직거래/택배거래"};
     ArrayList<File> imageFileCollect;
     //ArrayList<String> tempFileList;
     ArrayList<MultipartBody.Part> files;
@@ -65,16 +78,23 @@ public class Activity_post_write extends AppCompatActivity {
     private ArrayList<Data_post_image> imageList;
     private TextView imageNumberText;
     private ImageView selectImage;
+    private EditText postTitle,postPrice,postContents;
+
+
+    HashMap<String, RequestBody> requestMap = new HashMap<>();
+    private Spinner postCategory,postSellType;
+    private ArrayAdapter<String> categoryAdapter,sellTypeAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_write);
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         variableInit();
 
         String text = "some text";
-        RequestBody requestBody = RequestBody.create(MediaType.parse("text/plain"), text);
+
 
         selectImage.setOnClickListener(imageClick);
 
@@ -109,7 +129,13 @@ public class Activity_post_write extends AppCompatActivity {
         postWriteText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                requestMap = new HashMap<>();
                 files.clear();
+                if(imageFileCollect.size()==0||postTitle.getText().toString().equals("")||postPrice.getText().toString().equals("")){
+
+                    Toast.makeText(Activity_post_write.this, "값을 제대로 넣으세요", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 for (int i = 0; i < imageFileCollect.size(); i++) {
                     try {
                         Log.e("123",String.valueOf(i));
@@ -120,22 +146,40 @@ public class Activity_post_write extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     Log.e("123",files.toString());
-
                 }
+                SharedPreferences sharedPreferences=getSharedPreferences("autoLogin",MODE_PRIVATE);
+                String id=sharedPreferences.getString("userId","");
+
+                RequestBody requestBody = RequestBody.create(MediaType.parse("text/plain"), text);
+                RequestBody title=RequestBody.create(MediaType.parse("text/plain"), postTitle.getText().toString());
+                RequestBody price=RequestBody.create(MediaType.parse("text/plain"), postPrice.getText().toString());
+                RequestBody contents=RequestBody.create(MediaType.parse("text/plain"), postContents.getText().toString());
+                RequestBody category=RequestBody.create(MediaType.parse("text/plain"),postCategory.getSelectedItem().toString());
+                RequestBody sellType=RequestBody.create(MediaType.parse("text/plain"),postSellType.getSelectedItem().toString());
+                RequestBody email=RequestBody.create(MediaType.parse("text/plain"),id);
+                requestMap.put("title",title);
+                requestMap.put("price",price);
+                requestMap.put("contents",contents);
+                requestMap.put("category",category);
+                requestMap.put("sellType",sellType);
+                requestMap.put("email",email);
+
+
                 RetrofitService service = retrofit.create(RetrofitService.class);
-                Call<MemberSignup> call = service.sendMultiImage(files,requestBody);
+                Call<MemberSignup> call = service.sendMultiImage(files,requestMap);
                 call.enqueue(new Callback<MemberSignup>() {
                     @Override
                     public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
                         Log.e("123", "통신성공");
 
+
                         //이미지 업로드 전송 성공하면 임시파일들 삭제.
-                        for(int i=0; i<imageFileCollect.size();i++){
-                            if(imageFileCollect.get(i).exists()){
-                                boolean result=imageFileCollect.get(i).delete();
-                                Log.e("123",String.valueOf(result));
-                            }
-                        }
+//                        for(int i=0; i<imageFileCollect.size();i++){
+//                            if(imageFileCollect.get(i).exists()){
+//                                boolean result=imageFileCollect.get(i).delete();
+//                                Log.e("123",String.valueOf(result));
+//                            }
+//                        }
 
                     }
 
@@ -232,6 +276,9 @@ public class Activity_post_write extends AppCompatActivity {
                             Uri imageUri= intent.getData();
                             Data_post_image data= new Data_post_image(imageUri);
                             imageList.add(data);
+
+                            //여기서부터파일 만드는과정
+
                             File uriFile = new File(createCopyAndReturnRealPath(imageUri,"image"));
                             imageFileCollect.add(uriFile);
                             imageAdapter.notifyDataSetChanged();
@@ -263,11 +310,12 @@ public class Activity_post_write extends AppCompatActivity {
                                 Log.e("123",imageUri.toString());
                                 Data_post_image data = new Data_post_image(imageUri);
                                 imageList.add(data);
+
                                 //사진 저장 및 절대경로 받아오는 코드 찾아보고 이해하기..
                                 File uriFile = new File(createCopyAndReturnRealPath(imageUri,"image"+i));
                                 imageFileCollect.add(uriFile);
 
-                                //Log.e("123", uriFile.getPath());
+                                Log.e("123", uriFile.getPath());
                             }
                             imageAdapter.notifyDataSetChanged();
                             imageNumberText.setText(imageList.size()+"/5");
@@ -284,35 +332,115 @@ public class Activity_post_write extends AppCompatActivity {
 
     /* 이미지 파일을 복사한 후, 그 파일의 절대 경로 반환하는 메소드 */
     public String createCopyAndReturnRealPath(Uri uri, String fileName) {
+        Bitmap bitmap;
         final ContentResolver contentResolver = getContentResolver();
         if (contentResolver == null)
             return null;
         // 내부 저장소 안에 위치하도록 파일 생성
         String filePath = getApplicationInfo().dataDir + File.separator + System.currentTimeMillis() + "." + fileName.substring(fileName.lastIndexOf(".")+1);
         File file = new File(filePath);
+
+        try{
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                bitmap= ImageDecoder.decodeBitmap(ImageDecoder.createSource(getContentResolver(),uri));
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 30 /*ignored for PNG*/, bos);
+                byte[] bitmapdata = bos.toByteArray();
+                FileOutputStream fos = null;
+                try {
+                    //파일 생성된 곳에 작성할 수 있도록 outputstream 생성
+                    fos = new FileOutputStream(file);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    //outputstream을 통해 bitearray[] 로 데이터 저장
+                    fos.write(bitmapdata);
+
+                    fos.flush();
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         // 서버에 이미지 업로드 후 삭제하기 위해 경로를 저장해둠
         //tempFileList.add(filePath);
 
-        try {
-            // 매개변수로 받은 uri 를 통해  이미지에 필요한 데이터를 가져온다.
-            InputStream inputStream = contentResolver.openInputStream(uri);
-            if (inputStream == null)
-                return null;
-            // 가져온 이미지 데이터를 아까 생성한 파일에 저장한다.
-            OutputStream outputStream = new FileOutputStream(file);
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = inputStream.read(buf)) > 0)
-                outputStream.write(buf, 0, len);
-            outputStream.close();
-            inputStream.close();
-        } catch (IOException ignore) {
-            return null;
-        }
+//        try {
+//            // 매개변수로 받은 uri 를 통해  이미지에 필요한 데이터를 가져온다.
+//            InputStream inputStream = contentResolver.openInputStream(uri);
+//            if (inputStream == null)
+//                return null;
+//            // 가져온 이미지 데이터를 아까 생성한 파일에 저장한다.
+//            OutputStream outputStream = new FileOutputStream(file);
+//            byte[] buf = new byte[1024];
+//            int len;
+//            while ((len = inputStream.read(buf)) > 0)
+//                outputStream.write(buf, 0, len);
+//            outputStream.close();
+//            inputStream.close();
+//        } catch (IOException ignore) {
+//            return null;
+//        }
+
+
         return file.getAbsolutePath(); // 생성한 파일의 절대경로 반환
     }
 
     public void variableInit(){
+
+//        private EditText postTitle,postPrice,postContents;
+//        private Spinner postCategory,postSellType;
+
+        postTitle=findViewById(R.id.post_write_title);
+        postPrice= findViewById(R.id.post_write_price);
+        postContents=findViewById(R.id.post_write_contents);
+
+
+        //spinner adapter 장착하자.
+        postCategory=findViewById(R.id.post_write_category);
+        postSellType=findViewById(R.id.post_write_sell_type);
+
+        categoryAdapter=new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item,categoryItems);
+        sellTypeAdapter=new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item,sellTypeItems);
+
+
+        postCategory.setAdapter(categoryAdapter);
+        postCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch(position){
+                    case 0: Log.e("123","0번");
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            postCategory.getPopupContext();
+                        }
+                        break;
+                    case 1:Log.e("123","1번");
+
+
+                    break;
+
+                  default:
+                    break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        postSellType.setAdapter(sellTypeAdapter);
+
+//        postCategory.setPrompt("카테고리 선택");
+//        postSellType.setPrompt("거래방법 선택");
+
+        //recyclerview 이미지 관련된 코드
         imageFileCollect= new ArrayList<>();
         //tempFileList=new ArrayList<>();
         files = new ArrayList<>();
@@ -343,6 +471,8 @@ public class Activity_post_write extends AppCompatActivity {
                 .build();
 
     }
+
+
 
     @Override
     protected void onDestroy() {

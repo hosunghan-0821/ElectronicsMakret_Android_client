@@ -80,9 +80,9 @@ public interface RetrofitService {
     );
 
     @Multipart
-    @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/example/multiImage.php")
+    @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/postWrite.php")
     Call<MemberSignup> sendMultiImage(
-            @Part ArrayList<MultipartBody.Part> files, @Part ("hi") RequestBody param
+            @Part ArrayList<MultipartBody.Part> files, @PartMap HashMap<String, RequestBody> params
             );
 
 }
