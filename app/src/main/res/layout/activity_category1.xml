@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity_category_1">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/horizontal_guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1"/>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/ic_baseline_arrow_back_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="카테고리"
+        android:textSize="40dp"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/horizontal_guideline1">
+
+
+        <LinearLayout
+            android:id="@+id/linear_phone_category"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/phone_category_text"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_weight="12"
+                android:gravity="left|center"
+                android:text="모바일기기"
+                android:textSize="20dp" />
+            <ImageView
+                android:src="@drawable/ic_baseline_chevron_right_24"
+                android:layout_weight="0.5"
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_audio_category"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/audio_category_text"
+                android:gravity="left|center"
+                android:textSize="20dp"
+                android:text="오디오/영상 관련기기"
+                android:layout_weight="12"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"/>
+            <ImageView
+                android:src="@drawable/ic_baseline_chevron_right_24"
+                android:layout_weight="0.5"
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_notebook_category"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/notebook_category_text"
+                android:gravity="left|center"
+                android:textSize="20dp"
+                android:text="노트북/주변기기"
+                android:layout_weight="12"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"/>
+            <ImageView
+                android:src="@drawable/ic_baseline_chevron_right_24"
+                android:layout_weight="0.5"
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

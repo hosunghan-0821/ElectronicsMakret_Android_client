@@ -11,11 +11,10 @@
         android:id="@+id/view1"
         android:layout_width="wrap_content"
         android:layout_height="1dp"
-        android:background="#4682B4"
+        android:background="#808080"
         app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
 
 
     <TextView
@@ -23,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:text="중고거래 글쓰기"
+        android:text="거래 상품 등록"
         android:textSize="30dp"
         app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline1"
         app:layout_constraintStart_toEndOf="@+id/post_write_back_arrow"
@@ -93,7 +92,7 @@
                 android:id="@+id/view3"
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:background="#4682B4"
+                android:background="#808080"
                 app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -104,6 +103,7 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_baseline_camera_alt_24" />
@@ -129,23 +129,12 @@
                 android:layout_marginBottom="10dp"
                 app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline3"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/post_write_image_choice_image"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/textView15"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:text="제목"
-                android:textSize="30dp"
-                app:layout_constraintBottom_toBottomOf="@+id/post_write_title"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/horizontal_guideline3" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
 
             <EditText
-                android:textAlignment="textEnd"
                 android:id="@+id/post_write_title"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
@@ -154,54 +143,101 @@
                 android:layout_marginEnd="20dp"
                 android:background="@drawable/textview_border"
                 android:ems="10"
-                android:hint="제목"
+                android:hint="상품명을 입력해 주세요 최대(30자)"
                 android:inputType="textPersonName"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/textView15"
-                app:layout_constraintTop_toTopOf="@+id/view3" />
-
-            <Spinner
-                android:background="@drawable/textview_border"
-                android:spinnerMode="dialog"
-                android:id="@+id/post_write_category"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="20dp"
-                android:minHeight="48dp"
+                android:padding="10dp"
+                android:textAlignment="textStart"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/post_write_title"
+                app:layout_constraintTop_toTopOf="@+id/view3"
                 tools:ignore="SpeakableTextPresentCheck" />
 
-            <TextView
-                android:id="@+id/textView16"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="20dp"
-                android:text="가격"
-                android:textSize="30dp"
-                app:layout_constraintBottom_toBottomOf="@+id/post_write_price"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/post_write_category" />
-
-            <EditText
-                android:id="@+id/post_write_price"
+            <LinearLayout
+                android:background="@drawable/textview_border"
+                android:id="@+id/linear_category"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/post_write_title">
+
+                <TextView
+                    android:id="@+id/post_write_category_text"
+                    android:layout_gravity="center"
+                    android:layout_weight="10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:paddingTop="12dp"
+                    android:paddingLeft="12dp"
+
+                    android:text="카테고리 선택" />
+                <ImageView
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_baseline_chevron_right_24"
+                    />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:background="@drawable/textview_border"
+                android:orientation="horizontal"
+                android:id="@+id/linear_price"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linear_category">
 
-                android:ems="10"
-                android:hint="가격"
-                android:inputType="numberDecimal"
-                android:minHeight="48dp"
-                android:textAlignment="textEnd"
-                app:layout_constraintStart_toEndOf="@+id/textView16"
-                app:layout_constraintTop_toBottomOf="@+id/post_write_category" />
+                <TextView
+                    android:paddingTop="12dp"
+                    android:paddingLeft="12dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="배송비 포함"
+                    />
+
+                <CheckBox
+                    android:id="@+id/deliver_cost_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:minWidth="48dp" />
+
+
+
+                <EditText
+                    android:layout_weight="1"
+                   android:background="@android:color/transparent"
+                    android:id="@+id/post_write_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="판매가격을 입력해 주세요."
+                    android:inputType="numberDecimal"
+                    android:minHeight="48dp"
+                    android:textAlignment="textEnd"
+                    />
+                <TextView
+                    android:gravity="center"
+                    android:id="@+id/textView19"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="원"
+                    android:textSize="15dp"
+                    />
+
+            </LinearLayout>
+
+
 
             <EditText
 
@@ -222,6 +258,7 @@
                 app:layout_constraintVertical_bias="1.0" />
 
             <EditText
+                android:hint="상품설명을 입력해주세요.\n사이즈,색상,사용기간,보증기간 등\n상세한 상품정보를 입력하시면 \n더욱 수월하게 거래할 수 있습니다.\n(최대 500자 )"
                 android:id="@+id/post_write_contents"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -233,23 +270,12 @@
                 android:gravity="top"
                 android:inputType="textMultiLine"
                 android:maxLines="10"
-                app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView17"
-                app:layout_constraintTop_toBottomOf="@+id/post_write_price"
-                tools:ignore="SpeakableTextPresentCheck" />
-
-            <TextView
-                android:id="@+id/textView17"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="30dp"
-                android:text="세부사항"
                 android:textSize="15dp"
                 app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline2"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView16" />
+                app:layout_constraintTop_toBottomOf="@+id/linear_price"
+                tools:ignore="SpeakableTextPresentCheck" />
 
             <Spinner
                 android:background="@drawable/textview_border"
@@ -270,31 +296,31 @@
                 android:id="@+id/view4"
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:background="#4682B4"
-                app:layout_constraintBottom_toTopOf="@+id/textView18"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:layout_marginTop="10dp"
+                android:background="#808080"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/button2" />
+
+
 
             <TextView
-                android:id="@+id/textView18"
+                android:id="@+id/post_image_info_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="30dp"
-                android:text="지역 선택"
-                android:textSize="30dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/post_write_sell_type" />
+                android:layout_marginTop="12dp"
+                android:text="상품의 사진은 총 5개를 등록할 수 있습니다.\n 상품에 해당하는 명확한 사진을 올려주세요"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/recyclerView_post_write_image"
+                app:layout_constraintStart_toEndOf="@+id/post_write_image_choice_image"
+                app:layout_constraintTop_toTopOf="@+id/recyclerView_post_write_image" />
 
-            <TextView
-                android:id="@+id/textView19"
+            <Button
+                android:id="@+id/button2"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:gravity="center"
-                android:text="원"
-                android:textSize="15dp"
-                app:layout_constraintBottom_toBottomOf="@+id/post_write_price"
-                app:layout_constraintStart_toEndOf="@+id/post_write_price"
-                app:layout_constraintTop_toTopOf="@+id/post_write_price" />
+                android:layout_height="wrap_content"
+                android:text=" + 거래 희망 지역 추가"
+                app:layout_constraintStart_toStartOf="@+id/post_write_sell_type"
+                app:layout_constraintTop_toBottomOf="@+id/post_write_sell_type" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

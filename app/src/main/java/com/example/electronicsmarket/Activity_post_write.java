@@ -31,8 +31,10 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,14 +66,19 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Activity_post_write extends AppCompatActivity {
 
 
+
+    SharedPreferences.Editor editor;
+    SharedPreferences sharedPreferences;
+    private LinearLayout linearCategory;
     private ItemTouchHelper mItemTouchHelper;
-    private String[] categoryItems={"카테고리 선택","스마트폰/주변기기","노트북/주변기기","PC부품","오디오/영상기기"};
+    private CheckBox deliverCheckBox;
+
     private String[] sellTypeItems={"거래방법 선택","직거래","택배거래","직거래/택배거래"};
     ArrayList<File> imageFileCollect;
     //ArrayList<String> tempFileList;
     ArrayList<MultipartBody.Part> files;
     Retrofit retrofit;
-    private TextView postWriteText;
+    private TextView postWriteText,postImageInfo,categoryText;
     private RecyclerView imageRecyclerview;
     private LinearLayoutManager linearLayoutManager;
     private Adapter_post_image imageAdapter;
@@ -92,9 +99,6 @@ public class Activity_post_write extends AppCompatActivity {
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         variableInit();
-
-        String text = "some text";
-
 
         selectImage.setOnClickListener(imageClick);
 
@@ -149,21 +153,28 @@ public class Activity_post_write extends AppCompatActivity {
                 }
                 SharedPreferences sharedPreferences=getSharedPreferences("autoLogin",MODE_PRIVATE);
                 String id=sharedPreferences.getString("userId","");
+                RequestBody deliveryCost;
+                if(deliverCheckBox.isChecked()){
+                    deliveryCost=RequestBody.create(MediaType.parse("text/plain"),"Y");
+                }
+                else{
+                    deliveryCost=RequestBody.create(MediaType.parse("text/plain"),"N");
+                }
 
-                RequestBody requestBody = RequestBody.create(MediaType.parse("text/plain"), text);
                 RequestBody title=RequestBody.create(MediaType.parse("text/plain"), postTitle.getText().toString());
                 RequestBody price=RequestBody.create(MediaType.parse("text/plain"), postPrice.getText().toString());
                 RequestBody contents=RequestBody.create(MediaType.parse("text/plain"), postContents.getText().toString());
-                RequestBody category=RequestBody.create(MediaType.parse("text/plain"),postCategory.getSelectedItem().toString());
+                RequestBody category=RequestBody.create(MediaType.parse("text/plain"),categoryText.getText().toString());
                 RequestBody sellType=RequestBody.create(MediaType.parse("text/plain"),postSellType.getSelectedItem().toString());
                 RequestBody email=RequestBody.create(MediaType.parse("text/plain"),id);
+
+                requestMap.put("deliveryCost",deliveryCost);
                 requestMap.put("title",title);
                 requestMap.put("price",price);
                 requestMap.put("contents",contents);
                 requestMap.put("category",category);
                 requestMap.put("sellType",sellType);
                 requestMap.put("email",email);
-
 
                 RetrofitService service = retrofit.create(RetrofitService.class);
                 Call<MemberSignup> call = service.sendMultiImage(files,requestMap);
@@ -193,6 +204,18 @@ public class Activity_post_write extends AppCompatActivity {
             }
         });
 
+
+        //카테고리 선택 클릭 리스너
+
+        linearCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(Activity_post_write.this,Activity_category_1.class);
+                categoryLauncher.launch(intent);
+            }
+        });
+
+
         //이미지 지울 때 사용하는 클릭 리스너.
         imageAdapter.setListener(new Interface_post_listener() {
             @Override
@@ -205,7 +228,11 @@ public class Activity_post_write extends AppCompatActivity {
 
                 }
                 imageFileCollect.remove(position);
+
                 imageList.remove(position);
+                if(imageList.size()==0){
+                    postImageInfo.setVisibility(View.VISIBLE);
+                }
                 imageAdapter.notifyItemRemoved(position);
                 imageNumberText.setText(imageList.size()+"/5");
                 Log.e("123",imageFileCollect.toString());
@@ -219,7 +246,7 @@ public class Activity_post_write extends AppCompatActivity {
     View.OnClickListener imageClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(imageFileCollect.size()>5){
+            if(imageFileCollect.size()>=5){
                 AlertDialog.Builder builder = new AlertDialog.Builder(Activity_post_write.this);
 
                 builder.setTitle("알림");
@@ -242,6 +269,22 @@ public class Activity_post_write extends AppCompatActivity {
         }
     };
 
+
+        private ActivityResultLauncher<Intent> categoryLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if(result.getResultCode()==RESULT_OK){
+                            Log.e("123","41223");
+                            Intent intent =result.getData();
+                            String category= intent.getStringExtra("category");
+                            Log.e("123",category);
+                        }
+                    }
+                }
+        );
+
     //갤러리에서 이미지 가져왔을 때, resultLauncher;
     private ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -249,8 +292,7 @@ public class Activity_post_write extends AppCompatActivity {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == RESULT_OK) {
-
-
+                        postImageInfo.setVisibility(View.INVISIBLE);
                         //갯수제한 걸어둘 필요가 있다.
                         files.clear();
                         Intent intent = result.getData();
@@ -393,56 +435,30 @@ public class Activity_post_write extends AppCompatActivity {
     }
 
     public void variableInit(){
+        //shared
+        sharedPreferences=getSharedPreferences("category",MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.commit();
 
-//        private EditText postTitle,postPrice,postContents;
-//        private Spinner postCategory,postSellType;
+        //
+        categoryText=findViewById(R.id.post_write_category_text);
+        deliverCheckBox=findViewById(R.id.deliver_cost_checkbox);
 
+        linearCategory=findViewById(R.id.linear_category);
+
+        postImageInfo=findViewById(R.id.post_image_info_text);
         postTitle=findViewById(R.id.post_write_title);
         postPrice= findViewById(R.id.post_write_price);
         postContents=findViewById(R.id.post_write_contents);
 
-
-        //spinner adapter 장착하자.
-        postCategory=findViewById(R.id.post_write_category);
+        //spinner 관련
         postSellType=findViewById(R.id.post_write_sell_type);
-
-        categoryAdapter=new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item,categoryItems);
         sellTypeAdapter=new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item,sellTypeItems);
-
-
-        postCategory.setAdapter(categoryAdapter);
-        postCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch(position){
-                    case 0: Log.e("123","0번");
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            postCategory.getPopupContext();
-                        }
-                        break;
-                    case 1:Log.e("123","1번");
-
-
-                    break;
-
-                  default:
-                    break;
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
         postSellType.setAdapter(sellTypeAdapter);
-
-//        postCategory.setPrompt("카테고리 선택");
-//        postSellType.setPrompt("거래방법 선택");
 
         //recyclerview 이미지 관련된 코드
         imageFileCollect= new ArrayList<>();
-        //tempFileList=new ArrayList<>();
         files = new ArrayList<>();
 
         //recyclerview 관련 준비
@@ -473,6 +489,17 @@ public class Activity_post_write extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // shared 값 가져오기
+
+             String category=sharedPreferences.getString("category","");
+             categoryText.setText(category);
+             if(categoryText.getText().toString().equals("")){
+                 categoryText.setText("카테고리 선택");
+             }
+    }
 
     @Override
     protected void onDestroy() {
