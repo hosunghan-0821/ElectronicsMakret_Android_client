@@ -26,6 +26,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.Selection;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -49,6 +53,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -91,6 +96,7 @@ public class Activity_post_write extends AppCompatActivity {
     HashMap<String, RequestBody> requestMap = new HashMap<>();
     private Spinner postCategory,postSellType;
     private ArrayAdapter<String> categoryAdapter,sellTypeAdapter;
+    private String strAmount="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +107,29 @@ public class Activity_post_write extends AppCompatActivity {
         variableInit();
 
         selectImage.setOnClickListener(imageClick);
+
+        postPrice.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if(!TextUtils.isEmpty(s.toString()) && !s.toString().equals(strAmount)) {
+                    strAmount = makeStringComma(s.toString().replace(",", ""));
+                    postPrice.setText(strAmount);
+                    Editable editable = postPrice.getText();
+                    Selection.setSelection(editable, strAmount.length());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         //
         mItemTouchHelper = new ItemTouchHelper(new ItemTouchHelperCallback(imageAdapter, new ItemTouchHelperListener() {
@@ -182,15 +211,26 @@ public class Activity_post_write extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
                         Log.e("123", "통신성공");
+                        if(response.isSuccessful()&&response.body()!=null){
+                            //이미지 업로드 전송 성공하면 임시파일들 삭제.
+                            for(int i=0; i<imageFileCollect.size();i++){
+                                if(imageFileCollect.get(i).exists()){
+                                    boolean result=imageFileCollect.get(i).delete();
+                                    Log.e("123",String.valueOf(result));
+                                }
+                            }
+
+                            Intent intent =new Intent(Activity_post_write.this,Activity_post_read.class);
+                            intent.putExtra("postNum",response.body().getMessage());
+                            startActivity(intent);
+                            finish();
+
+                        }
 
 
-                        //이미지 업로드 전송 성공하면 임시파일들 삭제.
-//                        for(int i=0; i<imageFileCollect.size();i++){
-//                            if(imageFileCollect.get(i).exists()){
-//                                boolean result=imageFileCollect.get(i).delete();
-//                                Log.e("123",String.valueOf(result));
-//                            }
-//                        }
+
+
+
 
                     }
 
@@ -240,6 +280,17 @@ public class Activity_post_write extends AppCompatActivity {
         });
 
     }
+
+    // 1000단위 콤마
+    protected String makeStringComma(String str) {    // 천단위 콤마설정.
+        if (str.length() == 0) {
+            return "";
+        }
+        long value = Long.parseLong(str);
+        DecimalFormat format = new DecimalFormat("###,###");
+        return format.format(value);
+    }
+
 
 
     //갤러리에서 이미지 가져오기.

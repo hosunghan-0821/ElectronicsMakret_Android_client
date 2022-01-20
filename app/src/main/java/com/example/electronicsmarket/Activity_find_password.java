@@ -94,8 +94,8 @@ public class Activity_find_password extends AppCompatActivity {
                         if(response.isSuccessful()&&response.body().getIsSuccess()!=null){
                             Log.e("123","123");
                             if(response.body().getIsSuccess().equals("비번변경 성공")){
-                                builder.setTitle("임시 비밀번호를 이메일로 전송했습니다.");
-                                builder.setMessage("로그인 화면으로 이동합니다.");
+                                builder.setTitle("알림");
+                                builder.setMessage("임시비밀번호 이메일로 발송\n로그인 화면으로 이동합니다.");
                                 builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {

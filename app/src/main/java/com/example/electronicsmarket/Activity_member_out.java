@@ -176,7 +176,7 @@ public class Activity_member_out extends AppCompatActivity {
     View.OnClickListener cancel=new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            finish();
         }
     };
 }

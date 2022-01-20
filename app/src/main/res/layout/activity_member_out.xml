@@ -50,6 +50,7 @@
         app:layout_constraintTop_toTopOf="@+id/horizontal_guideline1" />
 
     <Spinner
+        android:background="@drawable/textview_border"
         android:id="@+id/member_out_spinner"
 
         android:layout_marginTop="20dp"

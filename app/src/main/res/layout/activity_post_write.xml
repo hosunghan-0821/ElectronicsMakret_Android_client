@@ -86,7 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.2" />
+                app:layout_constraintGuide_percent="0.15" />
 
             <View
                 android:id="@+id/view3"
@@ -321,6 +321,31 @@
                 android:text=" + 거래 희망 지역 추가"
                 app:layout_constraintStart_toStartOf="@+id/post_write_sell_type"
                 app:layout_constraintTop_toBottomOf="@+id/post_write_sell_type" />
+
+            <TextView
+                android:id="@+id/textView20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:text="안내사항"
+                android:textColor="#ff0000"
+                android:textSize="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view4" />
+
+            <TextView
+                android:layout_marginBottom="10dp"
+                android:id="@+id/textView22"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:text="상품등록 완료 전에 중고거래 금지품목에 대해 확인하세요\n개인정보 제공 안내를 확인하세요"
+                android:textSize="15dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView20" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

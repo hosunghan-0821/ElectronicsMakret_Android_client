@@ -66,7 +66,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.4" />
+        app:layout_constraintGuide_percent="0.42" />
 
     <TextView
         android:layout_marginLeft="10dp"
@@ -110,5 +110,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/update_nickname"
         app:layout_constraintTop_toBottomOf="@+id/update_profile_image" />
+
+    <TextView
+        android:textColor="#0067a3"
+        android:textStyle="bold"
+        android:textSize="12dp"
+        android:id="@+id/textView21"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="닉네임은 2~10자 까지 가능합니다"
+        app:layout_constraintEnd_toEndOf="@+id/update_nickname"
+        app:layout_constraintStart_toStartOf="@+id/update_nickname"
+        app:layout_constraintTop_toBottomOf="@+id/update_nickname" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

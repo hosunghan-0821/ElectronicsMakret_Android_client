@@ -11,16 +11,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
+
 public class Adapter_image_viewpager extends RecyclerView.Adapter<Adapter_image_viewpager.ViewPageHolder> {
 
     private Context context;
+    private ArrayList<String> imageRoute;
     private String[] sliderImage;
 
-    public Adapter_image_viewpager(Context context, String[] sliderImage) {
+    public Adapter_image_viewpager(Context context, ArrayList<String> imageRoute) {
         this.context = context;
-        this.sliderImage = sliderImage;
+        this.imageRoute=imageRoute;
     }
 
+    public void setImageRoute(ArrayList<String> imageRoute){
+        this.imageRoute=imageRoute;
+    }
     @NonNull
     @Override
     public Adapter_image_viewpager.ViewPageHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -32,12 +38,12 @@ public class Adapter_image_viewpager extends RecyclerView.Adapter<Adapter_image_
 
     @Override
     public void onBindViewHolder(@NonNull Adapter_image_viewpager.ViewPageHolder holder, int position) {
-        holder.bindSliderImage(sliderImage[position]);
+        holder.bindSliderImage(imageRoute.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return sliderImage.length;
+        return imageRoute.size();
     }
 
 

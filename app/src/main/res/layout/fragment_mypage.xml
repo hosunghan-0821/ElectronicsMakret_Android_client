@@ -81,7 +81,7 @@
         android:layout_width="wrap_content"
         android:layout_height="1dp"
         android:layout_marginTop="10dp"
-        android:background="#4682B4"
+        android:background="#808080"
         app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -91,7 +91,7 @@
         android:id="@+id/view"
         android:layout_width="wrap_content"
         android:layout_height="1dp"
-        android:background="#4682B4"
+        android:background="#808080"
         app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline1"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -100,7 +100,7 @@
     <View
         android:layout_width="wrap_content"
         android:layout_height="1dp"
-        android:background="#4682B4"
+        android:background="#808080"
         app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
