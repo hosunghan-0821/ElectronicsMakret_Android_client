@@ -18,6 +18,9 @@
         android:theme="@style/Theme.ElectronicsMarket"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Activity_post_read"
+            android:exported="false" />
+        <activity
             android:name=".Activity_category_2"
             android:exported="false" />
         <activity

@@ -30,7 +30,7 @@ public class Fragment_home extends Fragment  {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent= new Intent(getActivity(),example.class);
+                Intent intent= new Intent(getActivity(),Activity_post_read.class);
                 startActivity(intent);
             }
         });

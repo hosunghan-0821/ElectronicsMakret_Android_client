@@ -49,6 +49,11 @@ public interface RetrofitService {
     Call<PostEmail> newPassword( @Field("email") String email);
 
     @FormUrlEncoded
+    @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/postRead.php")
+    Call<PostInfo> getPostInfo(@Field("postNum") String postNum);
+
+
+    @FormUrlEncoded
     @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/signup/deleteProfile.php")
     Call<MemberSignup> deleteProfile(@Field("email") String email);
 
