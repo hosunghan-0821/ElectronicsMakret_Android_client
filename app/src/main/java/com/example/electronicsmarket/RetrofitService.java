@@ -84,6 +84,9 @@ public interface RetrofitService {
             @Field("password") String password
     );
 
+    @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/postAllInfo.php")
+    Call<PostAllInfo> getPostAllInfo();
+
     @Multipart
     @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/postWrite.php")
     Call<MemberSignup> sendMultiImage(

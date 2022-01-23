@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 public class PostInfo {
 
+    private String postRegTime;
+
+
     private String nickname,postTitle,postContents,postCategory,postSellType,postImageNum,postPrice,postDelivery,memberImage;
     private ArrayList<String> imageRoute;
 
@@ -14,6 +17,16 @@ public class PostInfo {
     public void setMemberImage(String memberImage) {
         this.memberImage = memberImage;
     }
+
+
+    public String getPostRegTime() {
+        return postRegTime;
+    }
+
+    public void setPostRegTime(String postRegTime) {
+        this.postRegTime = postRegTime;
+    }
+
 
     public String getNickname() {
         return nickname;
