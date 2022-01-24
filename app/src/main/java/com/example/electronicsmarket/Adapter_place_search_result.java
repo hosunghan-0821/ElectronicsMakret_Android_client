@@ -13,7 +13,11 @@ import java.util.ArrayList;
 public class Adapter_place_search_result extends RecyclerView.Adapter<Adapter_place_search_result.SearchViewHolder> {
 
     ArrayList<DataSearch> dataSearchList;
+    Interface_search_result_listener listener;
 
+    public void setListener(Interface_search_result_listener listener){
+        this.listener=listener;
+    }
     public void setDataSearchList(ArrayList<DataSearch> dataSearchList){
         this.dataSearchList=dataSearchList;
     }
@@ -51,9 +55,21 @@ public class Adapter_place_search_result extends RecyclerView.Adapter<Adapter_pl
         public SearchViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position=getAdapterPosition();
+                    if(listener!=null){
+                        listener.onItemClick(SearchViewHolder.this,position);
+                    }
+                }
+            });
             placeText=itemView.findViewById(R.id.search_place_name);
             addressText=itemView.findViewById(R.id.search_address_name);
 
         }
     }
+
+
+
 }

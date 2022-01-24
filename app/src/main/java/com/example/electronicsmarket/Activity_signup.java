@@ -38,7 +38,6 @@ public class Activity_signup extends AppCompatActivity {
 
 
     Thread thread1;
-
     CheckBox policyCheckBox1,policyCheckBox2;
     EditText loginEmail,loginPassword,loginPasswordCheck,loginNickname,emailVerifyNumber;
     TextView emailCheckText,passwordCheckText,passwordRepeatCheckText,nicknameCheckText,verifyTimer,verifyNumberCheckText;

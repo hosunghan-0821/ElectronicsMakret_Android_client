@@ -3,8 +3,6 @@ package com.example.electronicsmarket;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -28,7 +26,7 @@ public class Fragment_chat extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent =new Intent(getActivity(),googlemapExample.class);
+                Intent intent =new Intent(getActivity(), Activity_place_search_previous.class);
                 startActivity(intent);
             }
         });

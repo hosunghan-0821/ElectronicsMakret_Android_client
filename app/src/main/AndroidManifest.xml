@@ -24,7 +24,7 @@
             android:name=".Activity_place_search"
             android:exported="false" />
         <activity
-            android:name=".googlemapExample"
+            android:name=".Activity_place_search_previous"
             android:exported="false" />
         <activity
             android:name=".Activity_post_read"
