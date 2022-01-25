@@ -16,8 +16,10 @@ import java.util.ArrayList;
 
 public class Adapter_post_all_info extends RecyclerView.Adapter<Adapter_post_all_info.AllInfoViewHolder> {
 
+    Interface_info_item_click listener;
     ArrayList<PostInfo> postList;
     Context context;
+
 
     public Adapter_post_all_info(ArrayList<PostInfo> postList,Context context) {
         this.postList = postList;
@@ -25,6 +27,10 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<Adapter_post_all
     }
     public void setPostList(ArrayList<PostInfo> postList){
         this.postList=postList;
+    }
+
+    public void setItemClickListener(Interface_info_item_click listener){
+        this.listener=listener;
     }
 
     @NonNull
@@ -66,6 +72,20 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<Adapter_post_all
             postSellType2=itemView.findViewById(R.id.post_all_sell_type2);
             postTime=itemView.findViewById(R.id.post_all_time);
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position=getAdapterPosition();
+                    if(listener!=null){
+                        listener.onItemClick(position);
+                    }
+                }
+            });
+
         }
+    }
+
+    public interface Interface_info_item_click {
+        void onItemClick(int position);
     }
 }

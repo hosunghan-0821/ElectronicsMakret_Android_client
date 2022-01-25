@@ -43,6 +43,7 @@ public class Fragment_home extends Fragment  {
         View view =inflater.inflate(R.layout.fragment_home,container,false);
         variableInit(view);
 
+
         RetrofitService service = retrofit.create(RetrofitService.class);
         Call<PostAllInfo> call = service.getPostAllInfo();
 
@@ -59,6 +60,8 @@ public class Fragment_home extends Fragment  {
 
                     }
                 }
+
+
                 adapter.setPostList(postList);
                 adapter.notifyDataSetChanged();
 
@@ -68,6 +71,16 @@ public class Fragment_home extends Fragment  {
             public void onFailure(Call<PostAllInfo> call, Throwable t) {
                 Log.e("123", t.getMessage());
 
+            }
+        });
+
+        adapter.setItemClickListener(new Adapter_post_all_info.Interface_info_item_click() {
+            @Override
+            public void onItemClick(int position) {
+                Log.e("123","onItemclick");
+                Intent intent =new Intent(getActivity(),Activity_post_read.class);
+                intent.putExtra("postNum",postList.get(position).getPostNum());
+                startActivity(intent);
             }
         });
 

@@ -14,4 +14,5 @@
         android:title="기본이미지로 변경"
         android:id="@+id/standard"
         />
+
 </menu>

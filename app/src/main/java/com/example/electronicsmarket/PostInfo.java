@@ -7,8 +7,16 @@ public class PostInfo {
     private String postRegTime;
 
 
-    private String nickname,postTitle,postContents,postCategory,postSellType,postImageNum,postPrice,postDelivery,memberImage;
+    private String nickname,postTitle,postContents,postCategory,postSellType,postImageNum,postPrice,postDelivery,memberImage,postNum;
     private ArrayList<String> imageRoute;
+
+    public String getPostNum() {
+        return postNum;
+    }
+
+    public void setPostNum(String postNum) {
+        this.postNum = postNum;
+    }
 
     public String getMemberImage() {
         return memberImage;

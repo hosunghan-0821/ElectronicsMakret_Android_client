@@ -1,5 +1,6 @@
 package com.example.electronicsmarket;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,8 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 public class Adapter_post_image extends RecyclerView.Adapter<Adapter_post_image.ImageViewholder> {
@@ -16,9 +19,11 @@ public class Adapter_post_image extends RecyclerView.Adapter<Adapter_post_image.
     private ArrayList<Data_post_image> imageList;
     Interface_post_listener listener;
     ItemTouchHelperListener touchListener;
+    Context context;
 
-    public Adapter_post_image(ArrayList<Data_post_image> imageList) {
+    public Adapter_post_image(ArrayList<Data_post_image> imageList,Context context) {
         this.imageList = imageList;
+        this.context=context;
     }
 
     @NonNull
@@ -34,7 +39,10 @@ public class Adapter_post_image extends RecyclerView.Adapter<Adapter_post_image.
     @Override
     public void onBindViewHolder(@NonNull Adapter_post_image.ImageViewholder holder, int position) {
         //holder.startTime.setText(recordList.get(position).getStartTime());
-        holder.image.setImageURI(imageList.get(position).getImguri());
+        //holder.image.setImageURI(imageList.get(position).getImguri());
+        //Glide.with(getApplicationContext()).load(info.getMemberImage().toString()).into(circleImageView);
+        Glide.with(context).load(imageList.get(position).getImgUrl()).into(holder.image);
+
     }
 
     @Override

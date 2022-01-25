@@ -66,8 +66,10 @@
         android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/horizontal_guideline1">
+        app:layout_constraintTop_toBottomOf="@id/horizontal_guideline1"
+        app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/add"
@@ -96,6 +98,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
+
 
 
             <ImageView
@@ -153,13 +156,13 @@
                 tools:ignore="SpeakableTextPresentCheck" />
 
             <LinearLayout
-                android:background="@drawable/textview_border"
                 android:id="@+id/linear_category"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
+                android:background="@drawable/textview_border"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -167,45 +170,44 @@
 
                 <TextView
                     android:id="@+id/post_write_category_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_gravity="center"
                     android:layout_weight="10"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:paddingTop="12dp"
                     android:paddingLeft="12dp"
+                    android:paddingTop="12dp"
 
                     android:text="카테고리 선택" />
+
                 <ImageView
-                    android:layout_weight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
+                    android:layout_weight="1"
                     android:padding="10dp"
-                    android:src="@drawable/ic_baseline_chevron_right_24"
-                    />
+                    android:src="@drawable/ic_baseline_chevron_right_24" />
 
 
             </LinearLayout>
 
             <LinearLayout
-                android:background="@drawable/textview_border"
-                android:orientation="horizontal"
                 android:id="@+id/linear_price"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
+                android:background="@drawable/textview_border"
+                android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linear_category">
 
                 <TextView
-                    android:paddingTop="12dp"
-                    android:paddingLeft="12dp"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="배송비 포함"
-                    />
+                    android:paddingLeft="12dp"
+                    android:paddingTop="12dp"
+                    android:text="배송비 포함" />
 
                 <CheckBox
                     android:id="@+id/deliver_cost_checkbox"
@@ -214,29 +216,26 @@
                     android:minWidth="48dp" />
 
 
-
                 <EditText
-                    android:layout_weight="1"
-                   android:background="@android:color/transparent"
                     android:id="@+id/post_write_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
                     android:hint="판매가격을 입력해 주세요."
                     android:inputType="numberDecimal"
                     android:minHeight="48dp"
-                    android:textAlignment="textEnd"
-                    />
+                    android:textAlignment="textEnd" />
+
                 <TextView
-                    android:gravity="center"
                     android:id="@+id/textView19"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:gravity="center"
                     android:text="원"
-                    android:textSize="15dp"
-                    />
+                    android:textSize="15dp" />
 
             </LinearLayout>
-
 
 
             <EditText
@@ -244,7 +243,7 @@
                 android:id="@+id/editTextTextPersonName2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="150dp"
+                android:layout_marginBottom="100dp"
                 android:ems="10"
                 android:inputType="textPersonName"
                 android:minHeight="48dp"
@@ -258,7 +257,6 @@
                 app:layout_constraintVertical_bias="1.0" />
 
             <EditText
-                android:hint="상품설명을 입력해주세요.\n사이즈,색상,사용기간,보증기간 등\n상세한 상품정보를 입력하시면 \n더욱 수월하게 거래할 수 있습니다.\n(최대 500자 )"
                 android:id="@+id/post_write_contents"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -268,25 +266,29 @@
                 android:background="@drawable/textview_border"
                 android:ems="10"
                 android:gravity="top"
+                android:hint="상품설명을 입력해주세요.\n사이즈,색상,사용기간,보증기간 등\n상세한 상품정보를 입력하시면 \n더욱 수월하게 거래할 수 있습니다.\n(최대 500자 )"
                 android:inputType="textMultiLine"
                 android:maxLines="10"
                 android:textSize="15dp"
                 app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline2"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linear_price"
+                app:layout_constraintVertical_bias="0.0"
                 tools:ignore="SpeakableTextPresentCheck" />
 
             <Spinner
-                android:background="@drawable/textview_border"
-                android:spinnerMode="dialog"
                 android:id="@+id/post_write_sell_type"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="20dp"
+                android:background="@drawable/textview_border"
                 android:minHeight="48dp"
+                android:spinnerMode="dialog"
+                android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/horizontal_guideline2"
@@ -296,12 +298,45 @@
                 android:id="@+id/view4"
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginBottom="-10dp"
                 android:background="#808080"
+                app:layout_constraintBottom_toBottomOf="@+id/linear_location_select"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+
+            <RadioGroup
+                android:id="@+id/radio_group"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@+id/linear_location_select"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button2" />
+                app:layout_constraintTop_toBottomOf="@+id/textView31">
 
+                <RadioButton
+                    android:id="@+id/radio_button_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="모두 가능" />
 
+                <RadioButton
+                    android:id="@+id/radio_button_direct"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="직거래" />
+
+                <RadioButton
+                    android:id="@+id/radio_button_delivery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="택배거래"
+                    tools:ignore="TouchTargetSizeCheck" />
+
+            </RadioGroup>
 
             <TextView
                 android:id="@+id/post_image_info_text"
@@ -314,13 +349,50 @@
                 app:layout_constraintStart_toEndOf="@+id/post_write_image_choice_image"
                 app:layout_constraintTop_toTopOf="@+id/recyclerView_post_write_image" />
 
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=" + 거래 희망 지역 추가"
-                app:layout_constraintStart_toStartOf="@+id/post_write_sell_type"
-                app:layout_constraintTop_toBottomOf="@+id/post_write_sell_type" />
+
+            <LinearLayout
+                android:visibility="invisible"
+                android:background="@drawable/textview_border"
+                android:id="@+id/linear_location_select"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+
+                android:orientation="horizontal"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radio_group">
+
+
+                <ImageView
+                    android:layout_weight="10"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_baseline_location_on_24"
+                    android:text=" + 거래 희망 지역 추가"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/radio_group" />
+                <TextView
+                    android:textStyle="bold"
+                    android:paddingLeft="5dp"
+                    android:textSize="20dp"
+                    android:id="@+id/post_write_location_text"
+                    android:gravity="center|left"
+                    android:layout_weight="2"
+                    android:text="장소를 선택하세요"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+                <ImageView
+                    android:src="@drawable/ic_baseline_chevron_right_24"
+                    android:layout_weight="10"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </LinearLayout>
+
+
 
             <TextView
                 android:id="@+id/textView20"
@@ -335,17 +407,29 @@
                 app:layout_constraintTop_toBottomOf="@+id/view4" />
 
             <TextView
-                android:layout_marginBottom="10dp"
                 android:id="@+id/textView22"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:text="상품등록 완료 전에 중고거래 금지품목에 대해 확인하세요\n개인정보 제공 안내를 확인하세요"
                 android:textSize="15dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView20" />
+
+            <TextView
+                android:id="@+id/textView31"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:text="거래방식"
+                android:textSize="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/post_write_contents" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

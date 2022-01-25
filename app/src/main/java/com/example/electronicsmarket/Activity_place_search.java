@@ -138,11 +138,9 @@ public class Activity_place_search extends AppCompatActivity implements OnMapRea
             @Override
             public void onClick(View v) {
 
+                setLocationEditor.commit();
 
                 DataSearch data = new DataSearch();
-
-                //사용자가 선택한 데이터 > 최근 선택한 정보로 shared 에 저장
-                setLocationEditor.commit();
 
                 SharedPreferences sharedPreferences= getSharedPreferences("setLocation",MODE_PRIVATE);
                 data.setAddressName(sharedPreferences.getString("location_addressName",""));
@@ -150,61 +148,24 @@ public class Activity_place_search extends AppCompatActivity implements OnMapRea
                 data.setPlaceName( sharedPreferences.getString("location_placeName",""));
                 data.setLongitude( sharedPreferences.getString("location_longitude",""));
 
-                SharedPreferences.Editor editor=lastLocationPreferences.edit();
-
-                editor.putString("latitude",data.getLatitude());
-                editor.putString("longitude",data.getLongitude());
-                editor.putString("placeName",data.getPlaceName());
-                editor.putString("placeAddress",data.getAddressName());
-
-
-                editor.commit();
-                finish();
-            }
-        });
-
-
-        //검색 아이템 클릭시 interface 연결
-        resultListener=new Interface_search_result_listener() {
-            @Override
-            public void onItemClick(Adapter_place_search_result.SearchViewHolder viewHolder, int position) {
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(Activity_place_search.this);
 
                 builder.setTitle("Used Electroncis 장소 선택");
-                builder.setMessage("다음 장소를 선택하시겠습니까? \n"+ dataSearchList.get(position).getPlaceName());
+                builder.setMessage("다음 장소를 선택하시겠습니까? \n"+ data.getPlaceName());
                 builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-//                       shared 값 입력하기
-                       setLocationEditor.putString("location_placeName",dataSearchList.get(position).getPlaceName());
-                       setLocationEditor.putString("location_addressName",dataSearchList.get(position).getAddressName());
-                       setLocationEditor.putString("location_latitude",dataSearchList.get(position).getLatitude());
-                       setLocationEditor.putString("location_longitude",dataSearchList.get(position).getLongitude());
+                        SharedPreferences.Editor editor=lastLocationPreferences.edit();
 
-                       latitude=Double.parseDouble(dataSearchList.get(position).getLatitude());
-                       longitude=Double.parseDouble(dataSearchList.get(position).getLongitude());
+                        //사용자가 선택한 데이터 > 최근 선택한 정보로 shared 에 저장
+                        editor.putString("latitude",data.getLatitude());
+                        editor.putString("longitude",data.getLongitude());
+                        editor.putString("placeName",data.getPlaceName());
+                        editor.putString("placeAddress",data.getAddressName());
 
-                       placeSearchKeyword.setText(dataSearchList.get(position).getPlaceName());
-                       placeSearchKeyword.clearFocus();
-                       dialog.dismiss();
-                       mapFragment.getMapAsync(Activity_place_search.this::onMapReady);
-                       markerTitle=dataSearchList.get(position).getPlaceName();
-                       snippet=dataSearchList.get(position).getAddressName();
-
-                        boolean checkDuplicate=false;
-
-                        for(int i=0;i<previousArrayList.size();i++){
-                            if(dataSearchList.get(position).getPlaceName().equals(previousArrayList.get(i).getPlaceName())){
-                                checkDuplicate=true;
-                                break;
-                            }
-                        }
-                        if(!checkDuplicate){
-                            previousArrayList.add(0,dataSearchList.get(position));
-                            setPreviousArrayList(previousArrayList);
-                        }
+                        editor.commit();
+                        finish();
 
                     }
                 });
@@ -215,8 +176,51 @@ public class Activity_place_search extends AppCompatActivity implements OnMapRea
                     }
                 });
                 builder.show();
+
+
+
+
+
+            }
+        });
+
+
+        //검색 아이템 클릭시 interface 연결
+        resultListener=new Interface_search_result_listener() {
+            @Override
+            public void onItemClick(Adapter_place_search_result.SearchViewHolder viewHolder, int position) {
+
+                //shared 값 입력하기
+                setLocationEditor.putString("location_placeName",dataSearchList.get(position).getPlaceName());
+                setLocationEditor.putString("location_addressName",dataSearchList.get(position).getAddressName());
+                setLocationEditor.putString("location_latitude",dataSearchList.get(position).getLatitude());
+                setLocationEditor.putString("location_longitude",dataSearchList.get(position).getLongitude());
+
+                latitude=Double.parseDouble(dataSearchList.get(position).getLatitude());
+                longitude=Double.parseDouble(dataSearchList.get(position).getLongitude());
+
+                placeSearchKeyword.setText(dataSearchList.get(position).getPlaceName());
+                placeSearchKeyword.clearFocus();
+
+                mapFragment.getMapAsync(Activity_place_search.this::onMapReady);
+                markerTitle=dataSearchList.get(position).getPlaceName();
+                snippet=dataSearchList.get(position).getAddressName();
+
+                boolean checkDuplicate=false;
+
+                for(int i=0;i<previousArrayList.size();i++){
+                    if(dataSearchList.get(position).getPlaceName().equals(previousArrayList.get(i).getPlaceName())){
+                        checkDuplicate=true;
+                        break;
+                    }
+                }
+                if(!checkDuplicate){
+                    previousArrayList.add(0,dataSearchList.get(position));
+                    setPreviousArrayList(previousArrayList);
+                }
             }
         };
+
         adapter.setListener(resultListener);
 
 
@@ -234,36 +238,22 @@ public class Activity_place_search extends AppCompatActivity implements OnMapRea
             public void mainItemClick(int position) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(Activity_place_search.this);
 
-                builder.setTitle("Used Electroncis 장소 선택");
-                builder.setMessage("다음 장소를 선택하시겠습니까? \n"+ previousArrayList.get(position).getPlaceName());
-                builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //shared 값 입력하기
-                        setLocationEditor.putString("location_placeName",previousArrayList.get(position).getPlaceName());
-                        setLocationEditor.putString("location_addressName",previousArrayList.get(position).getAddressName());
-                        setLocationEditor.putString("location_latitude",previousArrayList.get(position).getLatitude());
-                        setLocationEditor.putString("location_longitude",previousArrayList.get(position).getLongitude());
+                setLocationEditor.putString("location_placeName",previousArrayList.get(position).getPlaceName());
+                setLocationEditor.putString("location_addressName",previousArrayList.get(position).getAddressName());
+                setLocationEditor.putString("location_latitude",previousArrayList.get(position).getLatitude());
+                setLocationEditor.putString("location_longitude",previousArrayList.get(position).getLongitude());
 
-                        latitude=Double.parseDouble(previousArrayList.get(position).getLatitude());
-                        longitude=Double.parseDouble(previousArrayList.get(position).getLongitude());
+                latitude=Double.parseDouble(previousArrayList.get(position).getLatitude());
+                longitude=Double.parseDouble(previousArrayList.get(position).getLongitude());
 
-                        placeSearchKeyword.setText(previousArrayList.get(position).getPlaceName());
-                        placeSearchKeyword.clearFocus();
+                placeSearchKeyword.setText(previousArrayList.get(position).getPlaceName());
+                placeSearchKeyword.clearFocus();
 
-                        dialog.dismiss();
-                        mapFragment.getMapAsync(Activity_place_search.this::onMapReady);
-                        markerTitle=previousArrayList.get(position).getPlaceName();
-                        snippet=previousArrayList.get(position).getAddressName();
-                    }
-                });
-                builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                builder.show();
+
+                mapFragment.getMapAsync(Activity_place_search.this::onMapReady);
+                markerTitle=previousArrayList.get(position).getPlaceName();
+                snippet=previousArrayList.get(position).getAddressName();
+
             }
         });
 

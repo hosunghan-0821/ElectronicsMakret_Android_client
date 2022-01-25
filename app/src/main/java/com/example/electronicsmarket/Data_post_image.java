@@ -12,6 +12,9 @@ public class Data_post_image {
         this.imgUrl = imgUrl;
     }
 
+    public Data_post_image() {
+    }
+
     public Data_post_image(Uri imguri) {
         this.imguri = imguri;
     }

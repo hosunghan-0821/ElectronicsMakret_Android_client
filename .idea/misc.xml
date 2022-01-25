@@ -28,8 +28,9 @@
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_member_info.xml" value="0.13857677902621723" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_member_out.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_place_search.xml" value="0.2" />
-        <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_post_read.xml" value="0.1" />
-        <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_post_write.xml" value="0.264" />
+        <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_place_search_previous.xml" value="0.1272644927536232" />
+        <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_post_read.xml" value="0.264" />
+        <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_post_write.xml" value="0.22178988326848248" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_profile_update.xml" value="0.1897644927536232" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_setting.xml" value="0.2477355072463768" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_signup.xml" value="0.22135416666666666" />
@@ -53,6 +54,7 @@
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/signup_activity.xml" value="0.19927536231884058" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/menu/bottom.xml" value="0.264" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/menu/bottommenu.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/menu/post_update.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/menu/updatemenu.xml" value="0.25" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/xml/bottommenu.xml" value="0.1526268115942029" />
       </map>

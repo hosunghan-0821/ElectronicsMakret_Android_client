@@ -11,15 +11,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1"/>
+        app:layout_constraintGuide_percent="0.1" />
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:src="@drawable/ic_baseline_arrow_back_24"
+        app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -30,8 +31,8 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:text="거래 게시글"
-        android:textSize="30dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline1"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,7 +42,7 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/horizontal_guideline1"
         app:layout_constraintVertical_bias="0.0"
@@ -92,25 +93,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
 
-                android:background="#808080"
-                app:layout_constraintTop_toBottomOf="@+id/viewpager_post_image"
                 android:layout_marginTop="20dp"
+                android:background="#808080"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/viewpager_post_image" />
 
             <TextView
-                android:textStyle="bold"
-                android:layout_marginTop="10dp"
+                android:textColor="@color/black"
                 android:id="@+id/post_read_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
                 android:text="제목"
                 android:textSize="20dp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/view6" />
+                app:layout_constraintTop_toBottomOf="@+id/post_read_price" />
 
             <TextView
+                android:textColor="@color/black"
                 android:id="@+id/post_read_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -119,37 +122,50 @@
                 android:text="1,000,000원"
                 android:textSize="20dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/post_read_title" />
+                app:layout_constraintTop_toBottomOf="@+id/view6" />
 
             <TextView
+                android:visibility="invisible"
                 android:id="@+id/post_read_deliver_cost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/textview_border"
                 android:padding="5dp"
                 android:text="배송비 별도"
                 android:textSize="17dp"
-                app:layout_constraintBottom_toBottomOf="@+id/post_read_price"
-                app:layout_constraintStart_toEndOf="@+id/post_read_price" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
             <View
                 android:id="@+id/view1"
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="50dp"
                 android:background="#808080"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/post_read_price" />
+                app:layout_constraintTop_toBottomOf="@+id/post_read_title" />
 
+
+            <TextView
+                android:id="@+id/textView36"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center|left"
+                android:text="장소 정보 없음"
+                android:textSize="15dp"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toTopOf="@+id/imageView2" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/post_write_profile_image"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView24">
 
@@ -159,104 +175,96 @@
                 android:id="@+id/post_write_nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginStart="20dp"
                 android:text="닉네임"
                 android:textSize="20dp"
                 app:layout_constraintStart_toEndOf="@+id/post_write_profile_image"
-                app:layout_constraintTop_toBottomOf="@+id/textView24" />
-
-            <TextView
-                android:id="@+id/post_write_email"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="20dp"
-                android:text="winsomed96@naver.com"
-                android:textSize="15dp"
-                app:layout_constraintStart_toEndOf="@+id/post_write_profile_image"
-                app:layout_constraintTop_toBottomOf="@+id/post_write_nickname" />
+                app:layout_constraintTop_toTopOf="@+id/post_write_profile_image" />
 
 
             <View
                 android:id="@+id/view2"
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:layout_marginTop="20dp"
 
+                android:layout_marginTop="20dp"
                 android:background="#808080"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/post_write_email" />
-
-            <TextView
-                android:textStyle="bold"
-                android:id="@+id/post_write_category"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:text="카테고리"
-                android:textSize="15dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view2" />
+                app:layout_constraintTop_toBottomOf="@+id/post_read_deliver_cost" />
 
             <TextView
                 android:id="@+id/post_read_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:text="모바일>이어폰"
-                android:textSize="20dp"
+                android:textSize="15dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/post_write_category" />
+                app:layout_constraintTop_toBottomOf="@+id/post_read_contents" />
 
             <TextView
-                android:textStyle="bold"
                 android:id="@+id/textView26"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:text="상품설명"
                 android:textSize="15dp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/post_read_category" />
+                app:layout_constraintTop_toBottomOf="@+id/view1" />
 
             <TextView
-                android:textSize="20dp"
-                android:textStyle="bold"
+                android:textColor="@color/black"
                 android:id="@+id/post_read_contents"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
                 android:text="상품설명을 입력해주세요.\n사이즈,색상,사용기간,보증기간 등\n상세한 상품정보를 입력하시면 \n더욱 수월하게 거래할 수 있습니다.\n(최대 500자 )"
+                android:textSize="20dp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
+
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView26" />
+
+
+            <View
+                android:visibility="invisible"
+                android:id="@+id/view7"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+
+                android:background="#808080"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/post_read_category" />
+
 
             <View
                 android:id="@+id/view5"
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:layout_marginTop="20dp"
 
+                android:layout_marginTop="20dp"
                 android:background="#808080"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/post_read_contents" />
+                app:layout_constraintTop_toBottomOf="@+id/post_write_profile_image" />
 
             <TextView
-                android:textColor="#ff0000"
                 android:id="@+id/textView28"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:text="안내사항"
+                android:textColor="#ff0000"
                 android:textSize="15dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/view5" />
@@ -270,10 +278,12 @@
                 android:layout_marginEnd="20dp"
                 android:text=" 'Electronics Used market'는 중고거래의 통신판매중개자로서 거래당사자가 아니며 판매회원과 구매 회원 간의 상품거래 정보 및 거래에 관여하지 않고 어떠한 의무와 책임도 부담하지 않습니다. "
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView28" />
 
             <TextView
+                android:visibility="invisible"
                 android:id="@+id/post_read_sell_type_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -282,10 +292,11 @@
                 android:padding="5dp"
                 android:text="직거래"
                 android:textSize="17dp"
-                app:layout_constraintBottom_toBottomOf="@+id/post_read_price"
-                app:layout_constraintStart_toEndOf="@+id/post_read_deliver_cost" />
+                app:layout_constraintStart_toEndOf="@+id/post_read_deliver_cost"
+                app:layout_constraintTop_toTopOf="@+id/post_read_deliver_cost" />
 
             <TextView
+                android:visibility="invisible"
                 android:id="@+id/post_read_sell_type_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -294,20 +305,31 @@
                 android:padding="5dp"
                 android:text="택배거래"
                 android:textSize="17dp"
-                app:layout_constraintBottom_toBottomOf="@+id/post_read_price"
-                app:layout_constraintStart_toEndOf="@+id/post_read_sell_type_1" />
+                app:layout_constraintStart_toEndOf="@+id/post_read_sell_type_1"
+                app:layout_constraintTop_toTopOf="@+id/post_read_deliver_cost" />
 
             <TextView
-                android:textStyle="bold"
-                android:textSize="20dp"
+
+                android:textColor="@color/black"
                 android:id="@+id/textView24"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:text="판매자 정보"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/view5"
+                app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="10dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view1" />
+                app:layout_constraintTop_toBottomOf="@+id/view7"
+                app:srcCompat="@drawable/ic_baseline_location_on_24" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -347,5 +369,16 @@
 
 
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/post_write_update_delete"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_setting" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

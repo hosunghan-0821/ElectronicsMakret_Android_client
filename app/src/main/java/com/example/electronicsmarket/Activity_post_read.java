@@ -9,10 +9,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -31,21 +34,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Activity_post_read extends AppCompatActivity {
 
     private Retrofit retrofit;
-   private ViewPager2 sliderViewPager;
-   private LinearLayout layoutIndicator;
-   private String[] images = new String[]{
-            "http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/Resource/postImage/postNum_21_20220120_061627_2.jpg",
-            "http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/Resource/postImage/postNum_21_20220120_061627_1.jpg",
-            "http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/Resource/postImage/postNum_20_20220120_061552_0.jpg",
-            "https://cdn.pixabay.com/photo/2020/09/02/18/03/girl-5539094_1280.jpg",
-            "https://cdn.pixabay.com/photo/2014/03/03/16/15/mosque-279015_1280.jpg"
-    };
-   private ArrayList<String> imageRoute;
+    private ViewPager2 sliderViewPager;
+    private LinearLayout layoutIndicator;
 
+    private ArrayList<String> imageRoute;
+    private ImageView updateDeleteImage;
     private Adapter_image_viewpager adapter;
     private CircleImageView circleImageView;
     private TextView postReadTitle,postReadPrice,postReadDelivery,postReadSellType1,postReadSellType2,postReadCategory,postReadContents;
     private TextView postReadNickname,postReadId;
+    private String postNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +56,11 @@ public class Activity_post_read extends AppCompatActivity {
         variableInit();
         Intent intent = getIntent();
 
-        String postNum=intent.getStringExtra("postNum");
+        postNum=intent.getStringExtra("postNum");
         if(postNum==null){
             postNum="22";
         }
+
         RetrofitService service = retrofit.create(RetrofitService.class);
         Call<PostInfo> call = service.getPostInfo(postNum);
 
@@ -86,7 +85,7 @@ public class Activity_post_read extends AppCompatActivity {
                 postReadContents.setText(info.getPostContents().toString());
                 postReadTitle.setText(info.getPostTitle());
                 postReadPrice.setText(info.getPostPrice()+"원");
-                postReadCategory.setText(info.getPostCategory());
+                postReadCategory.setText("  *  "+info.getPostCategory());
                 postReadNickname.setText(info.getNickname());
                 if(info.getPostDelivery().equals("Y")){
                     postReadDelivery.setText("배송비 포함");
@@ -121,6 +120,34 @@ public class Activity_post_read extends AppCompatActivity {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 setCurrentIndicator(position);
+            }
+        });
+
+
+        updateDeleteImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popup = new PopupMenu(Activity_post_read.this, updateDeleteImage);
+                MenuInflater inflate = popup.getMenuInflater();
+                inflate.inflate(R.menu.post_update_menu, popup.getMenu());
+                popup.show();
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        int id = item.getItemId();
+                        if (id == R.id.post_write_update) {
+                            Intent intent =new Intent(Activity_post_read.this,Activity_post_write.class);
+                            intent.putExtra("update",true);
+                            intent.putExtra("postNum",postNum);
+                            startActivity(intent);
+                        } else if (id == R.id.post_write_delete) {
+                            //여기선 삭제..
+
+                        }
+                        return false;
+                    }
+                });
+
             }
         });
 
@@ -167,6 +194,8 @@ public class Activity_post_read extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
+        updateDeleteImage=findViewById(R.id.post_write_update_delete);
+
         postReadTitle=findViewById(R.id.post_read_title);
         postReadPrice=findViewById(R.id.post_read_price);
         postReadDelivery=findViewById(R.id.post_read_deliver_cost);
@@ -175,7 +204,7 @@ public class Activity_post_read extends AppCompatActivity {
         postReadCategory=findViewById(R.id.post_read_category);
         postReadContents=findViewById(R.id.post_read_contents);
         postReadNickname=findViewById(R.id.post_write_nickname);
-        postReadId=findViewById(R.id.post_write_email);
+
 
         circleImageView=findViewById(R.id.post_write_profile_image);
 

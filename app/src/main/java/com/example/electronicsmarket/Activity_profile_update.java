@@ -119,7 +119,7 @@ public class Activity_profile_update extends AppCompatActivity {
         public void onClick(View v) {
             PopupMenu popup = new PopupMenu(Activity_profile_update.this, circleImageView);
             MenuInflater inflate = popup.getMenuInflater();
-            inflate.inflate(R.menu.updatemenu, popup.getMenu());
+            inflate.inflate(R.menu.profile_update_menu, popup.getMenu());
             popup.show();
             popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 @Override
