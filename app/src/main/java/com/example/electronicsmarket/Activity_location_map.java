@@ -13,12 +13,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class Activity_location_map extends AppCompatActivity implements OnMapReadyCallback {
 
 
 
+    private Marker marker;
     private GoogleMap mMap;
     private SupportMapFragment mapFragment;
     private Double latitude,longitude;
@@ -61,6 +63,8 @@ public class Activity_location_map extends AppCompatActivity implements OnMapRea
         markerOptions.title(locationName);
         markerOptions.snippet(locationAddress);
         mMap.addMarker(markerOptions);
+        marker=mMap.addMarker(markerOptions);
+        marker.showInfoWindow();
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location,17));
     }
 }

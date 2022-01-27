@@ -28,6 +28,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -48,6 +49,7 @@ public class Activity_place_search extends AppCompatActivity implements OnMapRea
     public final String API_KEY = "KakaoAK 508bceeac574adadb0a5337c161a375a";
 
 
+    private Marker marker;
     private double latitude,longitude;
     private GoogleMap mMap;
     private Adapter_place_search_previous previousAdapter;
@@ -377,7 +379,12 @@ public class Activity_place_search extends AppCompatActivity implements OnMapRea
         markerOptions.snippet(snippet);
         markerOptions.position(location);
         markerOptions.getInfoWindowAnchorU();
-        mMap.addMarker(markerOptions);
+
+        if(marker!=null){
+            marker.remove();
+        }
+        marker=mMap.addMarker(markerOptions);
+        marker.showInfoWindow();
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location,17));
 
     }

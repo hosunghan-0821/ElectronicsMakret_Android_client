@@ -93,9 +93,10 @@
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:paddingBottom="8dp"
-                app:layout_constraintBottom_toBottomOf="@+id/viewpager_post_image"
+                app:layout_constraintBottom_toBottomOf="@+id/view6"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/viewpager_post_image">
 
             </LinearLayout>
 
@@ -113,18 +114,50 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/viewpager_post_image" />
 
+            <LinearLayout
+
+                android:id="@+id/post_read_linear_status"
+                android:background="@drawable/textview_border"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view6">
+
+                <TextView
+                    android:id="@+id/post_read_post_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:padding="5dp"
+                    android:text="판매중"
+                    android:textColor="@color/black"
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
+                <ImageView
+                    android:padding="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_baseline_down__24"
+                    />
+
+
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/post_read_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:text="제목"
                 android:textColor="@color/black"
                 android:textSize="25dp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view6" />
+                app:layout_constraintTop_toBottomOf="@+id/post_read_linear_status" />
 
             <TextView
                 android:id="@+id/post_read_price"

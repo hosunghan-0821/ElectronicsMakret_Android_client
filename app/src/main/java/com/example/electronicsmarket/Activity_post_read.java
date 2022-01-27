@@ -3,13 +3,11 @@ package com.example.electronicsmarket;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuInflater;
@@ -28,9 +26,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -41,7 +36,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class Activity_post_read extends AppCompatActivity {
+public class Activity_post_read extends AppCompatActivity implements Dialog_bottom_sheet.BottomSheetListener {
 
     private Retrofit retrofit;
     private ViewPager2 sliderViewPager;
@@ -53,9 +48,16 @@ public class Activity_post_read extends AppCompatActivity {
     private Adapter_image_viewpager adapter;
     private CircleImageView circleImageView;
     private TextView postReadProductNum,postReadTitle, postReadPrice, postReadDelivery, postReadSellType1, postReadSellType2, postReadCategory, postReadContents, postReadLocationInfo;
-    private TextView postReadNickname, postReadId, postReadTime, postReadLike, postReadView,postReadCompleteText;
+    private TextView postReadNickname, postReadId, postReadTime, postReadLike, postReadView,postReadStatusText;
     private String postNum, postLocationAddress, postLocationName;
     private Double postReadLongitude, postReadLatitude;
+    private LinearLayout postReadLinearStatus;
+
+
+    @Override
+    public void onButtonClicked(String text) {
+        postReadStatusText.setText(text);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,20 +68,42 @@ public class Activity_post_read extends AppCompatActivity {
         imageRoute = new ArrayList<String>();
         adapter = new Adapter_image_viewpager(getApplicationContext(), imageRoute);
         variableInit();
-        Intent intent = getIntent();
 
+        //게시글 읽기위해 intent로 postNum 받기
+        Intent intent = getIntent();
         postNum = intent.getStringExtra("postNum");
         if (postNum == null) {
             postNum = "22";
         }
 
+        //바텀 sheet dialog를 써보자
+        postReadLinearStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dialog_bottom_sheet bottomSheet = new Dialog_bottom_sheet();
+                bottomSheet.show(getSupportFragmentManager(),"Dialog_bottom_sheet");
+            }
+        });
+
+
+
+
+        //retrofit 통신
         RetrofitService service = retrofit.create(RetrofitService.class);
         Call<PostInfo> call = service.getPostInfo(postNum);
-
         call.enqueue(new Callback<PostInfo>() {
             @Override
             public void onResponse(Call<PostInfo> call, Response<PostInfo> response) {
                 sellerId=response.body().getMemberId();
+                // shared 값 가져오기
+                SharedPreferences sharedPreferences=getSharedPreferences("autoLogin",MODE_PRIVATE);
+                String id=sharedPreferences.getString("userId","");
+                if(sellerId!=null){
+                    if(!sellerId.equals(id)){
+                        postReadLinearStatus.setVisibility(View.GONE);
+                    }
+                }
+
 
 
                 //이미지 처리
@@ -331,8 +355,8 @@ public class Activity_post_read extends AppCompatActivity {
 
         backImage = findViewById(R.id.post_write_category_1_back_arrow);
         updateDeleteImage = findViewById(R.id.post_write_update_delete);
-
-
+        postReadStatusText=findViewById(R.id.post_read_post_status);
+        postReadLinearStatus =findViewById(R.id.post_read_linear_status);
         postReadProductNum=findViewById(R.id. post_read_item_num);
         postReadTime = findViewById(R.id.post_read_time_check);
         postReadLike = findViewById(R.id.post_read_like_num);
