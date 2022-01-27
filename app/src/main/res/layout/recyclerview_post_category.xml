@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingLeft="10dp"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <TextView
+        android:textColor="@color/black"
         android:text="카테고리"
         android:id="@+id/category_text"
         android:gravity="left|center"
@@ -16,6 +18,6 @@
         android:src="@drawable/ic_baseline_chevron_right_24"
         android:layout_weight="0.5"
         android:layout_width="50dp"
-        android:layout_height="50dp"/>
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

@@ -4,59 +4,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity_category_2">
+    tools:context=".Activity_location_map">
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/horizontal_guideline1"
+        android:id="@+id/guideline3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1"/>
+        app:layout_constraintGuide_percent="0.1" />
 
     <ImageView
-        android:id="@+id/post_write_category_2_back_arrow"
+        android:id="@+id/post_read_location_map_back_arrow"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:src="@drawable/ic_baseline_arrow_back_24"
-        app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline1"
+        app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_arrow_back_24" />
 
     <TextView
-        android:id="@+id/textView15"
+        android:id="@+id/textView36"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:text="카테고리"
+        android:layout_marginStart="5dp"
+        android:text="거래장소"
         android:textColor="@color/black"
         android:textSize="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
-        app:layout_constraintStart_toEndOf="@+id/post_write_category_2_back_arrow"
+        app:layout_constraintBottom_toTopOf="@+id/guideline3"
+        app:layout_constraintStart_toEndOf="@+id/post_read_location_map_back_arrow"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
 
-        android:id="@+id/linearLayout4"
+    <fragment
+
+        android:id="@+id/post_location_map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/horizontal_guideline1">
-
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_category_2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-
-    </LinearLayout>
-
+        app:layout_constraintTop_toTopOf="@+id/guideline3"
+        tools:context=".MapsActivity" />
 </androidx.constraintlayout.widget.ConstraintLayout>

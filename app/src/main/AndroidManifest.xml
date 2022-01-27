@@ -21,6 +21,12 @@
         android:theme="@style/Theme.ElectronicsMarket"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Activity_seller_info"
+            android:exported="false" />
+        <activity
+            android:name=".Activity_location_map"
+            android:exported="false" />
+        <activity
             android:name=".Activity_place_search"
             android:exported="false" />
         <activity

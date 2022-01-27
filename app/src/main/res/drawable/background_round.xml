@@ -7,13 +7,12 @@
         android:bottomLeftRadius="100dp"
         android:bottomRightRadius="100dp"
         />
-
     <gradient
         android:angle="45"
         android:centerX="35%"
-        android:centerColor="#47A891"
-        android:startColor="@color/teal_200"
-        android:endColor="@color/teal_200"
+        android:centerColor="#dcdcdc"
+        android:startColor="#dcdcdc"
+        android:endColor="#dcdcdc"
         android:type="linear"
         />
     <padding

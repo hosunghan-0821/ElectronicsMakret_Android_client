@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -34,6 +35,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -67,6 +69,9 @@ public class Activity_place_search extends AppCompatActivity implements OnMapRea
     private String markerTitle;
     private String snippet;
     private SharedPreferences.Editor setLocationEditor;
+
+
+
 
 
     @Override
@@ -177,10 +182,6 @@ public class Activity_place_search extends AppCompatActivity implements OnMapRea
                 });
                 builder.show();
 
-
-
-
-
             }
         });
 
@@ -206,11 +207,18 @@ public class Activity_place_search extends AppCompatActivity implements OnMapRea
                 markerTitle=dataSearchList.get(position).getPlaceName();
                 snippet=dataSearchList.get(position).getAddressName();
 
+                SparseBooleanArray mSelectedItems = new SparseBooleanArray(0);
+                previousAdapter.setmSelectedItems(mSelectedItems);
+                previousAdapter.notifyDataSetChanged();
+
                 boolean checkDuplicate=false;
 
+
+                int pos=0;
                 for(int i=0;i<previousArrayList.size();i++){
                     if(dataSearchList.get(position).getPlaceName().equals(previousArrayList.get(i).getPlaceName())){
                         checkDuplicate=true;
+                        pos=i;
                         break;
                     }
                 }
@@ -218,11 +226,14 @@ public class Activity_place_search extends AppCompatActivity implements OnMapRea
                     previousArrayList.add(0,dataSearchList.get(position));
                     setPreviousArrayList(previousArrayList);
                 }
+                else{
+                    previousArrayList.add(0,dataSearchList.get(position));
+                    previousArrayList.remove(pos+1);
+                    setPreviousArrayList(previousArrayList);
+                }
             }
         };
-
         adapter.setListener(resultListener);
-
 
         previousAdapter.setPreviousListener(new Adapter_place_search_previous.Interface_previous_item_click() {
             @Override
@@ -231,12 +242,15 @@ public class Activity_place_search extends AppCompatActivity implements OnMapRea
                 previousAdapter.notifyDataSetChanged();
                 previousAdapter.setDataSearchPreviousList(previousArrayList);
                 setPreviousArrayList(previousArrayList);
-
             }
 
             @Override
-            public void mainItemClick(int position) {
+            public void mainItemClick(Adapter_place_search_previous.PreviousViewHolder viewHolder, int position) {
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(Activity_place_search.this);
+
+//                viewHolder.itemView.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+//                view
 
                 setLocationEditor.putString("location_placeName",previousArrayList.get(position).getPlaceName());
                 setLocationEditor.putString("location_addressName",previousArrayList.get(position).getAddressName());
@@ -285,7 +299,10 @@ public class Activity_place_search extends AppCompatActivity implements OnMapRea
                         }catch (Exception e){
                             e.printStackTrace();
                         }
+
+                        SparseBooleanArray mSelectedItems = new SparseBooleanArray(0);
                         searchResultText.setText("검색결과");
+                        adapter.setmSelectedItems(mSelectedItems);
                         adapter.setDataSearchList(dataSearchList);
                         adapter.notifyDataSetChanged();
                         imm.hideSoftInputFromWindow(placeSearchKeyword.getWindowToken(), 0);

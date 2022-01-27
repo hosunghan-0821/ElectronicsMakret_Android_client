@@ -62,6 +62,12 @@ public interface RetrofitService {
     @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/signup/{path}")
     Call<MemberSignup> sendNickname(@Path("path") String path,@Field("nickname") String nickname);
 
+
+    @FormUrlEncoded
+    @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/getPostWriterInfo.php")
+    Call<PostAllInfo> getSellerProfile(@Field("nickname") String nickname);
+
+
     @FormUrlEncoded
     @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/signup/signup.php")
     Call<MemberSignup> sendMemberInfo(
@@ -83,6 +89,12 @@ public interface RetrofitService {
     Call<MemberSignup> sendLoginInfo(
             @Field("id") String id,
             @Field("password") String password
+    );
+
+    @FormUrlEncoded
+    @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/postDelete.php")
+    Call<MemberSignup> sendDeletePostInfo(
+            @Field("postNum") String postNum
     );
 
     @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/postAllInfo.php")

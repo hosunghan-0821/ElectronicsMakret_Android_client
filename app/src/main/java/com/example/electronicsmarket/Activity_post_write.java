@@ -81,18 +81,17 @@ public class Activity_post_write extends AppCompatActivity {
     private LinearLayout linearCategory;
     private ItemTouchHelper mItemTouchHelper;
     private CheckBox deliverCheckBox;
+    private ImageView backImage;
 
     private String locationPlaceName, locationAddressName, locationLatitude, locationLongitude, imageListInfo = "";
-
-    private String deleteImage="";
-
-    private String[] sellTypeItems = {"거래방법 선택", "직거래", "택배거래", "직거래/택배거래"};
+    private String deleteImage = "";
+    private String postNum, sellTypeText = "";
     ArrayList<File> imageFileCollect;
-    //ArrayList<String> tempFileList;
     ArrayList<String> imageStringRoute;
     ArrayList<MultipartBody.Part> files;
     Retrofit retrofit;
-    private TextView postWriteText, postImageInfo, categoryText, postLocationtext;
+
+    private TextView postWriteText, postImageInfo, categoryText, postLocationtext,postLocationGuideText, postReadCompleteText;
     private RecyclerView imageRecyclerview;
     private LinearLayoutManager linearLayoutManager;
     private Adapter_post_image imageAdapter;
@@ -103,13 +102,13 @@ public class Activity_post_write extends AppCompatActivity {
     private LinearLayout linearLocationSelect;
 
     HashMap<String, RequestBody> requestMap = new HashMap<>();
-    private Spinner postCategory, postSellType;
+    private Spinner postCategory;
     private ArrayAdapter<String> categoryAdapter, sellTypeAdapter;
     private String strAmount = "";
     private RadioGroup radioGroup;
     private RadioButton radioALL, radioDirect, radioDelivery;//
     private boolean update;
-    private String postNum;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,10 +120,18 @@ public class Activity_post_write extends AppCompatActivity {
 
         selectImage.setOnClickListener(imageClick);
 
+        //뒤로가기버튼
+        backImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         Intent intent = getIntent();
 
         update = intent.getBooleanExtra("update", false);
         if (update) {
+            postReadCompleteText.setText("수정");
             postNum = intent.getStringExtra("postNum");
             Log.e("123", "업데이트");
 
@@ -136,6 +143,22 @@ public class Activity_post_write extends AppCompatActivity {
                 public void onResponse(Call<PostInfo> call, Response<PostInfo> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         PostInfo data = response.body();
+
+
+                        //카테고리 shared에 기본 값 저장해두기.
+                        // shared 값 가져오기
+
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("category",data.getPostCategory());
+                        editor.commit();
+                        //위치정보 세팅
+                        locationPlaceName = data.getPostLocationName();
+                        locationAddressName = data.getPostLocationAddress();
+                        locationLatitude = String.valueOf(data.getPostLocationLatitude());
+                        locationLongitude = String.valueOf(data.getPostLocationLongitude());
+
+                        postLocationtext.setText(data.getPostLocationName());
+
                         postTitle.setText(data.getPostTitle());
                         postPrice.setText(data.getPostPrice());
                         postContents.setText(data.getPostContents());
@@ -164,8 +187,6 @@ public class Activity_post_write extends AppCompatActivity {
                         imageAdapter.setImageList(imageList);
                         imageAdapter.notifyDataSetChanged();
                         imageNumberText.setText(imageList.size() + "/5");
-
-
                     }
                 }
 
@@ -195,15 +216,23 @@ public class Activity_post_write extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.radio_button_all) {
+                    postLocationGuideText.setVisibility(View.VISIBLE);
                     linearLocationSelect.setVisibility(View.VISIBLE);
+                    deliverCheckBox.setVisibility(View.VISIBLE);
+                    sellTypeText = "직거래/택배거래";
                     // 직거래/ 택배거래
                 } else if (checkedId == R.id.radio_button_direct) {
+                    postLocationGuideText.setVisibility(View.VISIBLE);
                     linearLocationSelect.setVisibility(View.VISIBLE);
+                    deliverCheckBox.setVisibility(View.INVISIBLE);
+                    sellTypeText = "직거래";
                     // 직거래
                 } else {
-                    linearLocationSelect.setVisibility(View.INVISIBLE);
-
-                    // 직거래 및 택배거래
+                    postLocationGuideText.setVisibility(View.GONE);
+                    linearLocationSelect.setVisibility(View.GONE);
+                    deliverCheckBox.setVisibility(View.VISIBLE);
+                    sellTypeText = "택배거래";
+                    //택배거래
                 }
 
             }
@@ -272,19 +301,13 @@ public class Activity_post_write extends AppCompatActivity {
         postWriteText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageListInfo="";
+                imageListInfo = "";
                 requestMap = new HashMap<>();
                 files.clear();
+
+
+                //수정일 떄 다중이미지 코드
                 if (update) {
-//                    for(int i=0;i<imageList.size();i++){
-//                        Log.e("123",imageList.get(i).getImgUrl());
-//                        try{
-//                            Log.e("123",imageList.get(i).getImguri().toString());
-//                        }catch (Exception e){
-//                            Log.e("123","uri없음");
-//                        }
-//
-//                    }
                     //여기서 파일 만들어야지 이제 순서 다바꾸고 작성 완료 누르니깐.
                     for (int i = 0; i < imageList.size(); i++) {
 
@@ -293,9 +316,9 @@ public class Activity_post_write extends AppCompatActivity {
 
                             Log.e("123", (i + 1) + "번째 파일은 새로 올리는 사진이에요 ");
                             File uriFile = new File(createCopyAndReturnRealPath(imageList.get(i).getImguri(), "image" + i));
-                            Log.e("123",uriFile.getPath());
+                            Log.e("123", uriFile.getPath());
                             imageFileCollect.add(uriFile);
-                            RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"),uriFile);
+                            RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), uriFile);
                             MultipartBody.Part filepart = MultipartBody.Part.createFormData("image" + i, "image", fileBody);
                             files.add(filepart);
                             Log.e("123", files.toString());
@@ -303,9 +326,8 @@ public class Activity_post_write extends AppCompatActivity {
 
                     }
 
-
                     //여기는 파일에 순서에 대한 정보를 만드는곳
-                    Log.e("123",String.valueOf(imageList.size()));
+                    Log.e("123", String.valueOf(imageList.size()));
                     for (int i = 0; i < imageList.size(); i++) {
 
                         if (imageList.get(i).getImguri() != null) {
@@ -318,8 +340,10 @@ public class Activity_post_write extends AppCompatActivity {
                     }
                     //여기까지 파일준비완료 //이제 순서에 대한 정보를 올려야겠지.
                 }
+
+                //이미지 순서에 대한 정보까지 입력완료
                 RequestBody imageInfo = RequestBody.create(MediaType.parse("text/plain"), imageListInfo);
-                requestMap.put("imageListInfo",imageInfo);
+                requestMap.put("imageListInfo", imageInfo);
 
                 if (!update) {
                     if (imageList.size() == 0 || postTitle.getText().toString().equals("") || postPrice.getText().toString().equals("")) {
@@ -335,6 +359,7 @@ public class Activity_post_write extends AppCompatActivity {
                     }
                 }
 
+                //여기가 메인
 
                 //거래방법 선택 안했을시
                 if (!(radioALL.isChecked() || radioDirect.isChecked() || radioDelivery.isChecked())) {
@@ -343,7 +368,7 @@ public class Activity_post_write extends AppCompatActivity {
                 }
                 //장소정보 없음
                 RequestBody placeName, addressName, Longitude, latitude;
-                if (postLocationtext.getText().toString().equals("장소를 선택하세요")) {
+                if (postLocationtext.getText().toString().equals("장소를 선택하세요") || radioDelivery.isChecked()) {
                     placeName = RequestBody.create(MediaType.parse("text/plain"), "");
                     addressName = RequestBody.create(MediaType.parse("text/plain"), "장소정보 없음");
                     Longitude = RequestBody.create(MediaType.parse("text/plain"), "");
@@ -357,7 +382,7 @@ public class Activity_post_write extends AppCompatActivity {
 
                 //수정 아닐 때는 원래방식대로 한번에
                 if (!update) {
-                    Log.e("123","업데이트 아님");
+
                     for (int i = 0; i < imageFileCollect.size(); i++) {
                         try {
                             Log.e("123", String.valueOf(i));
@@ -370,29 +395,24 @@ public class Activity_post_write extends AppCompatActivity {
                         Log.e("123", files.toString());
                     }
                 }
-                Log.e("123","업데이트 맞음");
-
                 SharedPreferences sharedPreferences = getSharedPreferences("autoLogin", MODE_PRIVATE);
                 String id = sharedPreferences.getString("userId", "");
                 RequestBody deliveryCost;
-                if (deliverCheckBox.isChecked()) {
+                if (deliverCheckBox.isChecked() && (radioALL.isChecked() || radioDelivery.isChecked())) {
                     deliveryCost = RequestBody.create(MediaType.parse("text/plain"), "Y");
                 } else {
                     deliveryCost = RequestBody.create(MediaType.parse("text/plain"), "N");
                 }
 
-                RequestBody deleteImageRoute=RequestBody.create(MediaType.parse("text/plain"),deleteImage);
+                RequestBody deleteImageRoute = RequestBody.create(MediaType.parse("text/plain"), deleteImage);
                 RequestBody title = RequestBody.create(MediaType.parse("text/plain"), postTitle.getText().toString());
                 RequestBody price = RequestBody.create(MediaType.parse("text/plain"), postPrice.getText().toString());
                 RequestBody contents = RequestBody.create(MediaType.parse("text/plain"), postContents.getText().toString());
                 RequestBody category = RequestBody.create(MediaType.parse("text/plain"), categoryText.getText().toString());
-                RequestBody sellType = RequestBody.create(MediaType.parse("text/plain"), postSellType.getSelectedItem().toString());
+                RequestBody sellType = RequestBody.create(MediaType.parse("text/plain"), sellTypeText);
                 RequestBody email = RequestBody.create(MediaType.parse("text/plain"), id);
-//                RequestBody imageInfo = RequestBody.create(MediaType.parse("text/plain"), imageListInfo);
-                Log.e("123",imageListInfo);
 
-
-                requestMap.put("deleteImage",deleteImageRoute);
+                requestMap.put("deleteImage", deleteImageRoute);
                 requestMap.put("placeName", placeName);
                 requestMap.put("addressName", addressName);
                 requestMap.put("longitude", Longitude);
@@ -407,10 +427,10 @@ public class Activity_post_write extends AppCompatActivity {
 
                 RetrofitService service = retrofit.create(RetrofitService.class);
                 //업데이트할 때는 다른 php 로 보내기 때문에, 구분해야함
-                if(update){
+                if (update) {
                     RequestBody postNumBody = RequestBody.create(MediaType.parse("text/plain"), postNum);
-                    requestMap.put("postNum",postNumBody);
-                    Call<MemberSignup> updateCall = service.sendUpdate(files,requestMap);
+                    requestMap.put("postNum", postNumBody);
+                    Call<MemberSignup> updateCall = service.sendUpdate(files, requestMap);
                     updateCall.enqueue(new Callback<MemberSignup>() {
                         @Override
                         public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
@@ -418,16 +438,23 @@ public class Activity_post_write extends AppCompatActivity {
                             Log.e("123", "통신성공");
                             if (response.isSuccessful() && response.body() != null) {
 
+                                if (response.body().isSuccess()) {
+                                    //이미지 업로드 전송 성공하면 임시파일들 삭제.
+                                    for (int i = 0; i < imageFileCollect.size(); i++) {
+                                        if (imageFileCollect.get(i).exists()) {
+                                            boolean result = imageFileCollect.get(i).delete();
+                                            Log.e("123", String.valueOf(result));
+                                        }
+                                    }
 
-                                //이미지 업로드 전송 성공하면 임시파일들 삭제.
-//                                for (int i = 0; i < imageFileCollect.size(); i++) {
-//                                    if (imageFileCollect.get(i).exists()) {
-//                                        boolean result = imageFileCollect.get(i).delete();
-//                                        Log.e("123", String.valueOf(result));
-//                                    }
-//                                }
+                                    Intent intent = new Intent(Activity_post_write.this, Activity_post_read.class);
+                                    intent.putExtra("postNum", response.body().getMessage());
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
+                                    finish();
+                                }
+
                             }
-
                         }
 
                         @Override
@@ -435,7 +462,6 @@ public class Activity_post_write extends AppCompatActivity {
                             Log.e("123", "통신오류");
                         }
                     });
-
                     return;
                 }
 
@@ -458,7 +484,6 @@ public class Activity_post_write extends AppCompatActivity {
                             intent.putExtra("postNum", response.body().getMessage());
                             startActivity(intent);
                             finish();
-
                         }
 
                     }
@@ -468,14 +493,10 @@ public class Activity_post_write extends AppCompatActivity {
                         Log.e("123", "통신오류");
                     }
                 });
-
-
             }
         });
 
-
         //카테고리 선택 클릭 리스너
-
         linearCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -484,17 +505,17 @@ public class Activity_post_write extends AppCompatActivity {
             }
         });
 
-
         //이미지 지울 때 사용하는 클릭 리스너.
         imageAdapter.setListener(new Interface_post_listener() {
             @Override
             public void onItemClick(Adapter_post_image.ImageViewholder imageViewholder, int position) {
 
+
                 if (update) {
 
-                    if(imageList.get(position).getImguri()==null){
-                        deleteImage+=imageList.get(position).getImgUrl()+"///";
-                        Log.e("123",deleteImage);
+                    if (imageList.get(position).getImguri() == null) {
+                        deleteImage += imageList.get(position).getImgUrl() + "///";
+                        Log.e("123", deleteImage);
                     }
                     imageList.remove(position);
                     imageAdapter.setImageList(imageList);
@@ -531,10 +552,7 @@ public class Activity_post_write extends AppCompatActivity {
                     if (result.getResultCode() == RESULT_OK) {
                         Intent intent = result.getData();
                         Log.e("123", "locationLauncehr");
-//                            intent.putExtra("location_placeName",locationSelectList.get(position).getPlaceName());
-//                            intent.putExtra("location_addressName",locationSelectList.get(position).getAddressName());
-//                            intent.putExtra("location_latitude",locationSelectList.get(position).getLatitude());
-//                            intent.putExtra("location_longitude",locationSelectList.get(position).getLongitude());
+
                         locationPlaceName = intent.getStringExtra("location_placeName");
                         locationAddressName = intent.getStringExtra("location_addressName");
                         locationLatitude = intent.getStringExtra("location_latitude");
@@ -554,7 +572,6 @@ public class Activity_post_write extends AppCompatActivity {
         DecimalFormat format = new DecimalFormat("###,###");
         return format.format(value);
     }
-
 
     //갤러리에서 이미지 가져오기.
     View.OnClickListener imageClick = new View.OnClickListener() {
@@ -582,7 +599,6 @@ public class Activity_post_write extends AppCompatActivity {
 
         }
     };
-
 
     private ActivityResultLauncher<Intent> categoryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -703,7 +719,6 @@ public class Activity_post_write extends AppCompatActivity {
             }
     );
 
-
     /* 이미지 파일을 복사한 후, 그 파일의 절대 경로 반환하는 메소드 */
     public String createCopyAndReturnRealPath(Uri uri, String fileName) {
         Bitmap bitmap;
@@ -774,8 +789,9 @@ public class Activity_post_write extends AppCompatActivity {
         editor.commit();
 
         //
-
-
+        postReadCompleteText=findViewById(R.id.post_write_complete);
+        postLocationGuideText=findViewById(R.id.post_write_location_guide_text);
+        backImage = findViewById(R.id.post_write_back_arrow);
         postLocationtext = findViewById(R.id.post_write_location_text);
         categoryText = findViewById(R.id.post_write_category_text);
         deliverCheckBox = findViewById(R.id.deliver_cost_checkbox);
@@ -796,9 +812,9 @@ public class Activity_post_write extends AppCompatActivity {
         imageStringRoute = new ArrayList<>();
 
         //spinner 관련
-        postSellType = findViewById(R.id.post_write_sell_type);
-        sellTypeAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, sellTypeItems);
-        postSellType.setAdapter(sellTypeAdapter);
+//        postSellType = findViewById(R.id.post_write_sell_type);
+//        sellTypeAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, sellTypeItems);
+//        postSellType.setAdapter(sellTypeAdapter);
 
         //recyclerview 이미지 관련된 코드
         imageFileCollect = new ArrayList<>();

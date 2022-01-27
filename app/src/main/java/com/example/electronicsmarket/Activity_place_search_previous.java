@@ -104,11 +104,10 @@ public class Activity_place_search_previous extends AppCompatActivity {
                 editor.putString("locationSelectList", objectToString);
                 editor.commit();
 
-
             }
 
             @Override
-            public void mainItemClick(int position) {
+            public void mainItemClick(Adapter_place_search_previous.PreviousViewHolder viewHolder, int position) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(Activity_place_search_previous.this);
 
                 builder.setTitle("거래 장소 선택");
@@ -148,10 +147,9 @@ public class Activity_place_search_previous extends AppCompatActivity {
                     }
                 });
                 builder.show();
-
-
             }
         });
+
 
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,15 +175,22 @@ public class Activity_place_search_previous extends AppCompatActivity {
             data.setPlaceName( setLocationPreferences.getString("location_placeName",""));
             data.setLongitude(setLocationPreferences.getString("location_longitude",""));
 
+            int pos=0;
             for(int i=0;i<locationSelectList.size();i++){
                 if(data.getPlaceName().equals(locationSelectList.get(i).getPlaceName())){
                     checkDuplicate=true;
+                    pos=i;
                     break;
                 }
             }
             if(!checkDuplicate){
                 locationSelectList.add(0,data);
                 adapter.setDataSearchPreviousList(locationSelectList);
+                adapter.notifyDataSetChanged();
+            }
+            else{
+                locationSelectList.add(0,data);
+                locationSelectList.remove(pos+1);
                 adapter.notifyDataSetChanged();
             }
 

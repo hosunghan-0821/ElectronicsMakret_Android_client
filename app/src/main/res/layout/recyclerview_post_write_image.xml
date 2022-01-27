@@ -6,12 +6,13 @@
     android:layout_height="wrap_content">
 
     <ImageView
-
         android:layout_margin="10dp"
+        android:padding="2dp"
+        android:scaleType="fitXY"
+        android:background="@drawable/imageview_border_gray"
         android:id="@+id/post_write_recyclerview_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

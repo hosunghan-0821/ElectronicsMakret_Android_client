@@ -1,5 +1,8 @@
 package com.example.electronicsmarket;
 
+import android.graphics.Color;
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +15,13 @@ import java.util.ArrayList;
 
 public class Adapter_place_search_result extends RecyclerView.Adapter<Adapter_place_search_result.SearchViewHolder> {
 
+    private SparseBooleanArray mSelectedItems = new SparseBooleanArray(0);
     ArrayList<DataSearch> dataSearchList;
     Interface_search_result_listener listener;
 
+    public void setmSelectedItems(SparseBooleanArray mSelectedItems){
+        this.mSelectedItems=mSelectedItems;
+    }
     public void setListener(Interface_search_result_listener listener){
         this.listener=listener;
     }
@@ -38,6 +45,18 @@ public class Adapter_place_search_result extends RecyclerView.Adapter<Adapter_pl
     @Override
     public void onBindViewHolder(@NonNull Adapter_place_search_result.SearchViewHolder holder, int position) {
 
+
+
+        Log.e("456",mSelectedItems.toString());
+        Log.e("456",String.valueOf(mSelectedItems.get(position,false)));
+        if ( mSelectedItems.get(position, false) ){
+            //holder.itemView.setBackgroundColor(Color.GRAY);
+            holder.itemView.setBackgroundResource(R.color.gray);
+        } else {
+            //holder.itemView.setBackgroundColor(Color.WHITE);
+            holder.itemView.setBackgroundResource(R.color.whit_gray);
+        }
+
         holder.placeText.setText(dataSearchList.get(position).getPlaceName());
         holder.addressText.setText(dataSearchList.get(position).getAddressName());
 
@@ -58,10 +77,34 @@ public class Adapter_place_search_result extends RecyclerView.Adapter<Adapter_pl
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     int position=getAdapterPosition();
+                    int allPosition;
+                    for (int i = 0; i < mSelectedItems.size(); i++) {
+                        allPosition = mSelectedItems.keyAt(i);
+                        mSelectedItems.put(allPosition, false);
+                        notifyItemChanged(allPosition);
+                    }
+
+                    Log.e("456",String.valueOf(mSelectedItems.get(position,false)));
+
+                    if ( mSelectedItems.get(position, false) ){
+                        mSelectedItems.put(position, false);
+
+//                        v.setBackgroundColor(Color.WHITE);
+                          v.setBackgroundResource(R.color.whit_gray);
+
+
+                    } else {
+                        mSelectedItems.put(position, true);
+                        //v.setBackgroundColor(Color.GRAY);
+                        v.setBackgroundResource(R.color.gray);
+                    }
+
                     if(listener!=null){
                         listener.onItemClick(SearchViewHolder.this,position);
                     }
+
                 }
             });
             placeText=itemView.findViewById(R.id.search_place_name);

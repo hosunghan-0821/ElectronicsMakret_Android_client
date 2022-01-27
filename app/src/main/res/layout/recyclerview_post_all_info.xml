@@ -8,15 +8,20 @@
     >
 
     <ImageView
+        android:layout_margin="10dp"
+        android:padding="2dp"
+        android:scaleType="fitXY"
+        android:background="@drawable/imageview_border_gray"
         android:id="@+id/post_all_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:textColor="@color/black"
         android:id="@+id/post_all_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -24,7 +29,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="10dp"
         android:text="제목"
-        android:textSize="25dp"
+        android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/post_all_image"
         app:layout_constraintTop_toTopOf="parent" />
@@ -35,19 +40,23 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
-        android:text="130,000"
-        android:textSize="25dp"
+        android:text="130,000원"
+        android:textColor="@color/black"
+        android:textSize="20dp"
         app:layout_constraintStart_toEndOf="@+id/post_all_image"
         app:layout_constraintTop_toBottomOf="@+id/post_all_title" />
 
     <TextView
+
         android:id="@+id/post_all_sell_type1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
+        android:background="#dcdcdc"
         android:text="직거래"
-        android:textSize="18dp"
+        android:textColor="@color/black"
+        android:textSize="15dp"
         app:layout_constraintStart_toEndOf="@+id/post_all_price"
         app:layout_constraintTop_toBottomOf="@+id/post_all_title" />
 
@@ -55,16 +64,19 @@
         android:id="@+id/post_all_sell_type2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:background="#dcdcdc"
         android:text="택배거래"
-        android:textSize="18dp"
+        android:textColor="@color/black"
+        android:textSize="15dp"
         app:layout_constraintStart_toEndOf="@+id/post_all_sell_type1"
-        app:layout_constraintTop_toTopOf="@+id/post_all_sell_type1" />
+        app:layout_constraintTop_toBottomOf="@+id/post_all_title" />
 
     <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/post_all_location_image"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toEndOf="@+id/post_all_image"
@@ -75,21 +87,19 @@
         android:id="@+id/post_all_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="40dp"
         android:text="위치"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView3"
+        android:textSize="15dp"
+        app:layout_constraintStart_toEndOf="@+id/post_all_location_image"
         app:layout_constraintTop_toBottomOf="@+id/post_all_price" />
 
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginEnd="5dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/post_all_like"
         app:srcCompat="@drawable/ic_baseline_favorite_24" />
@@ -99,9 +109,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="5dp"
         android:text="5"
-        android:textSize="20dp"
+        android:textSize="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -111,8 +121,31 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="12dp"
+        android:layout_marginBottom="5dp"
         android:text="6분전"
+        android:textSize="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/post_all_image"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+        app:layout_constraintTop_toBottomOf="@+id/post_all_location_image" />
+
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/post_all_view_num"
+        app:srcCompat="@drawable/ic_baseline_remove_red_eye_24" />
+
+    <TextView
+        android:id="@+id/post_all_view_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="5dp"
+        android:text="5"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imageView4" />
 </androidx.constraintlayout.widget.ConstraintLayout>

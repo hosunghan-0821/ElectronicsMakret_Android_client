@@ -4,11 +4,80 @@ import java.util.ArrayList;
 
 public class PostInfo {
 
-    private String postRegTime;
+
+    private String productNum;
 
 
-    private String nickname,postTitle,postContents,postCategory,postSellType,postImageNum,postPrice,postDelivery,memberImage,postNum;
+    private String memberId,nickname,postTitle,postContents,postCategory,postSellType,postImageNum,postPrice,postDelivery,memberImage,postNum;
+    private String  postRegTime,postViewNum,postLikeNum;
+    private Double postLocationLatitude,postLocationLongitude;
+    private String postLocationName,postLocationAddress;
     private ArrayList<String> imageRoute;
+
+
+    public String getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(String memberId) {
+        this.memberId = memberId;
+    }
+
+    public String getProductNum() {
+        return productNum;
+    }
+
+    public void setProductNum(String productNum) {
+        this.productNum = productNum;
+    }
+
+    public Double getPostLocationLatitude() {
+        return postLocationLatitude;
+    }
+
+    public void setPostLocationLatitude(Double postLocationLatitude) {
+        this.postLocationLatitude = postLocationLatitude;
+    }
+
+    public Double getPostLocationLongitude() {
+        return postLocationLongitude;
+    }
+
+    public void setPostLocationLongitude(Double postLocationLongitude) {
+        this.postLocationLongitude = postLocationLongitude;
+    }
+
+    public String getPostLocationName() {
+        return postLocationName;
+    }
+
+    public void setPostLocationName(String postLocationName) {
+        this.postLocationName = postLocationName;
+    }
+
+    public String getPostLocationAddress() {
+        return postLocationAddress;
+    }
+
+    public void setPostLocationAddress(String postLocationAddress) {
+        this.postLocationAddress = postLocationAddress;
+    }
+
+    public String getPostViewNum() {
+        return postViewNum;
+    }
+
+    public void setPostViewNum(String postViewNum) {
+        this.postViewNum = postViewNum;
+    }
+
+    public String getPostLikeNum() {
+        return postLikeNum;
+    }
+
+    public void setPostLikeNum(String postLikeNum) {
+        this.postLikeNum = postLikeNum;
+    }
 
     public String getPostNum() {
         return postNum;
