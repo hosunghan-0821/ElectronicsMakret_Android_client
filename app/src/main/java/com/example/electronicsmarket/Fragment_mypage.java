@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,19 +33,27 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class Fragment_mypage extends Fragment  {
-
-    SharedPreferences sharedPreferences;
-    Button profileUpdate;
-    Retrofit retrofit;
-    TextView nickname;
-    ImageView settingImage;
-    de.hdodenhof.circleimageview.CircleImageView circleImageView;
+    //mypage_frame_lovelist
+    private SharedPreferences sharedPreferences;
+    private Button profileUpdate;
+    private Retrofit retrofit;
+    private TextView nickname;
+    private ImageView settingImage;
+    private de.hdodenhof.circleimageview.CircleImageView circleImageView;
+    private FrameLayout frameLoveList,frameSellList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view =inflater.inflate(R.layout.fragment_mypage,container,false);
         variableInit(view);
+
+
+
+
+
+
+
 
         settingImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +70,22 @@ public class Fragment_mypage extends Fragment  {
                 startActivity(intent);
             }
         });
+
+        frameSellList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(getActivity(),Activity_sell_list.class);
+                startActivity(intent);
+            }
+        });
+
+        frameLoveList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(getActivity(),Activity_love_list.class);
+                startActivity(intent);
+            }
+        });
         return view;
     }
 
@@ -73,6 +98,9 @@ public class Fragment_mypage extends Fragment  {
                 .baseUrl("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/")
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
+
+        frameSellList=(FrameLayout)view.findViewById(R.id.mypage_frame_selllist);
+        frameLoveList=(FrameLayout)view.findViewById(R.id.mypage_frame_lovelist);
 
         nickname=view.findViewById(R.id.user_nickname);
         settingImage=view.findViewById(R.id.setting_image);

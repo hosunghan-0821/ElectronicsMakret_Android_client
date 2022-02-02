@@ -31,10 +31,12 @@ import android.text.Selection;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -76,6 +78,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Activity_post_write extends AppCompatActivity {
 
 
+    InputMethodManager imm;
     SharedPreferences.Editor editor;
     SharedPreferences sharedPreferences;
     private LinearLayout linearCategory;
@@ -98,8 +101,8 @@ public class Activity_post_write extends AppCompatActivity {
     private ArrayList<Data_post_image> imageList;
     private TextView imageNumberText;
     private ImageView selectImage, updateDeleteImage;
-    private EditText postTitle, postPrice, postContents;
-    private LinearLayout linearLocationSelect;
+    private EditText postTitle, postPrice, postContents,postLocationInfo;
+    private LinearLayout linearLocationSelect,linearLocationSelectInfo;
 
     HashMap<String, RequestBody> requestMap = new HashMap<>();
     private Spinner postCategory;
@@ -137,17 +140,15 @@ public class Activity_post_write extends AppCompatActivity {
 
             //업데이트 일 경우 데이터 정보 받아와서 화면에 뿌려주기
             RetrofitService service = retrofit.create(RetrofitService.class);
-            Call<PostInfo> call = service.getPostInfo(postNum);
+            Call<PostInfo> call = service.getPostInfo(postNum,"write","update");
             call.enqueue(new Callback<PostInfo>() {
                 @Override
                 public void onResponse(Call<PostInfo> call, Response<PostInfo> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         PostInfo data = response.body();
 
-
                         //카테고리 shared에 기본 값 저장해두기.
                         // shared 값 가져오기
-
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("category",data.getPostCategory());
                         editor.commit();
@@ -158,7 +159,7 @@ public class Activity_post_write extends AppCompatActivity {
                         locationLongitude = String.valueOf(data.getPostLocationLongitude());
 
                         postLocationtext.setText(data.getPostLocationName());
-
+                        postLocationInfo.setText(data.getPostLocationDetail());
                         postTitle.setText(data.getPostTitle());
                         postPrice.setText(data.getPostPrice());
                         postContents.setText(data.getPostContents());
@@ -210,6 +211,22 @@ public class Activity_post_write extends AppCompatActivity {
             }
         });
 
+        //EDIT_Text 엔터키 listener
+        postLocationInfo.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                switch(actionId){
+
+                  default:
+                      imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                      imm.hideSoftInputFromWindow(postLocationInfo.getWindowToken(), 0);
+                      postLocationInfo.clearFocus();
+
+                    break;
+                }
+                return true;
+            }
+        });
 
         //radioGroup onclickListener;
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -218,18 +235,21 @@ public class Activity_post_write extends AppCompatActivity {
                 if (checkedId == R.id.radio_button_all) {
                     postLocationGuideText.setVisibility(View.VISIBLE);
                     linearLocationSelect.setVisibility(View.VISIBLE);
+                    linearLocationSelectInfo.setVisibility(View.VISIBLE);
                     deliverCheckBox.setVisibility(View.VISIBLE);
                     sellTypeText = "직거래/택배거래";
                     // 직거래/ 택배거래
                 } else if (checkedId == R.id.radio_button_direct) {
                     postLocationGuideText.setVisibility(View.VISIBLE);
                     linearLocationSelect.setVisibility(View.VISIBLE);
+                    linearLocationSelectInfo.setVisibility(View.VISIBLE);
                     deliverCheckBox.setVisibility(View.INVISIBLE);
                     sellTypeText = "직거래";
                     // 직거래
                 } else {
                     postLocationGuideText.setVisibility(View.GONE);
                     linearLocationSelect.setVisibility(View.GONE);
+                    linearLocationSelectInfo.setVisibility(View.GONE);
                     deliverCheckBox.setVisibility(View.VISIBLE);
                     sellTypeText = "택배거래";
                     //택배거래
@@ -367,17 +387,19 @@ public class Activity_post_write extends AppCompatActivity {
                     return;
                 }
                 //장소정보 없음
-                RequestBody placeName, addressName, Longitude, latitude;
+                RequestBody placeName, addressName, Longitude, latitude,placeDetail;
                 if (postLocationtext.getText().toString().equals("장소를 선택하세요") || radioDelivery.isChecked()) {
                     placeName = RequestBody.create(MediaType.parse("text/plain"), "");
                     addressName = RequestBody.create(MediaType.parse("text/plain"), "장소정보 없음");
                     Longitude = RequestBody.create(MediaType.parse("text/plain"), "");
                     latitude = RequestBody.create(MediaType.parse("text/plain"), "");
+                    placeDetail =  RequestBody.create(MediaType.parse("text/plain"), "");
                 } else {
                     placeName = RequestBody.create(MediaType.parse("text/plain"), locationPlaceName);
                     addressName = RequestBody.create(MediaType.parse("text/plain"), locationAddressName);
                     Longitude = RequestBody.create(MediaType.parse("text/plain"), locationLongitude);
                     latitude = RequestBody.create(MediaType.parse("text/plain"), locationLatitude);
+                    placeDetail = RequestBody.create(MediaType.parse("text/plain"),postLocationInfo.getText().toString());
                 }
 
                 //수정 아닐 때는 원래방식대로 한번에
@@ -412,6 +434,7 @@ public class Activity_post_write extends AppCompatActivity {
                 RequestBody sellType = RequestBody.create(MediaType.parse("text/plain"), sellTypeText);
                 RequestBody email = RequestBody.create(MediaType.parse("text/plain"), id);
 
+                requestMap.put("placeDetail",placeDetail);
                 requestMap.put("deleteImage", deleteImageRoute);
                 requestMap.put("placeName", placeName);
                 requestMap.put("addressName", addressName);
@@ -558,6 +581,7 @@ public class Activity_post_write extends AppCompatActivity {
                         locationLatitude = intent.getStringExtra("location_latitude");
                         locationLongitude = intent.getStringExtra("location_longitude");
                         postLocationtext.setText(locationPlaceName);
+                        linearLocationSelectInfo.setVisibility(View.VISIBLE);
                     }
                 }
             });
@@ -796,6 +820,10 @@ public class Activity_post_write extends AppCompatActivity {
         categoryText = findViewById(R.id.post_write_category_text);
         deliverCheckBox = findViewById(R.id.deliver_cost_checkbox);
         linearLocationSelect = findViewById(R.id.linear_location_select);
+
+        linearLocationSelectInfo=findViewById(R.id.linear_location_select_info);
+        postLocationInfo=findViewById(R.id.post_write_location_text_info);
+
         linearCategory = findViewById(R.id.linear_category);
 
         radioGroup = findViewById(R.id.radio_group);

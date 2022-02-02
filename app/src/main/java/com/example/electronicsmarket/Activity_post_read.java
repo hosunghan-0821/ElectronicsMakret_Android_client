@@ -1,5 +1,6 @@
 package com.example.electronicsmarket;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -9,7 +10,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,14 +50,19 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
     private String sellerId;
     private FrameLayout postReadSellerFrame;
     private ArrayList<String> imageRoute;
-    private ImageView updateDeleteImage, backImage;
+    private ImageView updateDeleteImage, backImage,locationDetailImage,postReadLikeNumImage,postReadLikeImage;
     private Adapter_image_viewpager adapter;
     private CircleImageView circleImageView;
     private TextView postReadProductNum,postReadTitle, postReadPrice, postReadDelivery, postReadSellType1, postReadSellType2, postReadCategory, postReadContents, postReadLocationInfo;
-    private TextView postReadNickname, postReadId, postReadTime, postReadLike, postReadView,postReadStatusText;
+    private TextView postReadNickname, postReadId, postReadTime, postReadLike, postReadView,postReadStatusText,postReadPlaceDetail,postReadMoveLoveList;
     private String postNum, postLocationAddress, postLocationName;
     private Double postReadLongitude, postReadLatitude;
-    private LinearLayout postReadLinearStatus;
+    private LinearLayout postReadLinearStatus,postReadLinearLoveList;
+    private boolean like=true,isRunning=false;
+    private SharedPreferences sharedPreferences;
+    private String id;
+    private Thread thread;
+    private Handler handler;
 
 
     @Override
@@ -61,13 +72,41 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_read);
-
 
         imageRoute = new ArrayList<String>();
         adapter = new Adapter_image_viewpager(getApplicationContext(), imageRoute);
         variableInit();
+
+
+        //
+        //핸드러를 통해 thread에 따른 ui 처리 가능
+        handler=new Handler(Looper.getMainLooper()){
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                super.handleMessage(msg);
+                if(msg.arg1==1){
+                    isRunning=true;
+                    postReadLinearLoveList.setVisibility(View.VISIBLE);
+                }
+                else{
+                    postReadLinearLoveList.setVisibility(View.GONE);
+                    isRunning=false;
+                }
+            }
+        };
+
+        //찜목록으로 이동하는 text
+        postReadMoveLoveList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(Activity_post_read.this,Activity_love_list.class);
+                startActivity(intent);
+            }
+        });
 
         //게시글 읽기위해 intent로 postNum 받기
         Intent intent = getIntent();
@@ -75,6 +114,23 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
         if (postNum == null) {
             postNum = "22";
         }
+
+        //좋아요 기능 만들어보자.
+        postReadLikeImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(like){
+                    //찜목록 아닌경우 클릭할 시 , 찜목록 등록
+                    setLikeList("insert");
+                }
+                else{
+                    setLikeList("delete");
+                    //찜목록 맞을 경우 클릭할 시 ,찜목록 취소.
+                }
+
+            }
+        });
+
 
         //바텀 sheet dialog를 써보자
         postReadLinearStatus.setOnClickListener(new View.OnClickListener() {
@@ -84,28 +140,32 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
                 bottomSheet.show(getSupportFragmentManager(),"Dialog_bottom_sheet");
             }
         });
-
-
-
-
         //retrofit 통신
         RetrofitService service = retrofit.create(RetrofitService.class);
-        Call<PostInfo> call = service.getPostInfo(postNum);
+
+        Call<PostInfo> call = service.getPostInfo(postNum,"read",id);
+        Log.e("456",id);
         call.enqueue(new Callback<PostInfo>() {
             @Override
             public void onResponse(Call<PostInfo> call, Response<PostInfo> response) {
                 sellerId=response.body().getMemberId();
+                //System.out.println("isClientLike"+response.body().isClientIsLike());
                 // shared 값 가져오기
-                SharedPreferences sharedPreferences=getSharedPreferences("autoLogin",MODE_PRIVATE);
-                String id=sharedPreferences.getString("userId","");
+                Log.e("123","확인"+response.body().getPostLocationDetail());
+
+                // client 가 좋아요 눌렀던 게시글 이면, 하트에 색칠해놔야함 like boolean 값도 변경;
+                if(response.body().isClientIsLike()){
+                    postReadLikeImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_baseline_favorite_24));
+                    postReadLikeNumImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_baseline_favorite_24));
+                    like=false;
+                }
+
+                // 판매자일 경우 처리
                 if(sellerId!=null){
                     if(!sellerId.equals(id)){
                         postReadLinearStatus.setVisibility(View.GONE);
                     }
                 }
-
-
-
                 //이미지 처리
                 PostInfo info = response.body();
                 adapter.setImageRoute(info.getImageRoute());
@@ -124,8 +184,16 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
                 if (info.getPostLocationAddress() != null) {
                     if (info.getPostLocationAddress().equals("")) {
                         postReadLocationInfo.setText(" " + info.getPostLocationName());
+
                     } else {
                         postReadLocationInfo.setText(" " + info.getPostLocationName() + " ( " + info.getPostLocationAddress() + " )");
+                        if(info.getPostLocationDetail()!=null){
+                            if(!info.getPostLocationDetail().equals("")){
+                                locationDetailImage.setVisibility(View.VISIBLE);
+                                postReadPlaceDetail.setText("상세위치 정보 : "+info.getPostLocationDetail());
+                            }
+                        }
+
                     }
                 }
 
@@ -208,9 +276,6 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
         backImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Activity_post_read.this, Activity_main_home.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
                 finish();
             }
         });
@@ -237,8 +302,8 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
             @Override
             public void onClick(View v) {
                 // shared 값 가져오기
-                SharedPreferences sharedPreferences=getSharedPreferences("autoLogin",MODE_PRIVATE);
-                String id=sharedPreferences.getString("userId","");
+
+//                id=sharedPreferences.getString("userId","");
                 PopupMenu popup = new PopupMenu(Activity_post_read.this, updateDeleteImage);
                 if(sellerId.equals(id)){
                     MenuInflater inflate = popup.getMenuInflater();
@@ -315,6 +380,70 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    private void setLikeList(String state){
+
+        RetrofitService service = retrofit.create(RetrofitService.class);
+
+        Call<MemberSignup> call = service.setLikeList(id,postNum,state);
+        call.enqueue(new Callback<MemberSignup>() {
+            @Override
+            public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+                if(response.isSuccessful() && response.body()!=null){
+                    Log.e("456","통신 응답옴");
+                    //찜목록  추가
+                    if(response.body().isSuccess() &&state.equals("insert")){
+                        postReadLike.setText(String.valueOf(Integer.parseInt(postReadLike.getText().toString())+1));
+                        postReadLikeImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_baseline_favorite_24));
+                        postReadLikeNumImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_baseline_favorite_24));
+//                        customToastLikeList("해당 상품을 관심목록에 등록하셨습니다.");
+                        if(!isRunning){
+                            thread = new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    Message msg = new Message();
+                                    Message msg2 = new Message();
+                                    try{
+                                        msg.arg1=1;
+                                        handler.sendMessage(msg);
+                                        thread.sleep(3000);
+                                        msg2.arg1=0;
+                                        handler.sendMessage(msg2);
+                                    }catch (Exception e){
+                                        thread.interrupt();
+                                        System.out.println(e);
+                                    }
+
+                                }
+                            });
+                            thread.start();
+                        }
+
+                        like=false;
+                    }
+                    //찜목록 삭제
+                    else if(response.body().isSuccess()&&state.equals("delete")){
+                        postReadLike.setText(String.valueOf(Integer.parseInt(postReadLike.getText().toString())-1));
+                        postReadLikeImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_baseline_favorite_border_24));
+                        postReadLikeNumImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_baseline_favorite_border_24));
+                        like=true;
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MemberSignup> call, Throwable t) {
+                Toast.makeText(Activity_post_read.this, "통신 실패", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
     private void setupIndicators(int count) {
         ImageView[] indicators = new ImageView[count];
 
@@ -344,6 +473,11 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
 
     public void variableInit() {
 
+
+
+        sharedPreferences=getSharedPreferences("autoLogin",MODE_PRIVATE);
+        id=sharedPreferences.getString("userId","");
+
         //postReadTitle,postReadPrice,postReadDelivery,postReadSellType1,PostReadSellType2,postReadCategory,postReadContents;
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -353,6 +487,13 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
+        postReadMoveLoveList=findViewById(R.id.post_read_move_like_list);
+        postReadLinearLoveList=findViewById(R.id.post_read_linear_love_list);
+        postReadLikeNumImage=findViewById(R.id.post_read_like_num_image);
+        postReadLikeImage=findViewById(R.id.post_read_like_image);
+
+        locationDetailImage=findViewById(R.id.post_read_location_detail_image);
+        postReadPlaceDetail=findViewById(R.id.post_read_place_detail);
         backImage = findViewById(R.id.post_write_category_1_back_arrow);
         updateDeleteImage = findViewById(R.id.post_write_update_delete);
         postReadStatusText=findViewById(R.id.post_read_post_status);
@@ -379,6 +520,27 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
 
     }
 
+    public void customToastLikeList(String message){
+        LayoutInflater inflater = getLayoutInflater();
+
+        View parent = (Activity_post_read.this).getWindow().getDecorView();
+        View layout = inflater.inflate(R.layout.toast_custon_like_list,null,false);
+        LinearLayout linearLayout= layout.findViewById(R.id.inner_linearLayout);
+        Log.e("123",String.valueOf(parent.getWidth()));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(parent.getWidth()-200, ViewGroup.LayoutParams.WRAP_CONTENT);
+        linearLayout.setLayoutParams(params);
+        TextView toastText  = layout.findViewById(R.id.toast_textview);
+
+        toastText.setText(String.valueOf(message));
+        Toast toast = new Toast(getApplicationContext());
+        toast.setView(layout);
+        //toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0); //TODO 메시지가 표시되는 위치지정 (가운데 표시)
+        //toast.setGravity(Gravity.TOP, 0, 0); //TODO 메시지가 표시되는 위치지정 (상단 표시)
+        toast.setGravity(Gravity.BOTTOM, 0, 150); //TODO 메시지가 표시되는 위치지정 (하단 표시)
+        toast.setDuration(Toast.LENGTH_SHORT); //메시지 표시 시간
+        toast.show();
+
+    }
     public void timeDifferentCheck(String uploadTime) {
 
         long now = System.currentTimeMillis();
@@ -421,60 +583,5 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
         } catch (Exception e) {
 
         }
-
-
-//        //String uploadTime=
-//        int uploadTimeInt,nowTimeInt;
-//
-//        uploadTimeInt=Integer.parseInt(uploadTime.substring(4,6));
-//        nowTimeInt=Integer.parseInt(nowTime.substring(4,6));
-//        if(nowTimeInt-uploadTimeInt!=0){
-//            Log.e("123","현재시간"+nowTime);
-//            Log.e("123","업로드시간"+uploadTime);
-//            postReadTime.setText(String.valueOf(nowTimeInt-uploadTimeInt)+"달 전");
-//            return;
-//        }
-//        uploadTimeInt=Integer.parseInt(uploadTime.substring(6,8));
-//        nowTimeInt=Integer.parseInt(nowTime.substring(6,8));
-//        if(nowTimeInt-uploadTimeInt!=0){
-//            Log.e("123","현재시간"+nowTime);
-//            Log.e("123","업로드시간"+uploadTime);
-//            postReadTime.setText(String.valueOf(nowTimeInt-uploadTimeInt)+"일 전");
-//            return;
-//        }
-//        uploadTimeInt=Integer.parseInt(uploadTime.substring(9,11));
-//        nowTimeInt=Integer.parseInt(nowTime.substring(9,11));
-//        if(nowTimeInt-uploadTimeInt!=0){
-//            Log.e("123","현재시간"+nowTime);
-//            Log.e("123","업로드시간"+uploadTime);
-//            postReadTime.setText(String.valueOf(nowTimeInt-uploadTimeInt)+"시간 전");
-//            return;
-//        }
-//        uploadTimeInt=Integer.parseInt(uploadTime.substring(11,13));
-//        nowTimeInt=Integer.parseInt(nowTime.substring(11,13));
-//        if(nowTimeInt-uploadTimeInt!=0){
-//            Log.e("123","현재시간"+nowTime);
-//            Log.e("123","업로드시간"+uploadTime);
-//            postReadTime.setText(String.valueOf(nowTimeInt-uploadTimeInt)+"분 전");
-//            return;
-//        }
-//        uploadTimeInt=Integer.parseInt(uploadTime.substring(13,15));
-//        nowTimeInt=Integer.parseInt(nowTime.substring(13,15));
-//        if(nowTimeInt-uploadTimeInt!=0){
-//            Log.e("123","현재시간"+nowTime);
-//            Log.e("123","업로드시간"+uploadTime);
-//            postReadTime.setText(String.valueOf(nowTimeInt-uploadTimeInt)+"초 전");
-//            return;
-//        }
-//        else{
-//            postReadTime.setText("0초 전");
-//        }
-
-//
-//        Log.e("123","업로드시간"+String.valueOf(uploadTimeInt));
-//        Log.e("123","현재시간"+String.valueOf(nowTimeInt));
-//
-//        Log.e("123","시간차이"+String.valueOf(nowTimeInt-uploadTimeInt));
-
     }
 }

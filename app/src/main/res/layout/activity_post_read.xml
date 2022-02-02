@@ -236,7 +236,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
 
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="40dp"
                 android:background="#808080"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -381,6 +381,17 @@
                 app:srcCompat="@drawable/ic_baseline_location_on_24" />
 
             <ImageView
+                android:visibility="gone"
+                android:id="@+id/post_read_location_detail_image"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView2"
+                app:srcCompat="@drawable/ic_baseline_location_on_24" />
+
+            <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
@@ -404,14 +415,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/post_read_price" />
 
             <ImageView
-                android:id="@+id/imageView5"
+                android:id="@+id/post_read_like_num_image"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginStart="10dp"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView6"
                 app:layout_constraintStart_toEndOf="@+id/post_read_view_num"
                 app:layout_constraintTop_toTopOf="@+id/imageView6"
-                app:srcCompat="@drawable/ic_baseline_favorite_24" />
+                app:srcCompat="@drawable/ic_baseline_favorite_border_24" />
 
             <ImageView
                 android:id="@+id/imageView6"
@@ -440,9 +451,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="5"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView5"
-                app:layout_constraintStart_toEndOf="@+id/imageView5"
-                app:layout_constraintTop_toTopOf="@+id/imageView5" />
+                app:layout_constraintBottom_toBottomOf="@+id/post_read_like_num_image"
+                app:layout_constraintStart_toEndOf="@+id/post_read_like_num_image"
+                app:layout_constraintTop_toTopOf="@+id/post_read_like_num_image" />
 
             <ImageView
                 android:id="@+id/imageView7"
@@ -511,11 +522,62 @@
 
             </FrameLayout>
 
+            <TextView
+                android:id="@+id/post_read_place_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                app:layout_constraintStart_toStartOf="@+id/post_read_location_info"
+                app:layout_constraintTop_toBottomOf="@+id/post_read_location_info" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
 
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/post_read_linear_love_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/toast_custom"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/scrollView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:textColor="@color/black"
+            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="상품을 관심목록에 등록 하셨습니다"
+            android:textSize="14dp"
+            android:textStyle="bold">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/post_read_move_like_list"
+            android:textColor="#FF4000"
+            android:layout_margin="5dp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:text="관심목록으로 이동"
+            android:textSize="14dp"
+            android:textStyle="bold">
+
+        </TextView>
+
+    </LinearLayout>
     <LinearLayout
 
 
@@ -531,7 +593,7 @@
 
 
         <ImageView
-            android:background="@drawable/text_view_border_black_1dp"
+
             android:padding="10dp"
             android:id="@+id/post_read_like_image"
             android:layout_width="match_parent"

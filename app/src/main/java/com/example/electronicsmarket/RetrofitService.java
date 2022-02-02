@@ -28,6 +28,9 @@ public interface RetrofitService {
     @GET("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/signup/memberOut.php")
     Call<MemberSignup> memberOut(@Query("email") String email,@Query("message") String message);
 
+    @GET("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/setLikeList.php")
+    Call<MemberSignup> setLikeList(@Query("email") String nickname,@Query("postNum") String postNum,@Query("state") String insDel);
+
     @FormUrlEncoded
     @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/signup/{path}")
     Call<MemberSignup> getProfile(@Path("path") String path, @Field("email") String email);
@@ -51,7 +54,7 @@ public interface RetrofitService {
 
     @FormUrlEncoded
     @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/postRead.php")
-    Call<PostInfo> getPostInfo(@Field("postNum") String postNum);
+    Call<PostInfo> getPostInfo(@Field("postNum") String postNum,@Field("purpose") String purpose,@Field("email") String email);
 
 
     @FormUrlEncoded
@@ -97,8 +100,13 @@ public interface RetrofitService {
             @Field("postNum") String postNum
     );
 
+    @FormUrlEncoded
     @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/postAllInfo.php")
-    Call<PostAllInfo> getPostAllInfo();
+    Call<PostAllInfo> getPostAllInfo(@Field("finalPostNum")String finalPostNum,@Field("phasingNum")String phasingNum);
+
+    @FormUrlEncoded
+    @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/clientInfo.php")
+    Call<PostAllInfo> getClientInfo(@Field("email")String email,@Field("state")String state);
 
     @Multipart
     @POST("http://ec2-3-36-64-237.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/postWrite.php")

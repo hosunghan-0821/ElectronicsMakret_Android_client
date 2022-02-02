@@ -9,9 +9,9 @@ public class PostAllInfo {
     @SerializedName("postInfo")
     ArrayList<PostInfo> postInfo;
 
+    private int viewType;
     private String imageRoute;
     private String productNum;
-
 
     public String getImageRoute() {
         return imageRoute;
@@ -39,4 +39,13 @@ public class PostAllInfo {
     public void setPostInfo(ArrayList<PostInfo> postInfo) {
         this.postInfo = postInfo;
     }
+
+    public int getViewType() {
+        return viewType;
+    }
+
+    public void setViewType(int viewType) {
+        this.viewType = viewType;
+    }
+
 }

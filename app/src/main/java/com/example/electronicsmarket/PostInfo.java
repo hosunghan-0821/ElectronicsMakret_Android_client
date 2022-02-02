@@ -9,11 +9,44 @@ public class PostInfo {
 
 
     private String memberId,nickname,postTitle,postContents,postCategory,postSellType,postImageNum,postPrice,postDelivery,memberImage,postNum;
-    private String  postRegTime,postViewNum,postLikeNum;
+    private String  postRegTime,postViewNum,postLikeNum,postLocationDetail;
     private Double postLocationLatitude,postLocationLongitude;
     private String postLocationName,postLocationAddress;
     private ArrayList<String> imageRoute;
+    private int viewType;
+    private boolean clientIsLike;
 
+    public PostInfo() {
+    }
+
+    public PostInfo(int viewType) {
+        this.viewType = viewType;
+    }
+
+
+    public boolean isClientIsLike() {
+        return clientIsLike;
+    }
+
+    public void setClientIsLike(boolean clientIsLike) {
+        this.clientIsLike = clientIsLike;
+    }
+
+    public int getViewType() {
+        return viewType;
+    }
+
+    public void setViewType(int viewType) {
+        this.viewType = viewType;
+    }
+
+    public String getPostLocationDetail() {
+        return postLocationDetail;
+    }
+
+    public void setPostLocationDetail(String postLocationDetail) {
+        this.postLocationDetail = postLocationDetail;
+    }
 
     public String getMemberId() {
         return memberId;

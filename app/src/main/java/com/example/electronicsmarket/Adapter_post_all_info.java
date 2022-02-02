@@ -1,10 +1,12 @@
 package com.example.electronicsmarket;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,7 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Adapter_post_all_info extends RecyclerView.Adapter<Adapter_post_all_info.AllInfoViewHolder> {
+public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     Interface_info_item_click listener;
     ArrayList<PostInfo> postList;
@@ -56,10 +58,10 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<Adapter_post_all
             long diffHor = (format1.getTime() - format2.getTime()) / 3600000; //시 차이
             long diffDays = diffSec / (24*60*60); //일자수 차이
 
-            System.out.println(diffSec + "초 차이");
-            System.out.println(diffMin + "분 차이");
-            System.out.println(diffHor + "시 차이");
-            System.out.println(diffDays + "일 차이");
+//            System.out.println(diffSec + "초 차이");
+//            System.out.println(diffMin + "분 차이");
+//            System.out.println(diffHor + "시 차이");
+//            System.out.println(diffDays + "일 차이");
 
             if(diffSec<0){
                 return "1초전";
@@ -89,51 +91,78 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<Adapter_post_all
 
     @NonNull
     @Override
-    public AllInfoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_post_all_info, parent, false);
-        AllInfoViewHolder allinfoViewHolder = new AllInfoViewHolder(view);
+        Log.e("123",String.valueOf(viewType));
+        if(viewType==0){
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_post_all_info, parent, false);
+            AllInfoViewHolder allinfoViewHolder = new AllInfoViewHolder(view);
+            return allinfoViewHolder;
+        }
 
-        return allinfoViewHolder;
+        else{
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_progress, parent, false);
+            ProgressViewholder progressViewholder = new ProgressViewholder(view);
+            return progressViewholder;
+        }
+
+
+
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AllInfoViewHolder holder, int position) {
-        holder.postTitle.setText(postList.get(position).getPostTitle());
-        Glide.with(context).load(postList.get(position).getImageRoute().get(0)).into(holder.imageView);
-        holder.postPrice.setText(postList.get(position).getPostPrice()+"원");
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if(holder instanceof  AllInfoViewHolder){
+            ((AllInfoViewHolder) holder).postTitle.setText(postList.get(position).getPostTitle());
+            Glide.with(context).load(postList.get(position).getImageRoute().get(0)).into( ((AllInfoViewHolder) holder).imageView);
+            ((AllInfoViewHolder) holder).postPrice.setText(postList.get(position).getPostPrice()+"원");
 
-        holder.postTime.setText(timeDifferentCheck(postList.get(position).getPostRegTime()));
-        if(postList.get(position).getPostSellType().equals("직거래")){
-            holder.postSellType1.setVisibility(View.VISIBLE);
-            holder.postSellType2.setVisibility(View.GONE);
-        }
-        else if(postList.get(position).getPostSellType().equals("택배거래")){
-            holder.postSellType2.setVisibility(View.VISIBLE);
-            holder.postSellType1.setVisibility(View.GONE);
-        }
-
-        if(postList.get(position).getPostLocationName()!=null){
-            if(!postList.get(position).getPostLocationName().equals("장소정보 없음")){
-
-                holder.postImageLocation.setVisibility(View.VISIBLE);
-                holder.postLocationName.setVisibility(View.VISIBLE);
-                holder.postLocationName.setText(postList.get(position).getPostLocationName());
+            ((AllInfoViewHolder) holder).postTime.setText(timeDifferentCheck(postList.get(position).getPostRegTime()));
+            if(postList.get(position).getPostSellType().equals("직거래")){
+                ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.VISIBLE);
+                ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.GONE);
+            }
+            else if(postList.get(position).getPostSellType().equals("택배거래")){
+                ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.VISIBLE);
+                ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.GONE);
             }
             else{
-                holder.postImageLocation.setVisibility(View.INVISIBLE);
-                holder.postLocationName.setVisibility(View.INVISIBLE);
+                ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.VISIBLE);
+                ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.VISIBLE);
+
             }
+
+            if(postList.get(position).getPostLocationName()!=null){
+                if(!postList.get(position).getPostLocationName().equals("장소정보 없음")){
+
+                    ((AllInfoViewHolder) holder).postImageLocation.setVisibility(View.VISIBLE);
+                    ((AllInfoViewHolder) holder).postLocationName.setVisibility(View.VISIBLE);
+                    ((AllInfoViewHolder) holder).postLocationName.setText(postList.get(position).getPostLocationName());
+                }
+                else{
+                    ((AllInfoViewHolder) holder).postImageLocation.setVisibility(View.INVISIBLE);
+                    ((AllInfoViewHolder) holder).postLocationName.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            ((AllInfoViewHolder) holder).postLike.setText(postList.get(position).getPostLikeNum());
+            ((AllInfoViewHolder) holder).postView.setText(postList.get(position).getPostViewNum());
+        }
+        else if(holder instanceof ProgressViewholder){
+            Log.e("123","ProgressViewholder binding");
         }
 
-        holder.postLike.setText(postList.get(position).getPostLikeNum());
-        holder.postView.setText(postList.get(position).getPostViewNum());
 
     }
 
     @Override
     public int getItemCount() {
         return postList.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return postList.get(position).getViewType();
     }
 
     public class AllInfoViewHolder extends RecyclerView.ViewHolder {
@@ -176,5 +205,12 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<Adapter_post_all
     }
 
 
+    public class ProgressViewholder extends RecyclerView.ViewHolder {
 
+        protected ProgressBar progressBar;
+        public ProgressViewholder(@NonNull View itemView) {
+            super(itemView);
+            progressBar=itemView.findViewById(R.id.recyclerview_progressBar);
+        }
+    }
 }
