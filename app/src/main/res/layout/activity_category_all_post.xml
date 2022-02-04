@@ -4,17 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity_sell_list">
+    tools:context=".Activity_category_all_post">
+
+
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/horizontal_guideline1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-       app:layout_constraintGuide_percent="0.1" />
+        app:layout_constraintGuide_percent="0.1" />
+
+    <View
+        android:id="@+id/view1"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="#808080"
+        app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/sell_list_back_arrow"
+        android:id="@+id/category_choice_back_arrow"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginStart="10dp"
@@ -24,38 +35,28 @@
         app:srcCompat="@drawable/ic_baseline_arrow_back_24" />
 
     <TextView
-        android:id="@+id/textView45"
+        android:id="@+id/textView47"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:text="판매내역"
+        android:text="카테고리 선택"
         android:textColor="@color/black"
         android:textSize="20dp"
         app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline1"
-        app:layout_constraintStart_toEndOf="@+id/sell_list_back_arrow"
+        app:layout_constraintStart_toEndOf="@+id/category_choice_back_arrow"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/sell_list_tab_control"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/horizontal_guideline1"
-        tools:ignore="SpeakableTextPresentCheck"
-        app:tabIndicatorColor="@color/black"
-        app:tabSelectedTextColor="@color/black"
-        >
+    <androidx.recyclerview.widget.RecyclerView
 
-    </com.google.android.material.tabs.TabLayout>
-
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/sell_list_viewpager"
-        android:layout_width="match_parent"
+        android:id="@+id/category_choice_recyclerview"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sell_list_tab_control" />
+        app:layout_constraintTop_toTopOf="@+id/horizontal_guideline1" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

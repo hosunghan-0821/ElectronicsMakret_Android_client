@@ -21,6 +21,15 @@
         android:theme="@style/Theme.ElectronicsMarket"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Activity_search_all_post"
+            android:exported="false" />
+        <activity
+            android:name=".Activity_category_search_result"
+            android:exported="false" />
+        <activity
+            android:name=".Activity_category_all_post"
+            android:exported="false" />
+        <activity
             android:name=".Activity_sell_list"
             android:exported="false" />
         <activity

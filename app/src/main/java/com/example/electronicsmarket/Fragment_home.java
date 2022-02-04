@@ -36,7 +36,7 @@ public class Fragment_home extends Fragment  {
     private Adapter_post_all_info adapter;
     private RecyclerView recyclerView;
     private Retrofit retrofit;
-    private ImageView postWriteImage;
+    private ImageView postWriteImage,postCategoryImage,postSearchImage;
     private LinearLayoutManager linearLayoutManager;
     private SwipeRefreshLayout mainFrameRefresh;
     private String cursorPostNum,phasingNum;
@@ -149,6 +149,15 @@ public class Fragment_home extends Fragment  {
         }
 
 
+        //카테고리 선택시 카테고리 선택화면으로 이동
+        postCategoryImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(),Activity_category_all_post.class);
+                startActivity(intent);
+            }
+        });
+
         //아이템 클릭 시  해당 상세보기 아이템으로 이동하기.
         adapter.setItemClickListener(new Adapter_post_all_info.Interface_info_item_click() {
             @Override
@@ -199,6 +208,13 @@ public class Fragment_home extends Fragment  {
             }
         });
 
+        postSearchImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(),Activity_search_all_post.class);
+                startActivity(intent);
+            }
+        });
 
         return view;
     }
@@ -216,15 +232,22 @@ public class Fragment_home extends Fragment  {
 
         cursorPostNum="0";
         phasingNum="5";
+
         postList=new ArrayList<>();
+
+        postSearchImage=view.findViewById(R.id.home_search_image);
         mainFrameRefresh =view.findViewById(R.id.main_frame_refresh);
+
         postWriteImage=view.findViewById(R.id.post_write_plus_image);
         postWriteImage.setOnClickListener(postWriteClick);
+
         recyclerView=view.findViewById(R.id.post_all_recycelrview);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         adapter=new Adapter_post_all_info(postList,getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
+
+        postCategoryImage=view.findViewById(R.id.home_category_choice_image);
 
         Gson gson=new GsonBuilder()
                 .setLenient()

@@ -31,6 +31,8 @@
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/drawable/viewpager_border.xml" value="0.26979166666666665" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_category1.xml" value="0.18177083333333333" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_category2.xml" value="0.20833333333333334" />
+        <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_category_all_post.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_category_search_result.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_change_password.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_example.xml" value="0.1671875" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_find_password.xml" value="0.25364583333333335" />
@@ -46,20 +48,27 @@
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_post_read.xml" value="0.264" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_post_write.xml" value="0.10400000000000001" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_profile_update.xml" value="0.1897644927536232" />
-        <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_sell_list.xml" value="0.2513586956521739" />
+        <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_search_all_post.xml" value="0.264" />
+        <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_sell_list.xml" value="0.16" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_seller_info.xml" value="0.2" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_setting.xml" value="0.2477355072463768" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/activity_signup.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/bottom_sheet_layout.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/chat_fragment.xml" value="0.18645833333333334" />
+        <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/dialog_category_filter.xml" value="0.2" />
+        <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/dialog_price_filter.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/find_password.xml" value="0.1875" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/fragment_chat.xml" value="0.21965579710144928" />
-        <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/fragment_home.xml" value="0.1671875" />
+        <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/fragment_home.xml" value="0.264" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/fragment_mypage.xml" value="0.264" />
+        <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/fragment_sell_reservation.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/fragment_sell_selling.xml" value="0.1" />
+        <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/fragment_sell_sold.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/home_fragment.xml" value="0.18645833333333334" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/login.xml" value="0.2368659420289855" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/main_home.xml" value="0.2" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/mypage_fragment.xml" value="0.18645833333333334" />
+        <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/recyclerview_category_info.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/recyclerview_place_search_previous.xml" value="0.23731884057971014" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/recyclerview_place_search_result.xml" value="0.2" />
         <entry key="..\:/Users/hosung/AndroidStudioProjects/ElectronicsMarket/app/src/main/res/layout/recyclerview_post_all_info.xml" value="0.264" />

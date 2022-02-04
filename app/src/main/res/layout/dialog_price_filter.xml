@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView50"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="가격 범위 설정"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:padding="5dp"
+        android:background="@drawable/textview_border"
+        android:id="@+id/dialog_price_filter_min_price"
+        android:layout_width="150dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:inputType="number"
+        android:hint="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView50" />
+    <TextView
+        android:id="@+id/textView51"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="~"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/dialog_price_filter_min_price"
+        app:layout_constraintEnd_toStartOf="@+id/dialog_price_filter_max_price"
+        app:layout_constraintStart_toEndOf="@+id/dialog_price_filter_min_price"
+        app:layout_constraintTop_toTopOf="@+id/dialog_price_filter_min_price" />
+
+    <EditText
+        android:padding="5dp"
+        android:hint="제한없음"
+        android:inputType="number"
+        android:background="@drawable/textview_border"
+        android:id="@+id/dialog_price_filter_max_price"
+        android:layout_width="150dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:ems="10"
+
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView50" />
+</androidx.constraintlayout.widget.ConstraintLayout>
