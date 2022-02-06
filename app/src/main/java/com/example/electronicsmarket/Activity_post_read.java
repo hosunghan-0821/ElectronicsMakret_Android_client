@@ -44,6 +44,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Activity_post_read extends AppCompatActivity implements Dialog_bottom_sheet.BottomSheetListener {
 
+    private TextView postReadBuyProductDelivery;
     private Retrofit retrofit;
     private ViewPager2 sliderViewPager;
     private LinearLayout layoutIndicator;
@@ -82,7 +83,17 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
         variableInit();
 
 
-        //
+        //택배결제 버튼 눌럿을 경우 이동 intent.
+        postReadBuyProductDelivery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Activity_post_read.this,Activity_buy_product_delivery.class);
+                intent.putExtra("postNum",postNum);
+                startActivity(intent);
+            }
+        });
+
+
         //핸드러를 통해 thread에 따른 ui 처리 가능
         handler=new Handler(Looper.getMainLooper()){
             @Override
@@ -305,6 +316,8 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
 
 //                id=sharedPreferences.getString("userId","");
                 PopupMenu popup = new PopupMenu(Activity_post_read.this, updateDeleteImage);
+                Log.e("123","sellerId : "+ sellerId);
+                Log.e("123","userId : "+ id);
                 if(sellerId.equals(id)){
                     MenuInflater inflate = popup.getMenuInflater();
                     inflate.inflate(R.menu.post_update_menu, popup.getMenu());
@@ -474,7 +487,6 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
     public void variableInit() {
 
 
-
         sharedPreferences=getSharedPreferences("autoLogin",MODE_PRIVATE);
         id=sharedPreferences.getString("userId","");
 
@@ -487,6 +499,7 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
+        postReadBuyProductDelivery=findViewById(R.id.post_read_buy_product_delivery);
         postReadMoveLoveList=findViewById(R.id.post_read_move_like_list);
         postReadLinearLoveList=findViewById(R.id.post_read_linear_love_list);
         postReadLikeNumImage=findViewById(R.id.post_read_like_num_image);

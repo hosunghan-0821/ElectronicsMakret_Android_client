@@ -434,6 +434,7 @@ public class Activity_post_write extends AppCompatActivity {
                 RequestBody sellType = RequestBody.create(MediaType.parse("text/plain"), sellTypeText);
                 RequestBody email = RequestBody.create(MediaType.parse("text/plain"), id);
 
+
                 requestMap.put("placeDetail",placeDetail);
                 requestMap.put("deleteImage", deleteImageRoute);
                 requestMap.put("placeName", placeName);

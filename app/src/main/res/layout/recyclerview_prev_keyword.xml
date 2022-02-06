@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/textview_border"
+    >
+
+    <LinearLayout
+        android:padding="10dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/prev_search_post_keyword"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            android:text="검색어"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <ImageView
+            android:id="@+id/prev_search_keyword_delete_image"
+            android:src="@drawable/ic_baseline_cancel_24"
+            android:layout_weight="5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
+</LinearLayout>

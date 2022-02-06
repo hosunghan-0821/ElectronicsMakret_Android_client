@@ -14,12 +14,22 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ElectronicsMarket"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".Activity_get_address"
+            android:exported="false" />
+        <activity
+            android:name=".Activity_buy_product_delivery"
+            android:exported="false" />
+        <activity
+            android:name=".webViewTest"
+            android:exported="false" />
         <activity
             android:name=".Activity_search_all_post"
             android:exported="false" />

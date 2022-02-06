@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity_buy_product_delivery">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/buy_product_delivery_standard"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="360dp"
+                android:layout_marginBottom="300dp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent
+"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/horizontal_guideline1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.08" />
+
+            <View
+                android:id="@+id/buy_product_view_top"
+                android:layout_width="wrap_content"
+                android:layout_height="2dp"
+                android:background="#808080"
+                app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/horizontal_guideline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.25" />
+
+            <View
+                android:id="@+id/buy_product_view_middle"
+                android:layout_width="wrap_content"
+                android:layout_height="2dp"
+                android:background="#808080"
+                app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/horizontal_guideline3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.68" />
+
+            <View
+                android:id="@+id/buy_product_view_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="2dp"
+                android:background="#808080"
+                app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageView
+
+                android:id="@+id/buy_product_back_arrow"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="10dp"
+                app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_baseline_arrow_back_24" />
+
+            <TextView
+                android:id="@+id/textView53"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="주문/결제"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline1"
+                app:layout_constraintStart_toEndOf="@+id/buy_product_back_arrow"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/buy_product_image"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:src="@drawable/ic_baseline_favorite_24"
+                app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/horizontal_guideline1" />
+
+            <TextView
+                android:id="@+id/buy_product_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="상품제목"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/buy_product_image"
+                app:layout_constraintTop_toTopOf="@+id/buy_product_image" />
+
+            <TextView
+                android:id="@+id/buy_product_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:text="10,000원"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                app:layout_constraintStart_toEndOf="@+id/buy_product_image"
+                app:layout_constraintTop_toBottomOf="@+id/buy_product_title" />
+
+            <TextView
+                android:id="@+id/textView56"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:text="배송지"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/horizontal_guideline2" />
+
+            <TextView
+                android:id="@+id/textView57"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:text="받는 분 "
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView56" />
+
+            <TextView
+                android:id="@+id/textView58"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:text="결제방법 선택"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/horizontal_guideline3" />
+
+            <TextView
+                android:id="@+id/buy_product_buyer_name"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="15dp"
+                android:gravity="center"
+                android:text="포성이"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView57"
+                app:layout_constraintStart_toEndOf="@+id/vertical_guideline1"
+                app:layout_constraintTop_toTopOf="@+id/textView57"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/textView60"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:text="주소"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView57" />
+
+            <TextView
+                android:id="@+id/buy_product_buyer_address"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="10dp"
+                android:gravity="center|left"
+                android:text="주소입력"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView60"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/vertical_guideline1"
+                app:layout_constraintTop_toTopOf="@+id/textView60" />
+
+            <TextView
+                android:id="@+id/textView62"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="30dp"
+                android:text="상세주소"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView60" />
+
+            <EditText
+                android:id="@+id/buy_product_buyer_address_detail"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="10dp"
+                android:background="@android:color/transparent"
+                android:cursorVisible="false"
+                android:hint="상세주소 입력"
+                android:inputType="text"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/vertical_guideline1"
+                app:layout_constraintTop_toBottomOf="@+id/textView60"
+                tools:ignore="TouchTargetSizeCheck" />
+
+            <Spinner
+                android:id="@+id/buy_product_delivery_detail_spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:minHeight="30dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView54"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+            <EditText
+                android:id="@+id/buy_product_delivery_detail_text"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/textview_border"
+                android:hint="배송 요청사항을 입력해주세요"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buy_product_delivery_detail_spinner"
+                tools:ignore="TouchTargetSizeCheck" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/vertical_guideline1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+               app:layout_constraintGuide_percent="0.2" />
+
+            <TextView
+                android:id="@+id/textView54"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:text="연락처"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView62" />
+
+            <TextView
+                android:id="@+id/buy_product_buyer_phone_number"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="01095756302"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/vertical_guideline1"
+                app:layout_constraintTop_toBottomOf="@+id/buy_product_buyer_address_detail" />
+
+            <CheckBox
+                android:id="@+id/buy_product_address_check_box"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="기본주소지 설정"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/horizontal_guideline2"
+                tools:ignore="TouchTargetSizeCheck" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:id="@+id/linearLayout5"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@drawable/textview_border"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/buy_product_cancel_buy"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="취소하기"
+            android:textColor="@color/black"
+            android:textSize="30dp" />
+
+        <TextView
+            android:id="@+id/buy_product_buy_approve"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#dcdcdc"
+            android:gravity="center"
+            android:text="결제하기"
+            android:textColor="@color/black"
+            android:textSize="30dp" />
+
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

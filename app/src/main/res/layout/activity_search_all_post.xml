@@ -14,7 +14,7 @@
         app:layout_constraintGuide_percent="0.13" />
 
     <ImageView
-        android:id="@+id/imageView9"
+        android:id="@+id/search_post_back_arrow"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginStart="10dp"
@@ -31,9 +31,9 @@
         android:text="검색"
         android:textColor="@color/black"
         android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView9"
-        app:layout_constraintStart_toEndOf="@+id/imageView9"
-        app:layout_constraintTop_toTopOf="@+id/imageView9" />
+        app:layout_constraintBottom_toBottomOf="@+id/search_post_back_arrow"
+        app:layout_constraintStart_toEndOf="@+id/search_post_back_arrow"
+        app:layout_constraintTop_toTopOf="@+id/search_post_back_arrow" />
 
 
     <LinearLayout
@@ -50,6 +50,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <EditText
+
             android:id="@+id/search_post_keyword"
             android:layout_width="match_parent"
             android:layout_height="48dp"
@@ -84,6 +85,8 @@
         app:layout_constraintTop_toTopOf="@+id/horizontal_guideline1" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:padding="3dp"
+        android:background="@drawable/textview_border"
         android:id="@+id/search_post_prev_recyclerview"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -102,4 +105,18 @@
         app:layout_constraintBottom_toTopOf="@+id/search_post_prev_recyclerview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/horizontal_guideline1" />
+
+    <TextView
+        android:id="@+id/search_post_prev_keyword_text"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="최근 검색어가 없습니다."
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/search_post_prev_recyclerview" />
 </androidx.constraintlayout.widget.ConstraintLayout>

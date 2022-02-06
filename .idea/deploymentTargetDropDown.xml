@@ -12,17 +12,6 @@
         </deviceKey>
       </Target>
     </runningDeviceTargetSelectedWithDropDown>
-    <targetSelectedWithDropDown>
-      <Target>
-        <type value="QUICK_BOOT_TARGET" />
-        <deviceKey>
-          <Key>
-            <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="C:\Users\hosung\.android\avd\Pixel_3_API_30_new.avd" />
-          </Key>
-        </deviceKey>
-      </Target>
-    </targetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2022-02-04T08:09:35.732788800Z" />
+    <timeTargetWasSelectedWithDropDown value="2022-02-06T08:44:16.950985800Z" />
   </component>
 </project>

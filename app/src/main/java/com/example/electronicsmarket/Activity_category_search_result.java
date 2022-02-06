@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -28,9 +29,11 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import org.w3c.dom.Text;
 
+import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,6 +48,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Activity_category_search_result extends AppCompatActivity {
 
 
+    private SharedPreferences sharedPreferences;
     private ImageView backImage,postSearchImage;
     private EditText searchKeyword;
     private Button filterResetBtn;
@@ -56,10 +60,11 @@ public class Activity_category_search_result extends AppCompatActivity {
     private TextView filterText, categoryText;
     private FrameLayout filterFrame, priceFrame;
     private Retrofit retrofit;
-    private TextView newestText, highPriceText, lowPriceText, viewText, priceFilterText;
+    private TextView newestText, highPriceText, lowPriceText, viewText, priceFilterText,noResultText;
     private TextWatcher textWatcher;
     private String strAmount = "";
     private int maxPrice=-1, minPrice=-1, filterNum = 0;
+    private ArrayList<String> prevSearchKeywordList;
 
 
     @Override
@@ -98,6 +103,7 @@ public class Activity_category_search_result extends AppCompatActivity {
                             originPostInfoList.add(postInfoList.get(i));
                         }
                         adapter.setPostList(postInfoList);
+                        isSearchNoResult();
                         adapter.notifyDataSetChanged();
                     }
 
@@ -128,6 +134,7 @@ public class Activity_category_search_result extends AppCompatActivity {
                             originPostInfoList.add(postInfoList.get(i));
                         }
                         adapter.setPostList(postInfoList);
+                        isSearchNoResult();
                         adapter.notifyDataSetChanged();
                     }
                 }
@@ -157,6 +164,25 @@ public class Activity_category_search_result extends AppCompatActivity {
 
                         if(response.isSuccessful()&&response.body()!=null){
 
+                            //최근 검색관련 정리
+                            boolean isDuplicate =false;
+                            getSharedPrevKeywordList();
+                            for(int i=0;i<prevSearchKeywordList.size();i++){
+                                if(prevSearchKeywordList.get(i).equals(searchKeyword.getText().toString())){
+                                    prevSearchKeywordList.remove(i);
+                                    prevSearchKeywordList.add(0,searchKeyword.getText().toString());
+                                    isDuplicate=true;
+                                    break;
+                                }
+                            }
+                            if(!isDuplicate){
+                                prevSearchKeywordList.add(0,searchKeyword.getText().toString());
+                            }
+
+                            setSharedPrevKeywordList();
+
+
+                            //검색 결과에 따른 필터에 맞게끔 행동하도록 함수들 작성
                             postInfoList.clear();
                             originPostInfoList.clear();
                             PostAllInfo postAllInfo = response.body();
@@ -166,6 +192,8 @@ public class Activity_category_search_result extends AppCompatActivity {
                             postInfoList=getSortedPostList();
                             postInfoList=getPriceSortedPostList(postInfoList);
                             adapter.setPostList(postInfoList);
+
+                            isSearchNoResult();
                             adapter.notifyDataSetChanged();
 
                         }
@@ -192,6 +220,7 @@ public class Activity_category_search_result extends AppCompatActivity {
                 postInfoList.clear();
                 postInfoList.addAll(originPostInfoList);
                 adapter.setPostList(postInfoList);
+                isSearchNoResult();
                 adapter.notifyDataSetChanged();
 
             }
@@ -313,6 +342,7 @@ public class Activity_category_search_result extends AppCompatActivity {
 //                                    Log.e("123","originPostInfoList : "+originPostInfoList.get(i).getPostPrice());
 //                                }
                                 adapter.setPostList(postInfoList);
+                                isSearchNoResult();
                                 adapter.notifyDataSetChanged();
                                 priceFilterText.setText(minPriceText.getText().toString() + " ~ " + maxPriceText.getText().toString() + "원");
                             }
@@ -334,6 +364,7 @@ public class Activity_category_search_result extends AppCompatActivity {
 
                             }
                             adapter.setPostList(postInfoList);
+                            isSearchNoResult();
                             adapter.notifyDataSetChanged();
                             priceFilterText.setText(minPriceText.getText().toString() + "원 이상");
                         }
@@ -352,6 +383,7 @@ public class Activity_category_search_result extends AppCompatActivity {
                                 }
                             }
                             adapter.setPostList(postInfoList);
+                            isSearchNoResult();
                             adapter.notifyDataSetChanged();
                             priceFilterText.setText(maxPriceText.getText().toString() + "원 이하");
                         }
@@ -502,6 +534,7 @@ public class Activity_category_search_result extends AppCompatActivity {
         //최대 최소 범위가 정해져 있을경우
         if(maxPrice!=-1&&minPrice!=-1){
             for (int i = 0; i < beSortPostList.size(); i++) {
+                Log.e("123","최대 최소 범위가 정해져 있을경우");
                 int postPrice = Integer.parseInt(beSortPostList.get(i).getPostPrice().replace(",", ""));
                 if (!(postPrice <= maxPrice && postPrice >= minPrice)) {
                     beSortPostList.remove(i);
@@ -511,7 +544,8 @@ public class Activity_category_search_result extends AppCompatActivity {
             return beSortPostList;
         }
         //최대값 정해져있지 않을경우
-        else if (maxPrice !=-1){
+        else if (minPrice !=-1){
+            Log.e("123","최대값 정해져있지 않을경우");
             for (int i = 0; i < beSortPostList.size(); i++) {
                 int postPrice = Integer.parseInt(beSortPostList.get(i).getPostPrice().replace(",", ""));
                 if (!(postPrice >= minPrice)) {
@@ -522,7 +556,8 @@ public class Activity_category_search_result extends AppCompatActivity {
             return beSortPostList;
         }
         //최소값 정해져있지 않을 경우
-        else if(minPrice!=-1){
+        else if(maxPrice!=-1){
+            Log.e("123","최소값 정해져있지 않을 경우");
             for (int i = 0; i <beSortPostList.size(); i++) {
                 int postPrice = Integer.parseInt(beSortPostList.get(i).getPostPrice().replace(",", ""));
                 if (!(postPrice <= maxPrice)) {
@@ -538,6 +573,15 @@ public class Activity_category_search_result extends AppCompatActivity {
         return beSortPostList;
     }
 
+    public void isSearchNoResult(){
+        if(postInfoList.size()==0){
+            noResultText.setVisibility(View.VISIBLE);
+        }
+        else{
+            noResultText.setVisibility(View.INVISIBLE);
+        }
+
+    }
     public ArrayList<PostInfo> getSortedPostList() {
         ArrayList<PostInfo> beSortPostList;
         beSortPostList=new ArrayList<>();
@@ -592,8 +636,36 @@ public class Activity_category_search_result extends AppCompatActivity {
         return beSortPostList;
     }
 
+    public void getSharedPrevKeywordList(){
+
+        String stringToArray= sharedPreferences.getString("prevKeyword",null);
+        Gson gson = new GsonBuilder().create();
+
+        Type arrayListType = new TypeToken<ArrayList<String>>(){}.getType();
+        try{
+            prevSearchKeywordList=gson.fromJson(stringToArray,arrayListType);
+            if(prevSearchKeywordList==null){
+                prevSearchKeywordList=new ArrayList<String>();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void setSharedPrevKeywordList(){
+        Gson gson = new Gson();
+        Type arrayListType = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        String stringToJson = gson.toJson(prevSearchKeywordList, arrayListType);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("prevKeyword",stringToJson);
+        editor.apply();
+    }
+
     public void variableInit() {
 
+        prevSearchKeywordList=new ArrayList<String>();
+        sharedPreferences=getSharedPreferences("prevKeyword",MODE_PRIVATE);
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
@@ -602,6 +674,7 @@ public class Activity_category_search_result extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
+        noResultText=(TextView) findViewById(R.id.category_search_no_result_text);
         backImage=(ImageView) findViewById(R.id.category_search_result_back_arrow);
         backImage.setOnClickListener(new View.OnClickListener() {
             @Override

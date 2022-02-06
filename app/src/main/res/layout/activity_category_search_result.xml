@@ -23,7 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.1" />
+                app:layout_constraintGuide_percent="0.08" />
 
             <View
                 android:id="@+id/view1"
@@ -87,7 +87,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.18" />
+                app:layout_constraintGuide_percent="0.15" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/category_search_result_recyclerview"
@@ -202,7 +202,19 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/horizontal_guideline1" />
 
-
+            <TextView
+                android:id="@+id/category_search_no_result_text"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:text="해당 상품이 존재하지 않습니다"
+                android:textColor="@color/black"
+                android:textSize="25dp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@+id/category_search_result_recyclerview"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/category_search_result_recyclerview"
+                app:layout_constraintTop_toTopOf="@+id/category_search_result_recyclerview" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
