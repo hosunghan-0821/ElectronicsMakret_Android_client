@@ -8,6 +8,12 @@ public class PostInfo {
     private String productNum;
 
 
+    private String postStatus;
+
+
+    private String receiverName;
+    private boolean isLikeList;
+    private String addressDetail,deliveryRequire;
     private String memberId,nickname,postTitle,postContents,postCategory,postSellType,postImageNum,postPrice,postDelivery,memberImage,postNum;
     private String  postRegTime,postViewNum,postLikeNum,postLocationDetail;
     private Double postLocationLatitude,postLocationLongitude;
@@ -15,6 +21,64 @@ public class PostInfo {
     private ArrayList<String> imageRoute;
     private int viewType;
     private boolean clientIsLike;
+    private String clientNickname,clientPhoneNumber;
+
+    public String getAddressDetail() {
+        return addressDetail;
+    }
+
+    public String getPostStatus() {
+        return postStatus;
+    }
+
+    public void setPostStatus(String postStatus) {
+        this.postStatus = postStatus;
+    }
+
+
+    public boolean isLikeList() {
+        return isLikeList;
+    }
+
+    public String getReceiverName() {
+        return receiverName;
+    }
+
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
+    }
+
+    public void setLikeList(boolean likeList) {
+        isLikeList = likeList;
+    }
+
+    public void setAddressDetail(String addressDetail) {
+        this.addressDetail = addressDetail;
+    }
+
+    public String getDeliveryRequire() {
+        return deliveryRequire;
+    }
+
+    public void setDeliveryRequire(String deliveryRequire) {
+        this.deliveryRequire = deliveryRequire;
+    }
+
+    public String getClientPhoneNumber() {
+        return clientPhoneNumber;
+    }
+
+    public void setClientPhoneNumber(String clientPhoneNumber) {
+        this.clientPhoneNumber = clientPhoneNumber;
+    }
+
+    public String getClientNickname() {
+        return clientNickname;
+    }
+
+    public void setClientNickname(String clientNickname) {
+        this.clientNickname = clientNickname;
+    }
 
     public PostInfo() {
     }

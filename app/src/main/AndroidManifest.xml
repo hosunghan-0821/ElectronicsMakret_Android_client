@@ -22,13 +22,19 @@
         android:theme="@style/Theme.ElectronicsMarket"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Activity_address_change"
+            android:exported="false" />
+        <activity
+            android:name=".Activity_trade_detail_info"
+            android:exported="false" />
+        <activity
             android:name=".Activity_get_address"
             android:exported="false" />
         <activity
             android:name=".Activity_buy_product_delivery"
             android:exported="false" />
         <activity
-            android:name=".webViewTest"
+            android:name=".Activity_kakaopay_api"
             android:exported="false" />
         <activity
             android:name=".Activity_search_all_post"

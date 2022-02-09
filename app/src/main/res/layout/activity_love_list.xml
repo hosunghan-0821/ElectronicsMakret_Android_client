@@ -43,4 +43,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/vertical_guideline1" />
+
+    <TextView
+        android:id="@+id/love_list_no_result_text"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="관심목록이 없습니다"
+        android:textSize="30dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/love_list_recyclerview"
+        app:layout_constraintEnd_toEndOf="@+id/love_list_recyclerview"
+        app:layout_constraintStart_toStartOf="@+id/love_list_recyclerview"
+        app:layout_constraintTop_toTopOf="@+id/vertical_guideline1" />
 </androidx.constraintlayout.widget.ConstraintLayout>

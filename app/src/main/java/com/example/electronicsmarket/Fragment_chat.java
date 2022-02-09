@@ -26,7 +26,8 @@ public class Fragment_chat extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent =new Intent(getActivity(),webViewTest.class);
+                Intent intent =new Intent(getActivity(), Activity_trade_detail_info.class);
+                intent.putExtra("tradeNum","1");
                 startActivity(intent);
             }
         });

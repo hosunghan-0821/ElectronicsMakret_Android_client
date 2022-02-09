@@ -20,10 +20,10 @@ import java.util.Date;
 
 public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    Interface_info_item_click listener;
-    ArrayList<PostInfo> postList;
-    Context context;
-
+    private Interface_info_item_click listener;
+    private ArrayList<PostInfo> postList;
+    private Context context;
+    private Interface_like_list_cancel cancelListener;
 
     public Adapter_post_all_info(ArrayList<PostInfo> postList,Context context) {
         this.postList = postList;
@@ -36,7 +36,7 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
     public void setItemClickListener(Interface_info_item_click listener){
         this.listener=listener;
     }
-
+    public void setLikeListCancelListener(Interface_like_list_cancel cancelListener){this.cancelListener=cancelListener;}
 
     public String timeDifferentCheck(String uploadTime){
 
@@ -93,7 +93,7 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        Log.e("123",String.valueOf(viewType));
+        //Log.e("123",String.valueOf(viewType));
         if(viewType==0){
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_post_all_info, parent, false);
             AllInfoViewHolder allinfoViewHolder = new AllInfoViewHolder(view);
@@ -113,6 +113,15 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if(holder instanceof  AllInfoViewHolder){
+
+            //좋아요에서 사용되는 경우.
+            if(postList.get(position).isLikeList()){
+                ((AllInfoViewHolder) holder).cancelImage.setVisibility(View.VISIBLE);
+            }
+            else{
+                ((AllInfoViewHolder) holder).cancelImage.setVisibility(View.GONE);
+            }
+
             ((AllInfoViewHolder) holder).postTitle.setText(postList.get(position).getPostTitle());
             Glide.with(context).load(postList.get(position).getImageRoute().get(0)).into( ((AllInfoViewHolder) holder).imageView);
             ((AllInfoViewHolder) holder).postPrice.setText(postList.get(position).getPostPrice()+"원");
@@ -167,7 +176,7 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
 
     public class AllInfoViewHolder extends RecyclerView.ViewHolder {
 
-        protected ImageView imageView,postImageLocation;
+        protected ImageView imageView,postImageLocation,cancelImage;
         protected TextView  postLocationName,postTitle,postPrice,postSellType1,postSellType2,postTime,postView,postLike;
 
 
@@ -175,6 +184,7 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
 
             super(itemView);
 
+            cancelImage=itemView.findViewById(R.id.post_all_cancel_image);
             postImageLocation=itemView.findViewById(R.id.post_all_location_image);
             postLocationName=itemView.findViewById(R.id.post_all_location);
             postLike=itemView.findViewById(R.id.post_all_like);
@@ -197,11 +207,25 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
                 }
             });
 
+            cancelImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position=getAdapterPosition();
+                    if(cancelListener!=null){
+                        Log.e("123","cancelPosition : "+ position);
+                        cancelListener.onItemCancel(position);
+                    }
+                }
+            });
+
         }
     }
 
     public interface Interface_info_item_click {
         void onItemClick(int position);
+    }
+    public interface Interface_like_list_cancel{
+        void onItemCancel(int position);
     }
 
 

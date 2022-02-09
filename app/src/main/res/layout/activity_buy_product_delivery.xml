@@ -56,7 +56,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.25" />
+                app:layout_constraintGuide_percent="0.28" />
 
             <View
                 android:id="@+id/buy_product_view_middle"
@@ -72,7 +72,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.68" />
+                app:layout_constraintGuide_percent="0.81" />
 
             <View
                 android:id="@+id/buy_product_view_bottom"
@@ -107,16 +107,20 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
+
                 android:id="@+id/buy_product_image"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_margin="10dp"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/imageview_border_gray"
+                android:padding="2dp"
+                android:scaleType="fitXY"
                 android:src="@drawable/ic_baseline_favorite_24"
                 app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/horizontal_guideline1" />
+                app:layout_constraintTop_toBottomOf="@+id/textView55"
+                app:layout_constraintVertical_bias="0.488" />
 
             <TextView
                 android:id="@+id/buy_product_title"
@@ -137,7 +141,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="5dp"
                 android:text="10,000원"
                 android:textColor="@color/black"
                 android:textSize="20dp"
@@ -206,50 +210,51 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView57" />
 
-            <TextView
+            <EditText
                 android:id="@+id/buy_product_buyer_address"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="10dp"
+                android:background="@android:color/transparent"
                 android:gravity="center|left"
-                android:text="주소입력"
+                android:hint="주소입력"
                 android:textColor="@color/black"
-                android:textSize="15sp"
+                android:textSize="20dp"
                 app:layout_constraintBottom_toBottomOf="@+id/textView60"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/vertical_guideline1"
-                app:layout_constraintTop_toTopOf="@+id/textView60" />
+                app:layout_constraintTop_toTopOf="@+id/textView60"
+                tools:ignore="TouchTargetSizeCheck" />
 
             <TextView
                 android:id="@+id/textView62"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:text="상세주소"
                 android:textColor="@color/black"
                 android:textSize="20dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView60" />
+                app:layout_constraintTop_toBottomOf="@+id/buy_product_buyer_address" />
 
             <EditText
                 android:id="@+id/buy_product_buyer_address_detail"
                 android:layout_width="0dp"
                 android:layout_height="25dp"
                 android:layout_marginStart="15dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:background="@android:color/transparent"
-                android:cursorVisible="false"
                 android:hint="상세주소 입력"
                 android:inputType="text"
                 android:textColor="@color/black"
                 android:textSize="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/vertical_guideline1"
-                app:layout_constraintTop_toBottomOf="@+id/textView60"
+                app:layout_constraintTop_toBottomOf="@+id/buy_product_buyer_address"
                 tools:ignore="TouchTargetSizeCheck" />
 
             <Spinner
@@ -259,11 +264,12 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
+                android:background="@drawable/textview_border"
                 android:minHeight="30dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView54"
+                app:layout_constraintTop_toBottomOf="@+id/textView61"
                 tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
             <EditText
@@ -318,15 +324,105 @@
                 android:id="@+id/buy_product_address_check_box"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
                 android:text="기본주소지 설정"
                 android:textColor="@color/black"
                 android:textSize="15dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/horizontal_guideline2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buy_product_delivery_detail_text"
                 tools:ignore="TouchTargetSizeCheck" />
 
+            <TextView
+                android:id="@+id/textView55"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:text="상품정보"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buy_product_view_top" />
+
+            <TextView
+                android:id="@+id/textView61"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:text="배송 상세요청"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView54" />
+
+            <RadioGroup
+
+                android:id="@+id/buy_product_radio_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView58">
+
+                <RadioButton
+                    android:id="@+id/buy_product_radio_card_pay"
+                    android:layout_margin="5dp"
+                    android:padding="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="카드결제"
+                    android:textColor="@color/black"
+                    android:textSize="20dp"
+                    tools:ignore="TouchTargetSizeCheck">
+                </RadioButton>
+                <RadioButton
+                    android:id="@+id/buy_product_radio_kakao_pay"
+                    android:layout_margin="5dp"
+                    android:padding="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="카카오페이"
+                    android:textColor="@color/black"
+                    android:textSize="20dp"
+                    tools:ignore="TouchTargetSizeCheck"
+                    >
+
+                </RadioButton>
+
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/buy_product_receiver_name_change"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:background="#dcdcdc"
+                android:padding="5dp"
+                android:text="변경"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@+id/buy_product_buyer_name"
+                app:layout_constraintStart_toEndOf="@+id/buy_product_buyer_name"
+                app:layout_constraintTop_toTopOf="@+id/buy_product_buyer_name" />
+
+            <TextView
+                android:id="@+id/buy_product_address_change"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="#dcdcdc"
+                android:text="배송지 변경"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/horizontal_guideline2" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

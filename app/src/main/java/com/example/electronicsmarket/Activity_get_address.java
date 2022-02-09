@@ -37,22 +37,6 @@ public class Activity_get_address extends AppCompatActivity {
     public void webViewInit(){
         webView=findViewById(R.id.get_address_webview);
 
-////        webView.setWebChromeClient( new WebChromeClient(){
-////
-////        });
-//        webView.setWebViewClient(new WebViewClient(){
-//            @Override
-//            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-//                Log.e("123","onPageStarted : " );
-//                super.onPageStarted(view, url, favicon);
-//                webView.loadUrl("javascript:hi()");
-//            }
-//        });
-//        webView.getSettings().setJavaScriptEnabled(true);
-//        webView.addJavascriptInterface(new MyJavaScriptInterface(),"Android");
-//        webView.loadUrl("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/example/daum.html");
-//        Log.e("123","loadUrl");
-
         webView.getSettings().setJavaScriptEnabled(true);
         webView.addJavascriptInterface(new MyJavaScriptInterface(), "Android");
         webView.setWebViewClient(new WebViewClient() {
@@ -61,7 +45,7 @@ public class Activity_get_address extends AppCompatActivity {
                 webView.loadUrl("javascript:sample2_execDaumPostcode();");
             }
         });
-        webView.loadUrl("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/example/daum.html");
+        webView.loadUrl("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/lib/daum.html");
     }
 
 }

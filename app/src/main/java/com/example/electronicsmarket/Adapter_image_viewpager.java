@@ -1,6 +1,7 @@
 package com.example.electronicsmarket;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 
@@ -39,6 +41,7 @@ public class Adapter_image_viewpager extends RecyclerView.Adapter<Adapter_image_
     @Override
     public void onBindViewHolder(@NonNull Adapter_image_viewpager.ViewPageHolder holder, int position) {
         holder.bindSliderImage(imageRoute.get(position));
+
     }
 
     @Override
@@ -57,7 +60,11 @@ public class Adapter_image_viewpager extends RecyclerView.Adapter<Adapter_image_
         }
 
         public void bindSliderImage(String imageURL){
-            Glide.with(context).load(imageURL).into(imageView);
+            Glide.with(context).load(imageURL)
+//                    .apply(RequestOptions.bitmapTransform(BlurTransformation(25, 3)))
+                    .into(imageView);
+
+
         }
     }
 }

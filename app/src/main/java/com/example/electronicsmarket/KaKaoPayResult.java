@@ -4,12 +4,33 @@ import com.google.gson.annotations.SerializedName;
 
 public class KaKaoPayResult {
 
+
+    @SerializedName("error_code")
+    private String errorCode;
+    @SerializedName("error_message")
+    private String errorMessage;
     @SerializedName("next_redirect_mobile_url")
     private String redirectUrl;
 
     @SerializedName("next_redirect_app_url")
     private String appUrl;
     private String tid;
+
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 
     public String getAppUrl() {
         return appUrl;

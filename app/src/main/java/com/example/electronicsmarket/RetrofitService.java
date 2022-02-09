@@ -2,12 +2,9 @@ package com.example.electronicsmarket;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import okhttp3.MultipartBody;
-import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -125,6 +122,16 @@ public interface RetrofitService {
             @Part ArrayList<MultipartBody.Part> files, @PartMap HashMap<String, RequestBody> params
     );
 
+    @Multipart
+    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/paymentApi/paymentSuccess.php")
+    Call<PaymentInfo> sendPaymentInfo(@PartMap HashMap<String,RequestBody> params);
+
+    @FormUrlEncoded
+    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/paymentApi/getPaymentInfo.php")
+    Call<PaymentInfo> getPaymentInfo(@Field("email")String email, @Field("tradeNum")String tradeNum);
+
+
+    //여기서부터 다른 restapi 사용하기 위한 것들
     @GET("https://dapi.kakao.com/v2/local/search/keyword.json")
     Call<DataSearchResult> sendPlace(
 
@@ -133,8 +140,8 @@ public interface RetrofitService {
     );
 
     @FormUrlEncoded
-    @Headers({"content-type:application/x-www-form-urlencoded; charset=utf-8"})
-    @POST("https://kapi.kakao.com/v1/payment/ready")
+    @Headers({"content-type:application/x-www-form-urlencoded;charset=utf-8"})
+    @POST("v1/payment/ready")
     Call<KaKaoPayResult> sendKaKaoPayReadyRequest(
             @Header("Authorization") String Key ,
             @Field("cid") String cid,
@@ -148,6 +155,7 @@ public interface RetrofitService {
             @Field("cancel_url") String cancel_url,
             @Field("fail_url") String fail_url
             );
+
     @FormUrlEncoded
     @Headers({"content-type:application/x-www-form-urlencoded"})
     @POST("https://kapi.kakao.com/v1/payment/approve")

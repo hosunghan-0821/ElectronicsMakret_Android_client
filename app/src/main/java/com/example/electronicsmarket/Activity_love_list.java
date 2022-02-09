@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -33,6 +35,10 @@ public class Activity_love_list extends AppCompatActivity {
     private Retrofit retrofit;
     private SharedPreferences sharedPreferences;
     private String id;
+    private TextView noResultText;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +58,12 @@ public class Activity_love_list extends AppCompatActivity {
                     Log.e("123",response.body().getProductNum());
 
                     loveList=postAllInfo.postInfo;
+                    if(loveList.size()==0){
+                        noResultText.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        noResultText.setVisibility(View.INVISIBLE);
+                    }
                     adapter.setPostList(loveList);
                     adapter.notifyDataSetChanged();
                 }
@@ -87,6 +99,9 @@ public class Activity_love_list extends AppCompatActivity {
         sharedPreferences=getSharedPreferences("autoLogin",MODE_PRIVATE);
         id=sharedPreferences.getString("userId","");
 
+        noResultText=(TextView) findViewById(R.id.love_list_no_result_text);
+
+        //recyclerview 관련
         loveListRecyclerview=findViewById(R.id.love_list_recyclerview);
         linearLayoutManager=new LinearLayoutManager(Activity_love_list.this);
         loveList =new ArrayList<>();
@@ -98,6 +113,38 @@ public class Activity_love_list extends AppCompatActivity {
                 Intent intent =new Intent(Activity_love_list.this,Activity_post_read.class);
                 intent.putExtra("postNum",loveList.get(position).getPostNum());
                 startActivity(intent);
+            }
+        });
+        adapter.setLikeListCancelListener(new Adapter_post_all_info.Interface_like_list_cancel() {
+            @Override
+            public void onItemCancel(int position) {
+                RetrofitService service = retrofit.create(RetrofitService.class);
+                Call<MemberSignup> call = service.setLikeList(id,loveList.get(position).getPostNum(),"delete");
+                call.enqueue(new Callback<MemberSignup>() {
+                    @Override
+                    public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+
+                        if(response.isSuccessful()&&response.body().isSuccess()){
+
+                            loveList.remove(position);
+                            if(loveList.size()==0){
+                                noResultText.setVisibility(View.VISIBLE);
+                            }
+                            else{
+                                noResultText.setVisibility(View.INVISIBLE);
+                            }
+                            adapter.notifyItemRemoved(position);
+                            Toast.makeText(getApplicationContext(), "관심목록 삭제하였습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<MemberSignup> call, Throwable t) {
+                        Log.e("123","통신 onFailure ()");
+                    }
+                });
+
+
             }
         });
 

@@ -49,8 +49,6 @@ public class Fragment_mypage extends Fragment  {
         variableInit(view);
 
 
-
-
         settingImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

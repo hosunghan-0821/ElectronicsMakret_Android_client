@@ -68,7 +68,7 @@ public class Fragment_home extends Fragment  {
                 adapter.setPostList(postList);
                 adapter.notifyDataSetChanged();
                 cursorPostNum=postList.get(postList.size()-1).getPostNum();
-                Log.e("123","oncreateView CursorPostNum"+cursorPostNum);
+                //Log.e("123","oncreateView CursorPostNum"+cursorPostNum);
                 if(!response.body().getProductNum().equals("5")){
                     isFinalPhase=true;
                 }
@@ -89,7 +89,7 @@ public class Fragment_home extends Fragment  {
                 public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
 
                         if(!v.canScrollVertically(1)&&scrollCheck){
-                            Log.e("123","스크롤의 최하단입니다. 이거 연속으로 찍히는거면 터치의 문제");
+                            //Log.e("123","스크롤의 최하단입니다. 이거 연속으로 찍히는거면 터치의 문제");
                             scrollCheck=false;
 //                            Toast.makeText(getActivity(), "스크롤의 최하단입니다.", Toast.LENGTH_SHORT).show()
                             System.out.println("postinfoSize : "+postList.size());
@@ -162,7 +162,7 @@ public class Fragment_home extends Fragment  {
         adapter.setItemClickListener(new Adapter_post_all_info.Interface_info_item_click() {
             @Override
             public void onItemClick(int position) {
-                Log.e("123","onItemclick");
+                //Log.e("123","onItemclick");
                 Intent intent =new Intent(getActivity(),Activity_post_read.class);
                 intent.putExtra("postNum",postList.get(position).getPostNum());
                 startActivity(intent);
@@ -177,7 +177,7 @@ public class Fragment_home extends Fragment  {
             public void onRefresh() {
 
                 RetrofitService service = retrofit.create(RetrofitService.class);
-                Log.e("123","onRefresh CursorPostNum"+cursorPostNum);
+                //Log.e("123","onRefresh CursorPostNum"+cursorPostNum);
                 Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,"update");
                 call.enqueue(new Callback<PostAllInfo>() {
                     @Override
@@ -263,12 +263,12 @@ public class Fragment_home extends Fragment  {
     @Override
     public void onResume() {
         super.onResume();
-        Log.e("123","onresume : ");
+        //Log.e("123","onresume : ");
         //onResume 에는 기존에 존재하는 recyclerview 새로 고침하는 코드가 필요할듯.
 
         if(onCreateViewIsSet){
             RetrofitService service = retrofit.create(RetrofitService.class);
-            Log.e("123","onResume CursorPostNum"+cursorPostNum);
+            //Log.e("123","onResume CursorPostNum"+cursorPostNum);
             Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,"update");
             call.enqueue(new Callback<PostAllInfo>() {
                 @Override
@@ -303,18 +303,18 @@ public class Fragment_home extends Fragment  {
     @Override
     public void onStop() {
         super.onStop();
-        Log.e("123","onstop : ");
+        //Log.e("123","onstop : ");
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Log.e("123","onstart : ");
+        //Log.e("123","onstart : ");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.e("123","onPause : ");
+        //Log.e("123","onPause : ");
     }
 }

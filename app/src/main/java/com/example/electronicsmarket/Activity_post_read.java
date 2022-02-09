@@ -1,5 +1,9 @@
 package com.example.electronicsmarket;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,22 +48,23 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Activity_post_read extends AppCompatActivity implements Dialog_bottom_sheet.BottomSheetListener {
 
+
     private TextView postReadBuyProductDelivery;
     private Retrofit retrofit;
     private ViewPager2 sliderViewPager;
-    private LinearLayout layoutIndicator;
+    private LinearLayout layoutIndicator, postReadLinearBottomOption;
     private String sellerId;
     private FrameLayout postReadSellerFrame;
     private ArrayList<String> imageRoute;
-    private ImageView updateDeleteImage, backImage,locationDetailImage,postReadLikeNumImage,postReadLikeImage;
+    private ImageView updateDeleteImage, backImage, locationDetailImage, postReadLikeNumImage, postReadLikeImage;
     private Adapter_image_viewpager adapter;
     private CircleImageView circleImageView;
-    private TextView postReadProductNum,postReadTitle, postReadPrice, postReadDelivery, postReadSellType1, postReadSellType2, postReadCategory, postReadContents, postReadLocationInfo;
-    private TextView postReadNickname, postReadId, postReadTime, postReadLike, postReadView,postReadStatusText,postReadPlaceDetail,postReadMoveLoveList;
+    private TextView postReadProductNum, postReadTitle, postReadPrice, postReadDelivery, postReadSellType1, postReadSellType2, postReadCategory, postReadContents, postReadLocationInfo;
+    private TextView postReadNickname, postReadId, postReadTime, postReadLike, postReadView, postReadStatusText, postReadPlaceDetail, postReadMoveLoveList;
     private String postNum, postLocationAddress, postLocationName;
     private Double postReadLongitude, postReadLatitude;
-    private LinearLayout postReadLinearStatus,postReadLinearLoveList;
-    private boolean like=true,isRunning=false;
+    private LinearLayout postReadLinearStatus, postReadLinearLoveList;
+    private boolean like = true, isRunning = false;
     private SharedPreferences sharedPreferences;
     private String id;
     private Thread thread;
@@ -87,25 +92,29 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
         postReadBuyProductDelivery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Activity_post_read.this,Activity_buy_product_delivery.class);
-                intent.putExtra("postNum",postNum);
+                if (postReadSellType2.getVisibility() == View.GONE) {
+                    Toast.makeText(getApplicationContext(), "해당 상품은 택배거래가 불가능합니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Intent intent = new Intent(Activity_post_read.this, Activity_buy_product_delivery.class);
+                intent.putExtra("postNum", postNum);
                 startActivity(intent);
             }
         });
 
 
         //핸드러를 통해 thread에 따른 ui 처리 가능
-        handler=new Handler(Looper.getMainLooper()){
+        handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
-                if(msg.arg1==1){
-                    isRunning=true;
+                if (msg.arg1 == 1) {
+                    isRunning = true;
                     postReadLinearLoveList.setVisibility(View.VISIBLE);
-                }
-                else{
+                } else {
                     postReadLinearLoveList.setVisibility(View.GONE);
-                    isRunning=false;
+                    isRunning = false;
                 }
             }
         };
@@ -114,7 +123,7 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
         postReadMoveLoveList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent =new Intent(Activity_post_read.this,Activity_love_list.class);
+                Intent intent = new Intent(Activity_post_read.this, Activity_love_list.class);
                 startActivity(intent);
             }
         });
@@ -130,11 +139,10 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
         postReadLikeImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(like){
+                if (like) {
                     //찜목록 아닌경우 클릭할 시 , 찜목록 등록
                     setLikeList("insert");
-                }
-                else{
+                } else {
                     setLikeList("delete");
                     //찜목록 맞을 경우 클릭할 시 ,찜목록 취소.
                 }
@@ -148,113 +156,118 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
             @Override
             public void onClick(View v) {
                 Dialog_bottom_sheet bottomSheet = new Dialog_bottom_sheet();
-                bottomSheet.show(getSupportFragmentManager(),"Dialog_bottom_sheet");
+                bottomSheet.show(getSupportFragmentManager(), "Dialog_bottom_sheet");
             }
         });
-        //retrofit 통신
-        RetrofitService service = retrofit.create(RetrofitService.class);
 
-        Call<PostInfo> call = service.getPostInfo(postNum,"read",id);
-        Log.e("456",id);
-        call.enqueue(new Callback<PostInfo>() {
-            @Override
-            public void onResponse(Call<PostInfo> call, Response<PostInfo> response) {
-                sellerId=response.body().getMemberId();
-                //System.out.println("isClientLike"+response.body().isClientIsLike());
-                // shared 값 가져오기
-                Log.e("123","확인"+response.body().getPostLocationDetail());
-
-                // client 가 좋아요 눌렀던 게시글 이면, 하트에 색칠해놔야함 like boolean 값도 변경;
-                if(response.body().isClientIsLike()){
-                    postReadLikeImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_baseline_favorite_24));
-                    postReadLikeNumImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_baseline_favorite_24));
-                    like=false;
-                }
-
-                // 판매자일 경우 처리
-                if(sellerId!=null){
-                    if(!sellerId.equals(id)){
-                        postReadLinearStatus.setVisibility(View.GONE);
-                    }
-                }
-                //이미지 처리
-                PostInfo info = response.body();
-                adapter.setImageRoute(info.getImageRoute());
-                adapter.notifyDataSetChanged();
-                setupIndicators(info.getImageRoute().size());
-                if (info.getMemberImage() == null) {
-                    circleImageView.setImageResource(R.drawable.ic_baseline_person_black);
-                } else {
-                    Glide.with(getApplicationContext()).load(info.getMemberImage().toString()).into(circleImageView);
-                }
-
-
-                //시간 관련 로직 작성해야지
-                timeDifferentCheck(info.getPostRegTime());
-                //위치정보 세팅
-                if (info.getPostLocationAddress() != null) {
-                    if (info.getPostLocationAddress().equals("")) {
-                        postReadLocationInfo.setText(" " + info.getPostLocationName());
-
-                    } else {
-                        postReadLocationInfo.setText(" " + info.getPostLocationName() + " ( " + info.getPostLocationAddress() + " )");
-                        if(info.getPostLocationDetail()!=null){
-                            if(!info.getPostLocationDetail().equals("")){
-                                locationDetailImage.setVisibility(View.VISIBLE);
-                                postReadPlaceDetail.setText("상세위치 정보 : "+info.getPostLocationDetail());
-                            }
-                        }
-
-                    }
-                }
-
-                postReadLatitude = info.getPostLocationLatitude();
-                postReadLongitude = info.getPostLocationLongitude();
-                postLocationName = info.getPostLocationName();
-                postLocationAddress = info.getPostLocationAddress();
-
-                //
-                Log.e("123",info.getProductNum());
-                postReadProductNum.setText(info.getProductNum());
-                postReadView.setText(info.getPostViewNum());
-                postReadLike.setText(info.getPostLikeNum());
-
-                postReadContents.setText(info.getPostContents());
-                System.out.println("postcontents" + info.getPostContents());
-
-
-                postReadTitle.setText(info.getPostTitle());
-                postReadPrice.setText(info.getPostPrice() + "원");
-                if (info.getPostCategory().equals("카테고리 선택")) {
-                    postReadCategory.setVisibility(View.INVISIBLE);
-                }
-                postReadCategory.setText("  *  " + info.getPostCategory());
-                postReadNickname.setText(info.getNickname());
-
-                if (info.getPostSellType().equals("직거래/택배거래")) {
-
-                } else if (info.getPostSellType().equals("직거래")) {
-                    postReadDelivery.setVisibility(View.GONE);
-                    postReadSellType2.setVisibility(View.GONE);
-                } else {
-                    postReadSellType1.setVisibility(View.GONE);
-                }
-
-                if (info.getPostDelivery().equals("Y")) {
-                    postReadDelivery.setText("배송비 포함");
-                } else {
-                    postReadDelivery.setText("배송비 별도");
-                }
-
-                Log.e("123", "통신성공");
-
-            }
-
-            @Override
-            public void onFailure(Call<PostInfo> call, Throwable t) {
-                Log.e("123", "통신실패");
-            }
-        });
+//        //onCreate 일 떄,
+//        //retrofit 통신
+//        RetrofitService service = retrofit.create(RetrofitService.class);
+//        Call<PostInfo> call = service.getPostInfo(postNum, "read", id);
+//        Log.e("456", id);
+//        call.enqueue(new Callback<PostInfo>() {
+//            @Override
+//            public void onResponse(Call<PostInfo> call, Response<PostInfo> response) {
+//                sellerId = response.body().getMemberId();
+//
+//                //System.out.println("isClientLike"+response.body().isClientIsLike());
+//                // shared 값 가져오기
+//                Log.e("123", "확인" + response.body().getPostLocationDetail());
+//
+//                // client 가 좋아요 눌렀던 게시글 이면, 하트에 색칠해놔야함 like boolean 값도 변경;
+//                if (response.body().isClientIsLike()) {
+//                    postReadLikeImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_baseline_favorite_24));
+//                    postReadLikeNumImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_baseline_favorite_24));
+//                    like = false;
+//                }
+//
+//                // 판매자일 경우 처리
+//                if (sellerId != null) {
+//                    if (!sellerId.equals(id)) {
+//                        postReadLinearStatus.setVisibility(View.GONE);
+//                    } else {
+//                        postReadLinearBottomOption.setVisibility(View.GONE);
+//                    }
+//                }
+//                //이미지 처리
+//                PostInfo info = response.body();
+//                adapter.setImageRoute(info.getImageRoute());
+//                adapter.notifyDataSetChanged();
+//                setupIndicators(info.getImageRoute().size());
+//                if (info.getMemberImage() == null) {
+//                    circleImageView.setImageResource(R.drawable.ic_baseline_person_black);
+//                } else {
+//                    Glide.with(getApplicationContext()).load(info.getMemberImage().toString()).into(circleImageView);
+//                }
+//
+//
+//                //시간 관련 로직 작성해야지
+//                timeDifferentCheck(info.getPostRegTime());
+//                //위치정보 세팅
+//                if (info.getPostLocationAddress() != null) {
+//                    if (info.getPostLocationAddress().equals("")) {
+//                        postReadLocationInfo.setText(" " + info.getPostLocationName());
+//
+//                    } else {
+//                        postReadLocationInfo.setText(" " + info.getPostLocationName() + " ( " + info.getPostLocationAddress() + " )");
+//                        if (info.getPostLocationDetail() != null) {
+//                            if (!info.getPostLocationDetail().equals("")) {
+//                                locationDetailImage.setVisibility(View.VISIBLE);
+//                                postReadPlaceDetail.setText("상세위치 정보 : " + info.getPostLocationDetail());
+//                            }
+//                        }
+//
+//                    }
+//                }
+//
+//                postReadLatitude = info.getPostLocationLatitude();
+//                postReadLongitude = info.getPostLocationLongitude();
+//                postLocationName = info.getPostLocationName();
+//                postLocationAddress = info.getPostLocationAddress();
+//
+//                //
+//                Log.e("123", info.getProductNum());
+//                postReadProductNum.setText(info.getProductNum());
+//                postReadView.setText(info.getPostViewNum());
+//                postReadLike.setText(info.getPostLikeNum());
+//
+//                postReadContents.setText(info.getPostContents());
+//                System.out.println("postcontents" + info.getPostContents());
+//
+//
+//                postReadTitle.setText(info.getPostTitle());
+//                postReadPrice.setText(info.getPostPrice() + "원");
+//                if (info.getPostCategory().equals("카테고리 선택")) {
+//                    postReadCategory.setVisibility(View.INVISIBLE);
+//                }
+//                postReadCategory.setText("  *  " + info.getPostCategory());
+//                postReadNickname.setText(info.getNickname());
+//
+//                if (info.getPostSellType().equals("직거래/택배거래")) {
+//
+//
+//                } else if (info.getPostSellType().equals("직거래")) {
+//                    postReadDelivery.setVisibility(View.GONE);
+//                    postReadSellType2.setVisibility(View.GONE);
+//                } else {
+//                    postReadSellType1.setVisibility(View.GONE);
+//                }
+//
+//                if (info.getPostDelivery().equals("Y")) {
+//                    postReadDelivery.setText("배송비 포함");
+//                } else {
+//                    postReadDelivery.setText("배송비 별도");
+//                }
+//
+//                Log.e("123", "통신성공");
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<PostInfo> call, Throwable t) {
+//                Log.e("123", "통신실패");
+//            }
+//        });
 
 
         sliderViewPager = findViewById(R.id.viewpager_post_image);
@@ -275,11 +288,11 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
         postReadSellerFrame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("123","판매자 프레임 선택");
+                Log.e("123", "판매자 프레임 선택");
 
-                Intent intent = new Intent(Activity_post_read.this,Activity_seller_info.class);
-                intent.putExtra("nickname",postReadNickname.getText().toString());
-                intent.putExtra("postNum",postNum);
+                Intent intent = new Intent(Activity_post_read.this, Activity_seller_info.class);
+                intent.putExtra("nickname", postReadNickname.getText().toString());
+                intent.putExtra("postNum", postNum);
                 startActivity(intent);
             }
         });
@@ -316,14 +329,13 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
 
 //                id=sharedPreferences.getString("userId","");
                 PopupMenu popup = new PopupMenu(Activity_post_read.this, updateDeleteImage);
-                Log.e("123","sellerId : "+ sellerId);
-                Log.e("123","userId : "+ id);
-                if(sellerId.equals(id)){
+                Log.e("123", "sellerId : " + sellerId);
+                Log.e("123", "userId : " + id);
+                if (sellerId.equals(id)) {
                     MenuInflater inflate = popup.getMenuInflater();
                     inflate.inflate(R.menu.post_update_menu, popup.getMenu());
                     popup.show();
-                }
-                else{
+                } else {
                     MenuInflater inflate = popup.getMenuInflater();
                     inflate.inflate(R.menu.post_report_menu, popup.getMenu());
                     popup.show();
@@ -344,24 +356,23 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
                             builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Log.e("123","확인버튼");
+                                    Log.e("123", "확인버튼");
                                     RetrofitService service = retrofit.create(RetrofitService.class);
                                     Call<MemberSignup> call = service.sendDeletePostInfo(postNum);
                                     call.enqueue(new Callback<MemberSignup>() {
                                         @Override
                                         public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
-                                            Log.e("123","통신성공");
-                                            if(response.isSuccessful()&&response.body()!=null){
-                                                if(response.body().isSuccess()){
+                                            Log.e("123", "통신성공");
+                                            if (response.isSuccessful() && response.body() != null) {
+                                                if (response.body().isSuccess()) {
                                                     Toast.makeText(Activity_post_read.this, "게시글 삭제완료", Toast.LENGTH_SHORT).show();
-                                                    Intent intent = new Intent(Activity_post_read.this,Activity_main_home.class);
+                                                    Intent intent = new Intent(Activity_post_read.this, Activity_main_home.class);
                                                     startActivity(intent);
                                                     finish();
-                                                }
-                                                else{
+                                                } else {
                                                     Toast.makeText(Activity_post_read.this, "게시글 삭제실패", Toast.LENGTH_SHORT).show();
                                                 }
-                                       
+
                                             }
                                         }
 
@@ -382,8 +393,7 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
                             builder.show();
 
 
-                        }
-                        else if(id==R.id.post_write_report){
+                        } else if (id == R.id.post_write_report) {
 
                         }
                         return false;
@@ -396,39 +406,153 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
     @Override
     protected void onResume() {
         super.onResume();
+        //onCreate 일 떄,
+        //retrofit 통신
+        RetrofitService service = retrofit.create(RetrofitService.class);
+        Call<PostInfo> call = service.getPostInfo(postNum, "read", id);
+        Log.e("456", id);
+        call.enqueue(new Callback<PostInfo>() {
+            @Override
+            public void onResponse(Call<PostInfo> call, Response<PostInfo> response) {
+                sellerId = response.body().getMemberId();
+
+                //System.out.println("isClientLike"+response.body().isClientIsLike());
+                // shared 값 가져오기
+                Log.e("123", "확인" + response.body().getPostLocationDetail());
+
+                // client 가 좋아요 눌렀던 게시글 이면, 하트에 색칠해놔야함 like boolean 값도 변경;
+                if (response.body().isClientIsLike()) {
+                    postReadLikeImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_baseline_favorite_24));
+                    postReadLikeNumImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_baseline_favorite_24));
+                    like = false;
+                }
+                // client가 좋아요 눌렀던 게시글 아니면, 빈하트표시
+                else{
+                    postReadLikeImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_baseline_favorite_border_24));
+                    postReadLikeNumImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_baseline_favorite_border_24));
+                    like=true;
+                }
+
+                // 판매자일 경우 처리
+                if (sellerId != null) {
+                    if (!sellerId.equals(id)) {
+                        postReadLinearStatus.setVisibility(View.GONE);
+                    } else {
+                        postReadLinearBottomOption.setVisibility(View.GONE);
+                    }
+                }
+                //이미지 처리
+                PostInfo info = response.body();
+                adapter.setImageRoute(info.getImageRoute());
+                adapter.notifyDataSetChanged();
+                setupIndicators(info.getImageRoute().size());
+                if (info.getMemberImage() == null) {
+                    circleImageView.setImageResource(R.drawable.ic_baseline_person_black);
+                } else {
+                    Glide.with(getApplicationContext()).load(info.getMemberImage().toString()).into(circleImageView);
+                }
+
+
+                //시간 관련 로직 작성해야지
+                timeDifferentCheck(info.getPostRegTime());
+                //위치정보 세팅
+                if (info.getPostLocationAddress() != null) {
+                    if (info.getPostLocationAddress().equals("")) {
+                        postReadLocationInfo.setText(" " + info.getPostLocationName());
+
+                    } else {
+                        postReadLocationInfo.setText(" " + info.getPostLocationName() + " ( " + info.getPostLocationAddress() + " )");
+                        if (info.getPostLocationDetail() != null) {
+                            if (!info.getPostLocationDetail().equals("")) {
+                                locationDetailImage.setVisibility(View.VISIBLE);
+                                postReadPlaceDetail.setText("상세위치 정보 : " + info.getPostLocationDetail());
+                            }
+                        }
+
+                    }
+                }
+
+                postReadLatitude = info.getPostLocationLatitude();
+                postReadLongitude = info.getPostLocationLongitude();
+                postLocationName = info.getPostLocationName();
+                postLocationAddress = info.getPostLocationAddress();
+
+                //
+                Log.e("123", info.getProductNum());
+                postReadProductNum.setText(info.getProductNum());
+                postReadView.setText(info.getPostViewNum());
+                postReadLike.setText(info.getPostLikeNum());
+
+                postReadContents.setText(info.getPostContents());
+                System.out.println("postcontents" + info.getPostContents());
+
+
+                postReadTitle.setText(info.getPostTitle());
+                postReadPrice.setText(info.getPostPrice() + "원");
+                if (info.getPostCategory().equals("카테고리 선택")) {
+                    postReadCategory.setVisibility(View.INVISIBLE);
+                }
+                postReadCategory.setText("  *  " + info.getPostCategory());
+                postReadNickname.setText(info.getNickname());
+
+                if (info.getPostSellType().equals("직거래/택배거래")) {
+
+
+                } else if (info.getPostSellType().equals("직거래")) {
+                    postReadDelivery.setVisibility(View.GONE);
+                    postReadSellType2.setVisibility(View.GONE);
+                } else {
+                    postReadSellType1.setVisibility(View.GONE);
+                }
+
+                if (info.getPostDelivery().equals("Y")) {
+                    postReadDelivery.setText("배송비 포함");
+                } else {
+                    postReadDelivery.setText("배송비 별도");
+                }
+
+                Log.e("123", "통신성공");
+
+            }
+
+            @Override
+            public void onFailure(Call<PostInfo> call, Throwable t) {
+                Log.e("123", "통신실패");
+            }
+        });
 
     }
 
-    private void setLikeList(String state){
+    private void setLikeList(String state) {
 
         RetrofitService service = retrofit.create(RetrofitService.class);
 
-        Call<MemberSignup> call = service.setLikeList(id,postNum,state);
+        Call<MemberSignup> call = service.setLikeList(id, postNum, state);
         call.enqueue(new Callback<MemberSignup>() {
             @Override
             public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
-                if(response.isSuccessful() && response.body()!=null){
-                    Log.e("456","통신 응답옴");
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.e("456", "통신 응답옴");
                     //찜목록  추가
-                    if(response.body().isSuccess() &&state.equals("insert")){
-                        postReadLike.setText(String.valueOf(Integer.parseInt(postReadLike.getText().toString())+1));
-                        postReadLikeImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_baseline_favorite_24));
-                        postReadLikeNumImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_baseline_favorite_24));
+                    if (response.body().isSuccess() && state.equals("insert")) {
+                        postReadLike.setText(String.valueOf(Integer.parseInt(postReadLike.getText().toString()) + 1));
+                        postReadLikeImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_baseline_favorite_24));
+                        postReadLikeNumImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_baseline_favorite_24));
 //                        customToastLikeList("해당 상품을 관심목록에 등록하셨습니다.");
-                        if(!isRunning){
+                        if (!isRunning) {
                             thread = new Thread(new Runnable() {
                                 @Override
                                 public void run() {
 
                                     Message msg = new Message();
                                     Message msg2 = new Message();
-                                    try{
-                                        msg.arg1=1;
+                                    try {
+                                        msg.arg1 = 1;
                                         handler.sendMessage(msg);
                                         thread.sleep(3000);
-                                        msg2.arg1=0;
+                                        msg2.arg1 = 0;
                                         handler.sendMessage(msg2);
-                                    }catch (Exception e){
+                                    } catch (Exception e) {
                                         thread.interrupt();
                                         System.out.println(e);
                                     }
@@ -438,14 +562,14 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
                             thread.start();
                         }
 
-                        like=false;
+                        like = false;
                     }
                     //찜목록 삭제
-                    else if(response.body().isSuccess()&&state.equals("delete")){
-                        postReadLike.setText(String.valueOf(Integer.parseInt(postReadLike.getText().toString())-1));
-                        postReadLikeImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_baseline_favorite_border_24));
-                        postReadLikeNumImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_baseline_favorite_border_24));
-                        like=true;
+                    else if (response.body().isSuccess() && state.equals("delete")) {
+                        postReadLike.setText(String.valueOf(Integer.parseInt(postReadLike.getText().toString()) - 1));
+                        postReadLikeImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_baseline_favorite_border_24));
+                        postReadLikeNumImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_baseline_favorite_border_24));
+                        like = true;
                     }
                 }
             }
@@ -457,7 +581,9 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
         });
 
     }
+
     private void setupIndicators(int count) {
+        layoutIndicator.removeAllViewsInLayout();
         ImageView[] indicators = new ImageView[count];
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -487,8 +613,8 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
     public void variableInit() {
 
 
-        sharedPreferences=getSharedPreferences("autoLogin",MODE_PRIVATE);
-        id=sharedPreferences.getString("userId","");
+        sharedPreferences = getSharedPreferences("autoLogin", MODE_PRIVATE);
+        id = sharedPreferences.getString("userId", "");
 
         //postReadTitle,postReadPrice,postReadDelivery,postReadSellType1,PostReadSellType2,postReadCategory,postReadContents;
         Gson gson = new GsonBuilder()
@@ -498,26 +624,27 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
                 .baseUrl("http://ec2-15-164-99-218.ap-northeast-2.compute.amazonaws.com/")
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
+        postReadLinearBottomOption = (LinearLayout) findViewById(R.id.post_read_bottom_option);
 
-        postReadBuyProductDelivery=findViewById(R.id.post_read_buy_product_delivery);
-        postReadMoveLoveList=findViewById(R.id.post_read_move_like_list);
-        postReadLinearLoveList=findViewById(R.id.post_read_linear_love_list);
-        postReadLikeNumImage=findViewById(R.id.post_read_like_num_image);
-        postReadLikeImage=findViewById(R.id.post_read_like_image);
+        postReadBuyProductDelivery = findViewById(R.id.post_read_buy_product_delivery);
+        postReadMoveLoveList = findViewById(R.id.post_read_move_like_list);
+        postReadLinearLoveList = findViewById(R.id.post_read_linear_love_list);
+        postReadLikeNumImage = findViewById(R.id.post_read_like_num_image);
+        postReadLikeImage = findViewById(R.id.post_read_like_image);
 
-        locationDetailImage=findViewById(R.id.post_read_location_detail_image);
-        postReadPlaceDetail=findViewById(R.id.post_read_place_detail);
+        locationDetailImage = findViewById(R.id.post_read_location_detail_image);
+        postReadPlaceDetail = findViewById(R.id.post_read_place_detail);
         backImage = findViewById(R.id.post_write_category_1_back_arrow);
         updateDeleteImage = findViewById(R.id.post_write_update_delete);
-        postReadStatusText=findViewById(R.id.post_read_post_status);
-        postReadLinearStatus =findViewById(R.id.post_read_linear_status);
-        postReadProductNum=findViewById(R.id. post_read_item_num);
+        postReadStatusText = findViewById(R.id.post_read_post_status);
+        postReadLinearStatus = findViewById(R.id.post_read_linear_status);
+        postReadProductNum = findViewById(R.id.post_read_item_num);
         postReadTime = findViewById(R.id.post_read_time_check);
         postReadLike = findViewById(R.id.post_read_like_num);
         postReadView = findViewById(R.id.post_read_view_num);
 
 
-        postReadSellerFrame=findViewById(R.id.post_read_seller_frame);
+        postReadSellerFrame = findViewById(R.id.post_read_seller_frame);
         postReadLocationInfo = findViewById(R.id.post_read_location_info);
         postReadTitle = findViewById(R.id.post_read_title);
         postReadPrice = findViewById(R.id.post_read_price);
@@ -533,16 +660,16 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
 
     }
 
-    public void customToastLikeList(String message){
+    public void customToastLikeList(String message) {
         LayoutInflater inflater = getLayoutInflater();
 
         View parent = (Activity_post_read.this).getWindow().getDecorView();
-        View layout = inflater.inflate(R.layout.toast_custon_like_list,null,false);
-        LinearLayout linearLayout= layout.findViewById(R.id.inner_linearLayout);
-        Log.e("123",String.valueOf(parent.getWidth()));
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(parent.getWidth()-200, ViewGroup.LayoutParams.WRAP_CONTENT);
+        View layout = inflater.inflate(R.layout.toast_custon_like_list, null, false);
+        LinearLayout linearLayout = layout.findViewById(R.id.inner_linearLayout);
+        Log.e("123", String.valueOf(parent.getWidth()));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(parent.getWidth() - 200, ViewGroup.LayoutParams.WRAP_CONTENT);
         linearLayout.setLayoutParams(params);
-        TextView toastText  = layout.findViewById(R.id.toast_textview);
+        TextView toastText = layout.findViewById(R.id.toast_textview);
 
         toastText.setText(String.valueOf(message));
         Toast toast = new Toast(getApplicationContext());
@@ -554,6 +681,7 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
         toast.show();
 
     }
+
     public void timeDifferentCheck(String uploadTime) {
 
         long now = System.currentTimeMillis();
@@ -597,4 +725,6 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
 
         }
     }
+
+
 }
