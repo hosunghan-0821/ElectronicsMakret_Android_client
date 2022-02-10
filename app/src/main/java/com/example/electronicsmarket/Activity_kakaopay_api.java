@@ -138,9 +138,10 @@ public class Activity_kakaopay_api extends AppCompatActivity {
                     appURL = response.body().getAppUrl();
                 } else {
 
+
                     Log.e("123", response.message());
                     Log.e("123", "통신실패");
-//                   Toast.makeText(getApplicationContext(), "카카오 페이 서버 통신 오류 재시도 해주세요", Toast.LENGTH_SHORT).show();
+                   Toast.makeText(getApplicationContext(), "카카오 페이 서버 통신 오류 발생 화면 reload", Toast.LENGTH_SHORT).show();
                     finish();//인텐트 종료
                     overridePendingTransition(0, 0);//인텐트 효과 없애기
                     Intent intent = getIntent(); //인텐트

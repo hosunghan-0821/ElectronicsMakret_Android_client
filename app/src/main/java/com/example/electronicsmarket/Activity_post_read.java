@@ -69,7 +69,8 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
     private String id;
     private Thread thread;
     private Handler handler;
-
+    private TextView postReadStatus;
+    private boolean viewPlusCheck=false;
 
     @Override
     public void onButtonClicked(String text) {
@@ -82,10 +83,41 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_read);
+        variableInit();
 
         imageRoute = new ArrayList<String>();
         adapter = new Adapter_image_viewpager(getApplicationContext(), imageRoute);
-        variableInit();
+
+        //게시글 읽기위해 intent로 postNum 받기
+        Intent intent = getIntent();
+        postNum = intent.getStringExtra("postNum");
+        if (postNum == null) {
+            postNum = "22";
+        }
+        //onresume 을 통해 데이터들을 갱신하고있는데, 이 떄 ,조회수 관련해서 계속 증가한다. 데이터를 받아오면서
+        //oncreate 할 떄만 증가할 수 있또록, 따로 서버통신하기
+
+        Log.e("123","이게 첫번 째");
+        RetrofitService service = retrofit.create(RetrofitService.class);
+        Call<PostInfo> call2 = service.viewPlus(postNum);
+        call2.enqueue(new Callback<PostInfo>() {
+            @Override
+            public void onResponse(Call<PostInfo> call, Response<PostInfo> response) {
+                if(response.isSuccessful()&&response.body()!=null){
+                    Log.e("456","통신성공");
+                    Log.e("123","이게 먼저");
+//                    Log.e("123","getviewnum"+response.body().getPostViewNum());
+                     postReadView.setText(response.body().getPostViewNum());
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PostInfo> call, Throwable t) {
+
+            }
+        });
+
 
 
         //택배결제 버튼 눌럿을 경우 이동 intent.
@@ -128,12 +160,6 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
             }
         });
 
-        //게시글 읽기위해 intent로 postNum 받기
-        Intent intent = getIntent();
-        postNum = intent.getStringExtra("postNum");
-        if (postNum == null) {
-            postNum = "22";
-        }
 
         //좋아요 기능 만들어보자.
         postReadLikeImage.setOnClickListener(new View.OnClickListener() {
@@ -406,7 +432,8 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
     @Override
     protected void onResume() {
         super.onResume();
-        //onCreate 일 떄,
+
+        Log.e("123","이게 두번 쨰");
         //retrofit 통신
         RetrofitService service = retrofit.create(RetrofitService.class);
         Call<PostInfo> call = service.getPostInfo(postNum, "read", id);
@@ -414,6 +441,7 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
         call.enqueue(new Callback<PostInfo>() {
             @Override
             public void onResponse(Call<PostInfo> call, Response<PostInfo> response) {
+                Log.e("123","이게 두번째");
                 sellerId = response.body().getMemberId();
 
                 //System.out.println("isClientLike"+response.body().isClientIsLike());
@@ -441,8 +469,27 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
                         postReadLinearBottomOption.setVisibility(View.GONE);
                     }
                 }
+
                 //이미지 처리
                 PostInfo info = response.body();
+
+                //게시글 상태확인해서 판매완료인지 확인해서 화면 띄어줘야함
+                if(info.getPostStatus()!=null){
+                    if(info.getPostStatus().equals("DR")){
+                        //배송대기,배송중,배송완료 -> 모두 판매완료로 표시
+                        postReadBuyProductDelivery.setVisibility(View.GONE);
+                        adapter.setStatus(1);
+                        postReadStatus.setVisibility(View.VISIBLE);
+                        postReadStatusText.setText("판매완료");
+                    }
+                    else{
+                        //판매중 ->
+                        postReadStatus.setVisibility(View.INVISIBLE);
+                        adapter.setStatus(0);
+                        postReadStatusText.setText("판매중");
+                    }
+                }
+
                 adapter.setImageRoute(info.getImageRoute());
                 adapter.notifyDataSetChanged();
                 setupIndicators(info.getImageRoute().size());
@@ -480,7 +527,7 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
                 //
                 Log.e("123", info.getProductNum());
                 postReadProductNum.setText(info.getProductNum());
-                postReadView.setText(info.getPostViewNum());
+                //postReadView.setText(info.getPostViewNum());
                 postReadLike.setText(info.getPostLikeNum());
 
                 postReadContents.setText(info.getPostContents());
@@ -612,6 +659,8 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
 
     public void variableInit() {
 
+
+        postReadStatus=findViewById(R.id.post_read_status_text);
 
         sharedPreferences = getSharedPreferences("autoLogin", MODE_PRIVATE);
         id = sharedPreferences.getString("userId", "");

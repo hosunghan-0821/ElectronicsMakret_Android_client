@@ -73,6 +73,19 @@
         app:layout_constraintStart_toEndOf="@+id/post_all_sell_type1"
         app:layout_constraintTop_toBottomOf="@+id/post_all_title" />
 
+    <TextView
+        android:id="@+id/post_all_sell_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:background="#dcdcdc"
+        android:text="판매완료"
+        android:textColor="#B71C1C"
+        android:textSize="15dp"
+        app:layout_constraintStart_toEndOf="@+id/post_all_sell_type2"
+        app:layout_constraintTop_toBottomOf="@+id/post_all_title" />
+
     <ImageView
         android:id="@+id/post_all_location_image"
         android:layout_width="20dp"
@@ -159,4 +172,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_baseline_cancel_24" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

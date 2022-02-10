@@ -127,19 +127,32 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
             ((AllInfoViewHolder) holder).postPrice.setText(postList.get(position).getPostPrice()+"원");
 
             ((AllInfoViewHolder) holder).postTime.setText(timeDifferentCheck(postList.get(position).getPostRegTime()));
-            if(postList.get(position).getPostSellType().equals("직거래")){
-                ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.VISIBLE);
-                ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.GONE);
-            }
-            else if(postList.get(position).getPostSellType().equals("택배거래")){
-                ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.VISIBLE);
+
+            if(postList.get(position).getPostStatus().equals("DR")){
                 ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.GONE);
-            }
-            else{
-                ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.VISIBLE);
-                ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.VISIBLE);
+                ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.GONE);
+                ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.VISIBLE);
 
             }
+            else{
+                if(postList.get(position).getPostSellType().equals("직거래")){
+                    ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.VISIBLE);
+                    ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.GONE);
+                    ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.GONE);
+                }
+                else if(postList.get(position).getPostSellType().equals("택배거래")){
+                    ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.VISIBLE);
+                    ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.GONE);
+                    ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.GONE);
+                }
+                else{
+                    ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.VISIBLE);
+                    ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.VISIBLE);
+                    ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.GONE);
+                }
+            }
+
+
 
             if(postList.get(position).getPostLocationName()!=null){
                 if(!postList.get(position).getPostLocationName().equals("장소정보 없음")){
@@ -178,6 +191,7 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
 
         protected ImageView imageView,postImageLocation,cancelImage;
         protected TextView  postLocationName,postTitle,postPrice,postSellType1,postSellType2,postTime,postView,postLike;
+        protected TextView postSellStatus;
 
 
         public AllInfoViewHolder(@NonNull View itemView) {
@@ -195,6 +209,8 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
             postSellType1=itemView.findViewById(R.id.post_all_sell_type1);
             postSellType2=itemView.findViewById(R.id.post_all_sell_type2);
             postTime=itemView.findViewById(R.id.post_all_time);
+            postSellStatus=itemView.findViewById(R.id.post_all_sell_status);
+
 
 
             itemView.setOnClickListener(new View.OnClickListener() {

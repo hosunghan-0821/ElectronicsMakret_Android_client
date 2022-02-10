@@ -1,6 +1,7 @@
 package com.example.electronicsmarket;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +16,15 @@ import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 
+import jp.wasabeef.glide.transformations.BlurTransformation;
+import jp.wasabeef.glide.transformations.ColorFilterTransformation;
+
 public class Adapter_image_viewpager extends RecyclerView.Adapter<Adapter_image_viewpager.ViewPageHolder> {
 
     private Context context;
     private ArrayList<String> imageRoute;
     private String[] sliderImage;
-
+    private int status=0;
     public Adapter_image_viewpager(Context context, ArrayList<String> imageRoute) {
         this.context = context;
         this.imageRoute=imageRoute;
@@ -28,6 +32,9 @@ public class Adapter_image_viewpager extends RecyclerView.Adapter<Adapter_image_
 
     public void setImageRoute(ArrayList<String> imageRoute){
         this.imageRoute=imageRoute;
+    }
+    public void setStatus(int status){
+        this.status=status;
     }
     @NonNull
     @Override
@@ -40,7 +47,8 @@ public class Adapter_image_viewpager extends RecyclerView.Adapter<Adapter_image_
 
     @Override
     public void onBindViewHolder(@NonNull Adapter_image_viewpager.ViewPageHolder holder, int position) {
-        holder.bindSliderImage(imageRoute.get(position));
+
+        holder.bindSliderImage(imageRoute.get(position),status);
 
     }
 
@@ -59,11 +67,22 @@ public class Adapter_image_viewpager extends RecyclerView.Adapter<Adapter_image_
             imageView=itemView.findViewById(R.id.imageSlider);
         }
 
-        public void bindSliderImage(String imageURL){
-            Glide.with(context).load(imageURL)
-//                    .apply(RequestOptions.bitmapTransform(BlurTransformation(25, 3)))
+        public void bindSliderImage(String imageURL,int status){
+            if(status==0){
+                Glide.with(context).load(imageURL).into(imageView);
+            }
+            else if (status==1){
+                Glide.with(context)
+                    .load(imageURL)
+                    .apply(RequestOptions.bitmapTransform(new ColorFilterTransformation(Color.argb(100,0,0,0))))
                     .into(imageView);
+            }
 
+//                Glide.with(context).load(imageURL)
+//                    .apply(RequestOptions.bitmapTransform(new ColorFilterTransformation(context, Color.argb(100,255,0,0)))
+//                    .into(imageView);
+
+            //투명도
 
         }
     }

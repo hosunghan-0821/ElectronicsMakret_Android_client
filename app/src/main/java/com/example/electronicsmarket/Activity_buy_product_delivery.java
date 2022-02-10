@@ -149,6 +149,10 @@ public class Activity_buy_product_delivery extends AppCompatActivity {
         Intent i = getIntent();
         postNum = i.getStringExtra("postNum");
 
+
+
+
+
         //상품 정보들 가져와서 배치해주고, 기존 배송지 존재하면,데이터 세팅해두기,
         RetrofitService service = retrofit.create(RetrofitService.class);
         Call<PostInfo> call = service.getPostInfo(postNum, "delivery", id);

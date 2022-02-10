@@ -54,6 +54,10 @@ public interface RetrofitService {
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/postRead.php")
     Call<PostInfo> getPostInfo(@Field("postNum") String postNum,@Field("purpose") String purpose,@Field("email") String email);
 
+    @FormUrlEncoded
+    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/viewPlus.php")
+    Call<PostInfo> viewPlus(@Field("postNum") String postNum);
+
 
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/signup/deleteProfile.php")

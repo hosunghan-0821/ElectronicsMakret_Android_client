@@ -61,8 +61,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            >
+            android:layout_height="0dp">
 
             <TextView
 
@@ -74,17 +73,46 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 tools:layout_editor_absoluteX="16dp" />
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/viewpager_post_image"
-                android:layout_width="match_parent"
+            <FrameLayout
+                android:id="@+id/viewpager_frame_layout"
+                android:layout_width="0dp"
                 android:layout_height="200dp"
-
-                android:padding="1dp"
+                app:layout_constraintBottom_toTopOf="@+id/view6"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-            </androidx.viewpager2.widget.ViewPager2>
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewpager_post_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+
+                    android:padding="1dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+
+                </androidx.viewpager2.widget.ViewPager2>
+
+
+                <TextView
+                    android:id="@+id/post_read_status_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="판매완료"
+                    android:textColor="@color/white"
+                    android:textSize="50dp"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="@+id/viewpager_post_image"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/viewpager_post_image" />
+
+
+            </FrameLayout>
+
 
             <LinearLayout
                 android:id="@+id/layoutIndicators"
@@ -96,7 +124,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/view6"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/viewpager_post_image">
+                app:layout_constraintTop_toBottomOf="@+id/viewpager_frame_layout">
 
             </LinearLayout>
 
@@ -112,16 +140,16 @@
                 android:background="#808080"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/viewpager_post_image" />
+                app:layout_constraintTop_toBottomOf="@+id/viewpager_frame_layout" />
 
             <LinearLayout
 
                 android:id="@+id/post_read_linear_status"
-                android:background="@drawable/textview_border"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
+                android:background="@drawable/textview_border"
                 android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/view6">
@@ -136,12 +164,12 @@
                     android:textColor="@color/black"
                     android:textSize="15dp"
                     android:textStyle="bold" />
+
                 <ImageView
-                    android:padding="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/ic_baseline_down__24"
-                    />
+                    android:padding="5dp"
+                    android:src="@drawable/ic_baseline_down__24" />
 
 
             </LinearLayout>
@@ -381,12 +409,12 @@
                 app:srcCompat="@drawable/ic_baseline_location_on_24" />
 
             <ImageView
-                android:visibility="gone"
                 android:id="@+id/post_read_location_detail_image"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView2"
                 app:srcCompat="@drawable/ic_baseline_location_on_24" />
@@ -538,7 +566,6 @@
 
 
     <LinearLayout
-        android:visibility="gone"
         android:id="@+id/post_read_linear_love_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -547,17 +574,18 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/toast_custom"
         android:orientation="horizontal"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/scrollView3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
-            android:textColor="@color/black"
-            android:layout_margin="5dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="5dp"
             android:layout_weight="1"
             android:text="상품을 관심목록에 등록 하셨습니다"
+            android:textColor="@color/black"
             android:textSize="14dp"
             android:textStyle="bold">
 
@@ -565,26 +593,27 @@
 
         <TextView
             android:id="@+id/post_read_move_like_list"
-            android:textColor="#FF4000"
-            android:layout_margin="5dp"
-            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="5dp"
             android:layout_weight="2"
+            android:gravity="center"
             android:text="관심목록으로 이동"
+            android:textColor="#FF4000"
             android:textSize="14dp"
             android:textStyle="bold">
 
         </TextView>
 
     </LinearLayout>
+
     <LinearLayout
 
 
-        android:background="@drawable/text_view_border_black_1dp"
         android:id="@+id/post_read_bottom_option"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/text_view_border_black_1dp"
 
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -594,11 +623,11 @@
 
         <ImageView
 
-            android:padding="10dp"
             android:id="@+id/post_read_like_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="4"
+            android:padding="10dp"
 
             android:src="@drawable/ic_baseline_favorite_border_24" />
 
