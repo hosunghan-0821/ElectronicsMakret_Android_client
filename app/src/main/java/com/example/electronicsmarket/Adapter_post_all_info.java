@@ -123,7 +123,9 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
             }
 
             ((AllInfoViewHolder) holder).postTitle.setText(postList.get(position).getPostTitle());
+
             Glide.with(context).load(postList.get(position).getImageRoute().get(0)).into( ((AllInfoViewHolder) holder).imageView);
+
             ((AllInfoViewHolder) holder).postPrice.setText(postList.get(position).getPostPrice()+"원");
 
             ((AllInfoViewHolder) holder).postTime.setText(timeDifferentCheck(postList.get(position).getPostRegTime()));
@@ -131,8 +133,8 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
             if(postList.get(position).getPostStatus().equals("DR")){
                 ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.GONE);
                 ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.GONE);
+                ((AllInfoViewHolder) holder).postSellStatus.setText("판매완료 (배송대기)");
                 ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.VISIBLE);
-
             }
             else{
                 if(postList.get(position).getPostSellType().equals("직거래")){

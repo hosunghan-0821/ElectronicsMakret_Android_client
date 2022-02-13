@@ -22,6 +22,9 @@
         android:theme="@style/Theme.ElectronicsMarket"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Activity_buy_list"
+            android:exported="false" />
+        <activity
             android:name=".Activity_address_change"
             android:exported="false" />
         <activity

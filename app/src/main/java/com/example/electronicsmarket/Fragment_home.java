@@ -49,7 +49,7 @@ public class Fragment_home extends Fragment  {
         variableInit(view);
         //화면 생성시 처음 데이터 가져오기.
         RetrofitService service = retrofit.create(RetrofitService.class);
-        Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,phasingNum);
+        Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,phasingNum,"allInfo","");
         call.enqueue(new Callback<PostAllInfo>() {
             @Override
             public void onResponse(Call<PostAllInfo> call, Response<PostAllInfo> response) {
@@ -67,7 +67,10 @@ public class Fragment_home extends Fragment  {
                 }
                 adapter.setPostList(postList);
                 adapter.notifyDataSetChanged();
-                cursorPostNum=postList.get(postList.size()-1).getPostNum();
+                if(postList.size()!=0){
+                    cursorPostNum=postList.get(postList.size()-1).getPostNum();
+                }
+
                 //Log.e("123","oncreateView CursorPostNum"+cursorPostNum);
                 if(!response.body().getProductNum().equals("5")){
                     isFinalPhase=true;
@@ -97,7 +100,7 @@ public class Fragment_home extends Fragment  {
 //                                postList.add(new PostInfo(1));
 //                                adapter.notifyItemInserted(postList.size()-1);
                                 RetrofitService service = retrofit.create(RetrofitService.class);
-                                Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,phasingNum);
+                                Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,phasingNum,"allInfo","");
                                 call.enqueue(new Callback<PostAllInfo>() {
                                     @Override
                                     public void onResponse(Call<PostAllInfo> call, Response<PostAllInfo> response) {
@@ -119,7 +122,9 @@ public class Fragment_home extends Fragment  {
 
                                         adapter.setPostList(postList);
                                         adapter.notifyItemRangeInserted(beforePosition,5);
-                                        cursorPostNum=postList.get(postList.size()-1).getPostNum();
+                                        if(postList.size()!=0){
+                                            cursorPostNum=postList.get(postList.size()-1).getPostNum();
+                                        }
                                         //응답 온 데이터 갯수가 5개가 아니라면 마지막 phase.
                                         if(!response.body().getProductNum().equals("5")){
                                             isFinalPhase=true;
@@ -135,9 +140,10 @@ public class Fragment_home extends Fragment  {
                             }
 
 
-                        } else if(!v.canScrollVertically(-1)){
-                            //Toast.makeText(getActivity(), "스크롤의 최상단입니다.", Toast.LENGTH_SHORT).show();
                         }
+//                        else if(!v.canScrollVertically(-1)){
+//                            //Toast.makeText(getActivity(), "스크롤의 최상단입니다.", Toast.LENGTH_SHORT).show();
+//                        }
 
 
 
@@ -178,7 +184,7 @@ public class Fragment_home extends Fragment  {
 
                 RetrofitService service = retrofit.create(RetrofitService.class);
                 //Log.e("123","onRefresh CursorPostNum"+cursorPostNum);
-                Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,"update");
+                Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,"update","allInfo","");
                 call.enqueue(new Callback<PostAllInfo>() {
                     @Override
                     public void onResponse(Call<PostAllInfo> call, Response<PostAllInfo> response) {
@@ -269,7 +275,7 @@ public class Fragment_home extends Fragment  {
         if(onCreateViewIsSet){
             RetrofitService service = retrofit.create(RetrofitService.class);
             //Log.e("123","onResume CursorPostNum"+cursorPostNum);
-            Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,"update");
+            Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,"update","allInfo","");
             call.enqueue(new Callback<PostAllInfo>() {
                 @Override
                 public void onResponse(Call<PostAllInfo> call, Response<PostAllInfo> response) {

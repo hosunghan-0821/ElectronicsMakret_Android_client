@@ -5,10 +5,17 @@
     android:layout_height="match_parent"
     tools:context=".Fragment_sell_reservation">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:text="해당하는 내용 없습니다."
+        android:visibility="invisible"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent"/>
+
+
+
 
 </FrameLayout>

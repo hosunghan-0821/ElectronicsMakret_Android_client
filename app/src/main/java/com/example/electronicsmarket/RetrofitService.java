@@ -104,7 +104,7 @@ public interface RetrofitService {
 
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/postAllInfo.php")
-    Call<PostAllInfo> getPostAllInfo(@Field("finalPostNum")String finalPostNum,@Field("phasingNum")String phasingNum);
+    Call<PostAllInfo> getPostAllInfo(@Field("finalPostNum")String finalPostNum,@Field("phasingNum")String phasingNum,@Field("purpose") String purpose,@Field("email") String email);
 
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/postFilterAllInfo.php")

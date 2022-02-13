@@ -22,6 +22,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Activity_trade_detail_info extends AppCompatActivity {
 
+    private TextView tradeInfoSubTitle,tradeInfoTrader,tradeInfoAnnounce;
+    private TextView tradeInfoDeliveryInput;
     private String id;
     private Retrofit retrofit;
     private String tradeNum,postNum;
@@ -31,20 +33,21 @@ public class Activity_trade_detail_info extends AppCompatActivity {
     private TextView tradeInfoReceiver,tradeInfoReceiverPhoneNum,tradeInfoReceiverAddress,tradeInfoDeliveryCompany,tradeInfoDeliveryNum;
     private TextView tradeInfoDeliveryRequire,tradeInfoSellerInfo;
     private Activity_buy_product_delivery buyProductActivity;
+    private String readType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trade_detail_info);
-
+        variableInit();
         buyProductActivity = (Activity_buy_product_delivery) Activity_buy_product_delivery.buyProductActivity;
         if(buyProductActivity!=null){
             buyProductActivity.finish();
         }
         Intent intent = getIntent();
         tradeNum=intent.getStringExtra("tradeNum");
-        Log.e("123",tradeNum);
-        variableInit();
+        readType=intent.getStringExtra("readType");
+
 
         RetrofitService service = retrofit.create(RetrofitService.class);
         Call<PaymentInfo> call = service.getPaymentInfo(id,tradeNum);
@@ -64,8 +67,23 @@ public class Activity_trade_detail_info extends AppCompatActivity {
                     //결제금액
                     tradeInfoPayPrice.setText(response.body().getTradePrice()+"원");
                     tradeInfoPrice.setText(response.body().getTradePrice()+"원");
+
+                    //readType 에 따라서, 판매자 이름, 구매자 이름 나눠서 표기해줘야함
                     //판매자
-                    tradeInfoSellerName.setText(response.body().getTradeSeller());
+                    if(readType!=null){
+                        if(readType.equals("seller")){
+                            tradeInfoSellerName.setText(response.body().getTradeBuyer());
+                        }
+                        else{
+                            tradeInfoSellerName.setText(response.body().getTradeSeller());
+                        }
+                    }
+                    if(response.body().getTradeDeliveryStatus()!=null&&readType!=null){
+                        if(readType.equals("seller")&&response.body().getTradeDeliveryStatus().equals("배송대기")) {
+                            tradeInfoAnnounce.setText("결제완료. \n배송대기 상태입니다.\n회원정보를 확인하고 택배발송 후 운송장을 입력해주세요");
+                        }
+                    }
+
                     //결제수단
                     tradeInfoPayType.setText(response.body().getTradePayType());
 
@@ -113,6 +131,17 @@ public class Activity_trade_detail_info extends AppCompatActivity {
             }
         });
 
+        //한 화면에서, 판매 상세조회, 구매 상세조회 두개 다 해결하기 위해서, readtype 나눠서 일부 ui 변경
+        if(readType!=null){
+            if(readType.equals("seller")){
+                tradeInfoTitle.setText("판매 상세 조회");
+                tradeInfoSubTitle.setText("판매 정보");
+                tradeInfoTrader.setText("구매자");
+                tradeInfoDeliveryInput.setVisibility(View.VISIBLE);
+                tradeInfoRequest.setText("거래 취소");
+            }
+        }
+
 
         tradeInfoSellerInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,6 +180,9 @@ public class Activity_trade_detail_info extends AppCompatActivity {
         backImage=(ImageView) findViewById(R.id.trade_info_back_arrow);
         tradeInfoProductImage =(ImageView) findViewById(R.id.trade_info_image);
 
+        tradeInfoDeliveryInput=(TextView) findViewById(R.id.trade_info_delivery_info_input);
+        tradeInfoAnnounce=(TextView) findViewById(R.id.trade_info_announce_text);
+
         tradeInfoTitle=(TextView) findViewById(R.id.trade_info_title_text);
         tradeInfoRequest=(TextView) findViewById(R.id.trade_info_refund_cancel_text);
         tradeInfoProductName=(TextView) findViewById(R.id.trade_info_product_name);
@@ -169,5 +201,8 @@ public class Activity_trade_detail_info extends AppCompatActivity {
         tradeInfoReceiverPhoneNum=(TextView) findViewById(R.id.trade_info_receiver_phone_number);
         tradeInfoDeliveryCompany=(TextView) findViewById(R.id.trade_info_company_name);
         tradeInfoDeliveryNum=(TextView) findViewById(R.id.trade_info_delivery_number);
+
+        tradeInfoSubTitle=(TextView) findViewById(R.id.trade_info_sub_title);
+        tradeInfoTrader=(TextView) findViewById(R.id.trade_info_seller_or_buyer);
     }
 }

@@ -3,16 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment_sell_sold">
+    tools:context=".Fragment_buy_buying">
 
     <androidx.recyclerview.widget.RecyclerView
         android:scrollbars="vertical"
         android:scrollbarFadeDuration="0"
-        android:id="@+id/sell_sold_recyclerview"
+        android:id="@+id/buy_buying_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
     <TextView
+        android:id="@+id/buy_buying_no_result_text"
         android:textSize="20dp"
         android:textStyle="bold"
         android:textColor="@color/black"
@@ -21,5 +22,6 @@
         android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
 
 </FrameLayout>

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
+import android.webkit.ConsoleMessage;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -39,12 +40,19 @@ public class Activity_get_address extends AppCompatActivity {
 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.addJavascriptInterface(new MyJavaScriptInterface(), "Android");
+
+
         webView.setWebViewClient(new WebViewClient() {
+            //페이지를 다 load 하고 난 후에, 저 자바스크립트 함수 실행하도록
             @Override
             public void onPageFinished(WebView view, String url) {
+                Log.e("123","daum_api+등장");
                 webView.loadUrl("javascript:sample2_execDaumPostcode();");
             }
+
+
         });
+
         webView.loadUrl("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/lib/daum.html");
     }
 

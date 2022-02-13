@@ -3,10 +3,20 @@ package com.example.electronicsmarket;
 public class PaymentInfo {
     boolean isSuccess;
 
+    private String tradeBuyer;
     private String postNum;
     private String tradeNum,tradeTitle,tradePrice,tradeImageRoute,tradeType;
     private String tradeRegTime,tradeSeller,tradePayType,tradeReceiver,tradeReceiverPhoneNum;
     private String tradeAddress,tradeDeliveryStatus,tradeDeliveryRequire,tradeDeliveryCompany,tradeDeliveryNum;
+
+
+    public String getTradeBuyer() {
+        return tradeBuyer;
+    }
+
+    public void setTradeBuyer(String tradeBuyer) {
+        this.tradeBuyer = tradeBuyer;
+    }
 
     public boolean isSuccess() {
         return isSuccess;

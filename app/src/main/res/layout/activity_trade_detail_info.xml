@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.15" />
+        app:layout_constraintGuide_percent="0.18" />
 
     <ImageView
         android:id="@+id/trade_info_back_arrow"
@@ -210,7 +210,7 @@
                 app:layout_constraintTop_toTopOf="@+id/horizontal_guideline2">
 
                 <TextView
-                    android:id="@+id/textView70"
+                    android:id="@+id/trade_info_sub_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -222,7 +222,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/textView71"
+                    android:id="@+id/trade_info_seller_or_buyer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -231,7 +231,7 @@
                     android:textColor="@color/black"
                     android:textSize="20dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView70" />
+                    app:layout_constraintTop_toBottomOf="@+id/trade_info_sub_title" />
 
                 <TextView
                     android:id="@+id/textView72"
@@ -243,7 +243,7 @@
                     android:textColor="@color/black"
                     android:textSize="20dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView71" />
+                    app:layout_constraintTop_toBottomOf="@+id/trade_info_seller_or_buyer" />
 
                 <TextView
                     android:id="@+id/textView73"
@@ -286,7 +286,7 @@
                     android:textColor="@color/black"
                     android:textSize="20dp"
                     app:layout_constraintStart_toStartOf="@+id/constraint1_vertical_guideline1"
-                    app:layout_constraintTop_toBottomOf="@+id/textView70" />
+                    app:layout_constraintTop_toBottomOf="@+id/trade_info_sub_title" />
 
                 <TextView
                     android:id="@+id/trade_info_trade_reg_time"
@@ -333,7 +333,7 @@
                     android:text="프로필 보기"
                     android:textColor="@color/teal_700"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView70" />
+                    app:layout_constraintTop_toBottomOf="@+id/trade_info_sub_title" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -511,6 +511,18 @@
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@+id/constraint2_vertical_guide_line1"
                     app:layout_constraintTop_toBottomOf="@+id/trade_info_receiver_address" />
+
+                <TextView
+                    android:id="@+id/trade_info_delivery_info_input"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:text="운송장 입력"
+                    android:textColor="@color/teal_700"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View
@@ -549,7 +561,6 @@
         android:layout_height="0dp"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
-        android:layout_marginBottom="5dp"
         android:gravity="left"
         android:padding="5dp"
         android:text="결제 완료! \n판매자 택배 발송 이후의 환불요청은 판매자의 승인이 필요합니다."

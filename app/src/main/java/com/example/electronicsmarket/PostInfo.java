@@ -6,10 +6,7 @@ public class PostInfo {
 
 
     private String productNum;
-
-
-    private String postStatus;
-
+    private String postStatus,tradeNum;
 
     private String receiverName;
     private boolean isLikeList;
@@ -29,6 +26,14 @@ public class PostInfo {
 
     public String getPostStatus() {
         return postStatus;
+    }
+
+    public String getTradeNum() {
+        return tradeNum;
+    }
+
+    public void setTradeNum(String tradeNum) {
+        this.tradeNum = tradeNum;
     }
 
     public void setPostStatus(String postStatus) {

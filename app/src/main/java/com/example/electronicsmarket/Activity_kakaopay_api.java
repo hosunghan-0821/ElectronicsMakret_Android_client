@@ -65,6 +65,7 @@ public class Activity_kakaopay_api extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), data, Toast.LENGTH_LONG).show();
                 Intent intent =new Intent (Activity_kakaopay_api.this,Activity_trade_detail_info.class);
                 intent.putExtra("tradeNum",tradeNum);
+                intent.putExtra("readType","buyer");
                 startActivity(intent);
                 finish();
             }

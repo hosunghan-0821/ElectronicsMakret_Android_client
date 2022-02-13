@@ -40,7 +40,7 @@ public class Fragment_mypage extends Fragment  {
     private TextView nickname;
     private ImageView settingImage;
     private de.hdodenhof.circleimageview.CircleImageView circleImageView;
-    private FrameLayout frameLoveList,frameSellList;
+    private FrameLayout frameLoveList,frameSellList,frameBuyList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -80,6 +80,14 @@ public class Fragment_mypage extends Fragment  {
                 startActivity(intent);
             }
         });
+
+        frameBuyList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(getActivity(),Activity_buy_list.class);
+                startActivity(intent);
+            }
+        });
         return view;
     }
 
@@ -95,6 +103,7 @@ public class Fragment_mypage extends Fragment  {
 
         frameSellList=(FrameLayout)view.findViewById(R.id.mypage_frame_selllist);
         frameLoveList=(FrameLayout)view.findViewById(R.id.mypage_frame_lovelist);
+        frameBuyList=(FrameLayout)view.findViewById(R.id.mypage_frame_buylist);
 
         nickname=view.findViewById(R.id.user_nickname);
         settingImage=view.findViewById(R.id.setting_image);

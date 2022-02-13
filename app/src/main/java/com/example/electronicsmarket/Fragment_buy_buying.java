@@ -27,53 +27,52 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class Fragment_sell_selling extends Fragment {
+public class Fragment_buy_buying extends Fragment {
 
-    private RecyclerView sellingRecyclerView;
+
+    private RecyclerView buyingRecyclerView;
     private Adapter_post_all_info adapter;
     private LinearLayoutManager linearLayoutManager;
-    private ArrayList<PostInfo> sellingList;
+    private ArrayList<PostInfo> buyingList;
     private Retrofit retrofit;
     private String cursorPostNum,phasingNum;
     private boolean isFinalPhase=false,scrollCheck=true;
     private String id;
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view =inflater.inflate(R.layout.fragment_sell_selling,container,false);
+        View view = inflater.inflate(R.layout.fragment_buy_buying, container, false);
         variableInit(view);
 
         RetrofitService service = retrofit.create(RetrofitService.class);
-        Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,phasingNum,"sellingInfo",id);
+        Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,phasingNum,"buyingInfo",id);
 
         call.enqueue(new Callback<PostAllInfo>() {
             @Override
             public void onResponse(Call<PostAllInfo> call, Response<PostAllInfo> response) {
-
                 if(response.isSuccessful() &&response.body()!=null){
                     PostAllInfo postAllInfo =response.body();
                     for(int i=0;i<postAllInfo.postInfo.size();i++){
                         try{
                             postAllInfo.postInfo.get(i).setViewType(0);
-                            sellingList.add(postAllInfo.postInfo.get(i));
+                            buyingList.add(postAllInfo.postInfo.get(i));
                         }catch (Exception e){
 
                         }
                     }
 
-                    adapter.setPostList(sellingList);
+                    adapter.setPostList(buyingList);
                     adapter.notifyDataSetChanged();
-                    if(sellingList.size()!=0){
-                        cursorPostNum=sellingList.get(sellingList.size()-1).getPostNum();
+                    if(buyingList.size()!=0){
+                        cursorPostNum=buyingList.get(buyingList.size()-1).getPostNum();
                     }
+
                     if(!response.body().getProductNum().equals("5")){
                         isFinalPhase=true;
                     }
-                }
 
+                }
             }
 
             @Override
@@ -84,7 +83,7 @@ public class Fragment_sell_selling extends Fragment {
 
         //하단 터치시 페이징해서 정보 가져와서 postList에 추가
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            sellingRecyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            buyingRecyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
                 @Override
                 public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
 
@@ -97,19 +96,19 @@ public class Fragment_sell_selling extends Fragment {
 //                                postList.add(new PostInfo(1));
 //                                adapter.notifyItemInserted(postList.size()-1);
                             RetrofitService service = retrofit.create(RetrofitService.class);
-                            Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,phasingNum,"sellingInfo",id);
+                            Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,phasingNum,"buyingInfo",id);
                             call.enqueue(new Callback<PostAllInfo>() {
                                 @Override
                                 public void onResponse(Call<PostAllInfo> call, Response<PostAllInfo> response) {
 
                                     System.out.println("불러온 item 갯수 : "+response.body().getProductNum());
                                     PostAllInfo postAllInfo =response.body();
-                                    int beforePosition=sellingList.size();
+                                    int beforePosition=buyingList.size();
 
                                     for(int i=0;i<postAllInfo.postInfo.size();i++){
                                         try{
                                             postAllInfo.postInfo.get(i).setViewType(0);
-                                            sellingList.add(postAllInfo.postInfo.get(i));
+                                            buyingList.add(postAllInfo.postInfo.get(i));
                                         }catch (Exception e){
 
                                         }
@@ -117,12 +116,11 @@ public class Fragment_sell_selling extends Fragment {
 //                                        postList.remove(beforePosition-1);
 //                                        adapter.notifyItemRemoved(beforePosition-1);
 
-                                    adapter.setPostList(sellingList);
+                                    adapter.setPostList(buyingList);
                                     adapter.notifyItemRangeInserted(beforePosition,5);
-                                    if(sellingList.size()!=0){
-                                        cursorPostNum=sellingList.get(sellingList.size()-1).getPostNum();
+                                    if(buyingList.size()!=0){
+                                        cursorPostNum=buyingList.get(buyingList.size()-1).getPostNum();
                                     }
-
                                     //응답 온 데이터 갯수가 5개가 아니라면 마지막 phase.
                                     if(!response.body().getProductNum().equals("5")){
                                         isFinalPhase=true;
@@ -155,22 +153,17 @@ public class Fragment_sell_selling extends Fragment {
 
 
 
-
         return view;
     }
 
     public void variableInit(View view){
-
-
         // shared 값 가져오기
         SharedPreferences sharedPreferences=this.getActivity().getSharedPreferences("autoLogin", Context.MODE_PRIVATE);
         id=sharedPreferences.getString("userId","");
 
-
         //커서 페이징 하기위해서 사용
         cursorPostNum="0";
         phasingNum="5";
-
 
         //retrofit2 관련
         Gson gson=new GsonBuilder()
@@ -182,13 +175,13 @@ public class Fragment_sell_selling extends Fragment {
                 .build();
 
         //해당 recyclerview 관련
-        sellingRecyclerView=view.findViewById(R.id.sell_selling_recyclerview);
-        sellingList=new ArrayList<>();
+        buyingRecyclerView=view.findViewById(R.id.buy_buying_recyclerview);
+        buyingList=new ArrayList<>();
         linearLayoutManager = new LinearLayoutManager(getActivity()); //or getContext();
-        adapter=new Adapter_post_all_info(sellingList,getActivity()); //or getContext();
+        adapter=new Adapter_post_all_info(buyingList,getActivity()); //or getContext();
 
-        sellingRecyclerView.setAdapter(adapter);
-        sellingRecyclerView.setLayoutManager(linearLayoutManager);
+        buyingRecyclerView.setAdapter(adapter);
+        buyingRecyclerView.setLayoutManager(linearLayoutManager);
 
     }
 }

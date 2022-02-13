@@ -215,4 +215,15 @@
 
     </FrameLayout>
 
+    <FrameLayout
+        android:id="@+id/mypage_frame_buylist"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView11"
+        app:layout_constraintEnd_toEndOf="@+id/textView11"
+        app:layout_constraintStart_toStartOf="@+id/textView11"
+        app:layout_constraintTop_toTopOf="@+id/sell_list_image">
+
+    </FrameLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
