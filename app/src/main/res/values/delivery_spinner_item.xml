@@ -8,4 +8,13 @@
         <item>경비실</item>
         <item>우편함</item>
     </string-array>
+
+    <string-array name="company_options">
+        <item>택배사 선택</item>
+        <item>우체국택배</item>
+        <item>한진택배</item>
+        <item>CJ대한통운</item>
+        <item>CVSnet 편의점택배(GS25)</item>
+        <item>롯데택배</item>
+    </string-array>
 </resources>

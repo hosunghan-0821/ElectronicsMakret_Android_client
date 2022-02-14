@@ -1,5 +1,9 @@
 package com.example.electronicsmarket;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -9,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
@@ -22,7 +27,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Activity_trade_detail_info extends AppCompatActivity {
 
-    private TextView tradeInfoSubTitle,tradeInfoTrader,tradeInfoAnnounce;
+    private TextView tradeInfoSubTitle,tradeInfoTrader,tradeInfoAnnounce,tradeInfoDeliveryInfo;
     private TextView tradeInfoDeliveryInput;
     private String id;
     private Retrofit retrofit;
@@ -114,7 +119,8 @@ public class Activity_trade_detail_info extends AppCompatActivity {
                         tradeInfoDeliveryCompany.setText(response.body().getTradeDeliveryCompany());
                     }
                     if(response.body().getTradeDeliveryNum()!=null){
-                        tradeInfoDeliveryNum.setText(response.body().getTradeNum());
+                        Log.e("123","getTradeDeliveryNum : "+response.body().getTradeDeliveryNum());
+                        tradeInfoDeliveryNum.setText(response.body().getTradeDeliveryNum());
                     }
                     //구매일자 처리 가공해줘야함
 
@@ -140,9 +146,38 @@ public class Activity_trade_detail_info extends AppCompatActivity {
                 tradeInfoDeliveryInput.setVisibility(View.VISIBLE);
                 tradeInfoRequest.setText("거래 취소");
             }
+            else if(readType.equals("buyer")){
+                tradeInfoDeliveryInfo.setVisibility(View.VISIBLE);
+            }
         }
 
 
+        //배송조회 하는 화면으로 이동.
+        tradeInfoDeliveryInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(Activity_trade_detail_info.this,Activity_delivery_info.class);
+                intent.putExtra("tradeNum",tradeNum);
+                intent.putExtra("deliveryCompany",tradeInfoDeliveryCompany.getText().toString());
+                intent.putExtra("deliveryNum",tradeInfoDeliveryNum.getText().toString());
+                intent.putExtra("deliveryReceiver",tradeInfoReceiver.getText().toString());
+                startActivity(intent);
+            }
+        });
+
+
+        //운송장 입력하는 화면으로 이동.
+        tradeInfoDeliveryInput.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(Activity_trade_detail_info.this,Activity_delivery_num_input.class);
+                deliveryNumLauncher.launch(intent);
+
+            }
+        });
+
+        //판매자 상세정보 확인하기 버튼
         tradeInfoSellerInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,6 +188,7 @@ public class Activity_trade_detail_info extends AppCompatActivity {
             }
         });
 
+        //뒤로가기 버튼
         backImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -162,6 +198,54 @@ public class Activity_trade_detail_info extends AppCompatActivity {
 
 
     }
+
+
+    private ActivityResultLauncher<Intent> deliveryNumLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+
+                        if(result.getResultCode()==RESULT_OK){
+                            //DB에 운송장 번호 및 운송장 저장, 화면에 표시.
+
+                            String deliveryCompany=result.getData().getStringExtra("deliveryCompany");
+                            String deliveryNum=result.getData().getStringExtra("deliveryNum");
+
+                            Log.e("123",result.getData().getStringExtra("deliveryCompany"));
+                            Log.e("123",result.getData().getStringExtra("deliveryNum"));
+                            tradeInfoDeliveryCompany.setText(deliveryCompany);
+                            tradeInfoDeliveryNum.setText(deliveryNum);
+
+                            RetrofitService service = retrofit.create(RetrofitService.class);
+                            Call<PaymentInfo> call =service.setDeliveryInfo(tradeNum,deliveryNum,deliveryCompany);
+                            call.enqueue(new Callback<PaymentInfo>() {
+                                @Override
+                                public void onResponse(Call<PaymentInfo> call, Response<PaymentInfo> response) {
+
+                                    if(response.isSuccessful() && response.body()!=null){
+                                        if(response.body().isSuccess){
+                                            Toast.makeText(Activity_trade_detail_info.this, "운송장 등록 성공!", Toast.LENGTH_SHORT).show();
+                                            tradeInfoAnnounce.setText("결제완료\n배송중입니다.\n구매자의 구매확정 이후 대금이 지급됩니다.");
+                                        }
+                                        else{
+                                            Toast.makeText(Activity_trade_detail_info.this, "운송장 등록 실패!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<PaymentInfo> call, Throwable t) {
+
+                                }
+                            });
+
+                        }
+
+                    }
+                }
+        );
     public void variableInit(){
 
         // shared 값 가져오기
@@ -204,5 +288,9 @@ public class Activity_trade_detail_info extends AppCompatActivity {
 
         tradeInfoSubTitle=(TextView) findViewById(R.id.trade_info_sub_title);
         tradeInfoTrader=(TextView) findViewById(R.id.trade_info_seller_or_buyer);
+
+        tradeInfoDeliveryInfo=(TextView) findViewById(R.id.trade_info_delivery_info);
+
+
     }
 }

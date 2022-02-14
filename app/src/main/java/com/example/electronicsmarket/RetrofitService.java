@@ -114,11 +114,13 @@ public interface RetrofitService {
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/clientInfo.php")
     Call<PostAllInfo> getClientInfo(@Field("email")String email,@Field("state")String state);
 
+
     @Multipart
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/postWrite.php")
     Call<MemberSignup> sendMultiImage(
             @Part ArrayList<MultipartBody.Part> files, @PartMap HashMap<String, RequestBody> params
             );
+
 
     @Multipart
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/postUpdate.php")
@@ -126,13 +128,25 @@ public interface RetrofitService {
             @Part ArrayList<MultipartBody.Part> files, @PartMap HashMap<String, RequestBody> params
     );
 
+
+
+
     @Multipart
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/paymentApi/paymentSuccess.php")
     Call<PaymentInfo> sendPaymentInfo(@PartMap HashMap<String,RequestBody> params);
 
+
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/paymentApi/getPaymentInfo.php")
     Call<PaymentInfo> getPaymentInfo(@Field("email")String email, @Field("tradeNum")String tradeNum);
+
+    @FormUrlEncoded
+    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/paymentApi/setDeliveryInfo.php")
+    Call<PaymentInfo> setDeliveryInfo(@Field("tradeNum")String tradeNum,@Field("deliveryNum")String deliveryNum,@Field("deliveryCompany")String deliveryCompany);
+
+    @FormUrlEncoded
+    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/lib/crawling.php")
+    Call<DeliveryInfo> getDeliveryInfo(@Field("deliveryNum")String deliveryNum,@Field("deliveryCompany")String deliveryCompany);
 
 
     //여기서부터 다른 restapi 사용하기 위한 것들
@@ -142,6 +156,7 @@ public interface RetrofitService {
             @Header("Authorization")String Key,
             @Query("query") String query
     );
+
 
     @FormUrlEncoded
     @Headers({"content-type:application/x-www-form-urlencoded;charset=utf-8"})
@@ -159,6 +174,7 @@ public interface RetrofitService {
             @Field("cancel_url") String cancel_url,
             @Field("fail_url") String fail_url
             );
+
 
     @FormUrlEncoded
     @Headers({"content-type:application/x-www-form-urlencoded"})

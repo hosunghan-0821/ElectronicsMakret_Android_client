@@ -164,14 +164,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
                     android:text="상품제목"
                     android:textColor="@color/black"
                     android:textSize="20dp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/trade_info_image"
-                    app:layout_constraintTop_toBottomOf="@+id/textView66" />
+                    app:layout_constraintTop_toTopOf="@+id/trade_info_image" />
 
                 <TextView
                     android:id="@+id/trade_info_price"
@@ -520,6 +519,19 @@
                     android:layout_marginEnd="10dp"
                     android:text="운송장 입력"
                     android:textColor="@color/teal_700"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/trade_info_delivery_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:text="배송 조회"
+                    android:textColor="@color/teal_700"
+                    android:textSize="20dp"
                     android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

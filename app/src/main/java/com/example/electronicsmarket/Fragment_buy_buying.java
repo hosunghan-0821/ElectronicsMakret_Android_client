@@ -1,6 +1,7 @@
 package com.example.electronicsmarket;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -179,6 +180,16 @@ public class Fragment_buy_buying extends Fragment {
         buyingList=new ArrayList<>();
         linearLayoutManager = new LinearLayoutManager(getActivity()); //or getContext();
         adapter=new Adapter_post_all_info(buyingList,getActivity()); //or getContext();
+
+        adapter.setItemClickListener(new Adapter_post_all_info.Interface_info_item_click() {
+            @Override
+            public void onItemClick(int position) {
+                Intent intent = new Intent(getActivity(),Activity_trade_detail_info.class);
+                intent.putExtra("tradeNum",buyingList.get(position).getTradeNum());
+                intent.putExtra("readType","buyer");
+                startActivity(intent);
+            }
+        });
 
         buyingRecyclerView.setAdapter(adapter);
         buyingRecyclerView.setLayoutManager(linearLayoutManager);

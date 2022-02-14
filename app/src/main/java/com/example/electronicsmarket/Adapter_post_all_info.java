@@ -136,6 +136,12 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
                 ((AllInfoViewHolder) holder).postSellStatus.setText("판매완료 (배송대기)");
                 ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.VISIBLE);
             }
+            else if(postList.get(position).getPostStatus().equals("DS")){
+                ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.GONE);
+                ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.GONE);
+                ((AllInfoViewHolder) holder).postSellStatus.setText("판매완료 (배송중)");
+                ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.VISIBLE);
+            }
             else{
                 if(postList.get(position).getPostSellType().equals("직거래")){
                     ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.VISIBLE);
