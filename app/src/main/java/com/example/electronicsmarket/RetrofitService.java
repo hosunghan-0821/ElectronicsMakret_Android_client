@@ -114,7 +114,6 @@ public interface RetrofitService {
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/clientInfo.php")
     Call<PostAllInfo> getClientInfo(@Field("email")String email,@Field("state")String state);
 
-
     @Multipart
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/postWrite.php")
     Call<MemberSignup> sendMultiImage(
@@ -146,7 +145,19 @@ public interface RetrofitService {
 
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/lib/crawling.php")
-    Call<DeliveryInfo> getDeliveryInfo(@Field("deliveryNum")String deliveryNum,@Field("deliveryCompany")String deliveryCompany);
+    Call<DeliveryInfo> getDeliveryInfo(@Field("deliveryNum")String deliveryNum,@Field("deliveryCompany")String deliveryCompany,@Field("tradeNum")String tradeNum);
+
+    @FormUrlEncoded
+    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/paymentApi/setPaymentConfirm.php")
+    Call<PostInfo> confirmPayment(@Field("postNum")String postNum);
+
+    @Multipart
+    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/paymentApi/setReviewInfo.php")
+    Call<PostInfo> sendReviewInfo(@PartMap HashMap<String,RequestBody> params);
+
+    @FormUrlEncoded
+    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/getReviewInfo.php")
+    Call<ReviewAllInfo> getReviewInfo(@Field("finalPostNum")String finalPostNum,@Field("phasingNum")String phasingNum,@Field("email")String email);
 
 
     //여기서부터 다른 restapi 사용하기 위한 것들

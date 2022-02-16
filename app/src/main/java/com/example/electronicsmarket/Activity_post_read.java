@@ -475,19 +475,21 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
 
                 //게시글 상태확인해서 판매완료인지 확인해서 화면 띄어줘야함
                 if(info.getPostStatus()!=null){
-                    if(info.getPostStatus().equals("DR")){
+                    if(!info.getPostStatus().equals("Y")){
                         //배송대기,배송중,배송완료 -> 모두 판매완료로 표시
                         postReadBuyProductDelivery.setVisibility(View.GONE);
                         adapter.setStatus(1);
                         postReadStatus.setVisibility(View.VISIBLE);
                         postReadStatusText.setText("판매완료");
                     }
+
                     else{
                         //판매중 ->
                         postReadStatus.setVisibility(View.INVISIBLE);
                         adapter.setStatus(0);
                         postReadStatusText.setText("판매중");
                     }
+
                 }
 
                 adapter.setImageRoute(info.getImageRoute());

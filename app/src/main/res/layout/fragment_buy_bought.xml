@@ -6,4 +6,21 @@
     tools:context=".Fragment_buy_bought">
 
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:scrollbars="vertical"
+        android:scrollbarFadeDuration="0"
+        android:id="@+id/buy_bought_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <TextView
+        android:id="@+id/buy_bought_no_result_text"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:text="해당하는 내용 없습니다."
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </FrameLayout>

@@ -5,9 +5,11 @@ import java.util.ArrayList;
 public class PostInfo {
 
 
+    private String buyRegTime;
+    private String tradeConfirmTime;
     private String productNum;
     private String postStatus,tradeNum;
-
+    private boolean isSuccess;
     private String receiverName;
     private boolean isLikeList;
     private String addressDetail,deliveryRequire;
@@ -19,6 +21,30 @@ public class PostInfo {
     private int viewType;
     private boolean clientIsLike;
     private String clientNickname,clientPhoneNumber;
+
+    public boolean isSuccess() {
+        return isSuccess;
+    }
+
+    public String getTradeConfirmTime() {
+        return tradeConfirmTime;
+    }
+
+    public String getBuyRegTime() {
+        return buyRegTime;
+    }
+
+    public void setBuyRegTime(String buyRegTime) {
+        this.buyRegTime = buyRegTime;
+    }
+
+    public void setTradeConfirmTime(String tradeConfirmTime) {
+        this.tradeConfirmTime = tradeConfirmTime;
+    }
+
+    public void setSuccess(boolean success) {
+        isSuccess = success;
+    }
 
     public String getAddressDetail() {
         return addressDetail;

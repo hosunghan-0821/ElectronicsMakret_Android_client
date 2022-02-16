@@ -9,8 +9,8 @@
     >
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/circleImageView2"
-        android:layout_width="50dp"
+        android:id="@+id/post_seller_review_writer_profile"
+        android:layout_width="70dp"
         android:layout_height="70dp"
 
         android:layout_marginStart="10dp"
@@ -28,25 +28,26 @@
         android:text="posung 님"
         android:textColor="@color/black"
         android:textSize="20dp"
-        app:layout_constraintStart_toEndOf="@+id/circleImageView2"
-        app:layout_constraintTop_toTopOf="@+id/circleImageView2" />
+        app:layout_constraintStart_toEndOf="@+id/post_seller_review_writer_profile"
+        app:layout_constraintTop_toTopOf="@+id/post_seller_review_writer_profile" />
 
     <RatingBar
-        android:id="@+id/self_rating"
+        android:id="@+id/post_seller_review_rating"
         style="?android:attr/ratingBarStyleSmall"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
         android:isIndicator="true"
         android:numStars="5"
         android:rating="5"
         android:stepSize="0.5"
-        app:layout_constraintBottom_toBottomOf="@+id/post_seller_review_nickname"
-        app:layout_constraintStart_toEndOf="@+id/post_seller_review_nickname"
+        app:layout_constraintStart_toEndOf="@+id/post_seller_review_writer_profile"
+        app:layout_constraintTop_toBottomOf="@+id/post_seller_review_nickname"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <TextView
-        android:id="@+id/textView39"
+        android:id="@+id/post_seller_review_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -56,15 +57,31 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView44"
+        android:id="@+id/post_seller_review_contents"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
         android:text="배송도 좋고, 물건도 좋고 잘 쓰겠습니다."
         android:textColor="@color/black"
-        android:textSize="15dp"
+        android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/circleImageView2"
-        app:layout_constraintTop_toBottomOf="@+id/post_seller_review_nickname" />
+        app:layout_constraintStart_toEndOf="@+id/post_seller_review_writer_profile"
+        app:layout_constraintTop_toBottomOf="@+id/post_seller_review_writer_profile" />
+
+    <TextView
+        android:id="@+id/post_seller_review_buy_product"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="10dp"
+        android:background="#dcdcdc"
+        android:text="구매상품 : "
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/post_seller_review_writer_profile"
+        app:layout_constraintTop_toBottomOf="@+id/post_seller_review_contents" />
 </androidx.constraintlayout.widget.ConstraintLayout>

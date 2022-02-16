@@ -38,7 +38,7 @@ public class Fragment_sell_sold extends Fragment {
     private String cursorPostNum,phasingNum;
     private String id;
     private Retrofit retrofit;
-    private boolean isFinalPhase=false,scrollCheck=true;
+    private boolean isFinalPhase=false,scrollCheck=true,onCreateViewIsSet=false;
 
 
     @Override
@@ -68,13 +68,14 @@ public class Fragment_sell_sold extends Fragment {
                     adapter.setPostList(soldList);
                     adapter.notifyDataSetChanged();
                     if(soldList.size()!=0){
-                        cursorPostNum=soldList.get(soldList.size()-1).getPostNum();
+                        cursorPostNum=soldList.get(soldList.size()-1).getBuyRegTime();
                     }
 
 
                     if(!response.body().getProductNum().equals("5")){
                         isFinalPhase=true;
                     }
+                    onCreateViewIsSet=true;
 
                 }
 
@@ -123,7 +124,10 @@ public class Fragment_sell_sold extends Fragment {
 
                                     adapter.setPostList(soldList);
                                     adapter.notifyItemRangeInserted(beforePosition,5);
-                                    cursorPostNum=soldList.get(soldList.size()-1).getPostNum();
+                                    if(soldList.size()!=0){
+                                        cursorPostNum=soldList.get(soldList.size()-1).getBuyRegTime();
+                                    }
+
                                     //응답 온 데이터 갯수가 5개가 아니라면 마지막 phase.
                                     if(!response.body().getProductNum().equals("5")){
                                         isFinalPhase=true;
@@ -194,5 +198,35 @@ public class Fragment_sell_sold extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if(onCreateViewIsSet){
+            RetrofitService service = retrofit.create(RetrofitService.class);
+            //Log.e("123","onResume CursorPostNum"+cursorPostNum);
+            Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,"update","soldInfo",id);
+            call.enqueue(new Callback<PostAllInfo>() {
+                @Override
+                public void onResponse(Call<PostAllInfo> call, Response<PostAllInfo> response) {
+
+                    System.out.println("getProductNum : "+response.body().getProductNum());
+                    soldList.clear();
+                    PostAllInfo postAllInfo =response.body();
+                    for(int i=0;i<postAllInfo.postInfo.size();i++){
+                        try{
+                            postAllInfo.postInfo.get(i).setViewType(0);
+                            soldList.add(postAllInfo.postInfo.get(i));
+                        }catch (Exception e){
+
+                        }
+                    }
+                    adapter.setPostList(soldList);
+                    adapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onFailure(Call<PostAllInfo> call, Throwable t) {
+                    Log.e("123", t.getMessage());
+
+                }
+            });
+        }
     }
 }

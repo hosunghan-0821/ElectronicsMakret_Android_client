@@ -24,10 +24,18 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
     private ArrayList<PostInfo> postList;
     private Context context;
     private Interface_like_list_cancel cancelListener;
+    private Interface_buy_confirm_click confirmListener;
+    private String status;
 
     public Adapter_post_all_info(ArrayList<PostInfo> postList,Context context) {
         this.postList = postList;
         this.context=context;
+    }
+    public void setStatus(String status){
+        this.status=status;
+    }
+    public void setConfirmListener(Interface_buy_confirm_click confirmListener){
+        this.confirmListener=confirmListener;
     }
     public void setPostList(ArrayList<PostInfo> postList){
         this.postList=postList;
@@ -135,14 +143,39 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
                 ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.GONE);
                 ((AllInfoViewHolder) holder).postSellStatus.setText("판매완료 (배송대기)");
                 ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.VISIBLE);
+                ((AllInfoViewHolder) holder).postBuyConfirm.setVisibility(View.GONE);
             }
             else if(postList.get(position).getPostStatus().equals("DS")){
                 ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.GONE);
                 ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.GONE);
                 ((AllInfoViewHolder) holder).postSellStatus.setText("판매완료 (배송중)");
                 ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.VISIBLE);
+                ((AllInfoViewHolder) holder).postBuyConfirm.setVisibility(View.GONE);
+            }
+            else if(postList.get(position).getPostStatus().equals("DF")){
+                ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.GONE);
+                ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.GONE);
+                ((AllInfoViewHolder) holder).postSellStatus.setText("판매완료 (배송완료)");
+                ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.VISIBLE);
+                if(status!=null){
+                    if(status.equals("buy")){
+                        ((AllInfoViewHolder) holder).postBuyConfirm.setVisibility(View.VISIBLE);
+                    }
+                }
+                else{
+                    ((AllInfoViewHolder) holder).postBuyConfirm.setVisibility(View.GONE);
+                }
+
+            }
+            else if(postList.get(position).getPostStatus().equals("S")){
+                ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.GONE);
+                ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.GONE);
+                ((AllInfoViewHolder) holder).postSellStatus.setText("판매완료 (구매확정)");
+                ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.VISIBLE);
+                ((AllInfoViewHolder) holder).postBuyConfirm.setVisibility(View.GONE);
             }
             else{
+                ((AllInfoViewHolder) holder).postBuyConfirm.setVisibility(View.GONE);
                 if(postList.get(position).getPostSellType().equals("직거래")){
                     ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.VISIBLE);
                     ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.GONE);
@@ -199,13 +232,14 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
 
         protected ImageView imageView,postImageLocation,cancelImage;
         protected TextView  postLocationName,postTitle,postPrice,postSellType1,postSellType2,postTime,postView,postLike;
-        protected TextView postSellStatus;
+        protected TextView postSellStatus,postBuyConfirm;
 
 
         public AllInfoViewHolder(@NonNull View itemView) {
 
             super(itemView);
 
+            postBuyConfirm=itemView.findViewById(R.id.post_all_info_buy_confirm);
             cancelImage=itemView.findViewById(R.id.post_all_cancel_image);
             postImageLocation=itemView.findViewById(R.id.post_all_location_image);
             postLocationName=itemView.findViewById(R.id.post_all_location);
@@ -231,6 +265,16 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
                 }
             });
 
+            postBuyConfirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position=getAdapterPosition();
+                    if(confirmListener!=null){
+                        confirmListener.onConfirmClick(position);
+                    }
+                }
+            });
+
             cancelImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -250,6 +294,9 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
     }
     public interface Interface_like_list_cancel{
         void onItemCancel(int position);
+    }
+    public interface Interface_buy_confirm_click{
+        void onConfirmClick(int position);
     }
 
 

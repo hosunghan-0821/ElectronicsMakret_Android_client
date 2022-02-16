@@ -35,7 +35,7 @@ public class Fragment_sell_selling extends Fragment {
     private ArrayList<PostInfo> sellingList;
     private Retrofit retrofit;
     private String cursorPostNum,phasingNum;
-    private boolean isFinalPhase=false,scrollCheck=true;
+    private boolean isFinalPhase=false,scrollCheck=true,onCreateViewIsSet=false;
     private String id;
 
 
@@ -72,6 +72,7 @@ public class Fragment_sell_selling extends Fragment {
                     if(!response.body().getProductNum().equals("5")){
                         isFinalPhase=true;
                     }
+                    onCreateViewIsSet=true;
                 }
 
             }
@@ -157,6 +158,41 @@ public class Fragment_sell_selling extends Fragment {
 
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(onCreateViewIsSet){
+            RetrofitService service = retrofit.create(RetrofitService.class);
+            //Log.e("123","onResume CursorPostNum"+cursorPostNum);
+            Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,"update","sellingInfo",id);
+            call.enqueue(new Callback<PostAllInfo>() {
+                @Override
+                public void onResponse(Call<PostAllInfo> call, Response<PostAllInfo> response) {
+
+                    System.out.println("getProductNum : "+response.body().getProductNum());
+                    sellingList.clear();
+                    PostAllInfo postAllInfo =response.body();
+                    for(int i=0;i<postAllInfo.postInfo.size();i++){
+                        try{
+                            postAllInfo.postInfo.get(i).setViewType(0);
+                            sellingList.add(postAllInfo.postInfo.get(i));
+                        }catch (Exception e){
+
+                        }
+                    }
+                    adapter.setPostList(sellingList);
+                    adapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onFailure(Call<PostAllInfo> call, Throwable t) {
+                    Log.e("123", t.getMessage());
+
+                }
+            });
+        }
     }
 
     public void variableInit(View view){

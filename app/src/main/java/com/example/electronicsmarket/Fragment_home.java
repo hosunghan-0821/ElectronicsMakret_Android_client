@@ -301,7 +301,6 @@ public class Fragment_home extends Fragment  {
 
                 }
             });
-
         }
 
     }

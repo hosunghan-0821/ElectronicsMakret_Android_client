@@ -22,6 +22,12 @@
         android:theme="@style/Theme.ElectronicsMarket"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Activity_writer_review_collect"
+            android:exported="false" />
+        <activity
+            android:name=".Activity_review_write"
+            android:exported="false" />
+        <activity
             android:name=".Activity_delivery_info"
             android:exported="false" />
         <activity

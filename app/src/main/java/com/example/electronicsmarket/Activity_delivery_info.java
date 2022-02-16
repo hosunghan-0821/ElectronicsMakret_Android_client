@@ -29,7 +29,7 @@ public class Activity_delivery_info extends AppCompatActivity {
     private LinearLayoutManager linearLayoutManager;
     private DeliveryInfo deliveryInfo;
     private Retrofit retrofit;
-    private String deliveryCompany,deliveryNum,deliveryReceiver;
+    private String deliveryCompany,deliveryNum,deliveryReceiver,tradeNum;
     private Adapter_delivery_info adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +41,10 @@ public class Activity_delivery_info extends AppCompatActivity {
         deliveryCompany=intent.getStringExtra("deliveryCompany");
         deliveryNum=intent.getStringExtra("deliveryNum");
         deliveryReceiver=intent.getStringExtra("deliveryReceiver");
+        tradeNum=intent.getStringExtra("tradeNum");
 
         RetrofitService service = retrofit.create(RetrofitService.class);
-        Call<DeliveryInfo> call = service.getDeliveryInfo(deliveryNum,deliveryCompany);
+        Call<DeliveryInfo> call = service.getDeliveryInfo(deliveryNum,deliveryCompany,tradeNum);
 
         call.enqueue(new Callback<DeliveryInfo>() {
             @Override
