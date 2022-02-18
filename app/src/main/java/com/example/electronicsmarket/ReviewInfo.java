@@ -13,6 +13,7 @@ public class ReviewInfo {
         return reviewNo;
     }
 
+
     public void setReviewNo(String reviewNo) {
         this.reviewNo = reviewNo;
     }

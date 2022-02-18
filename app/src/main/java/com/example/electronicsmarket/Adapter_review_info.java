@@ -22,7 +22,11 @@ public class Adapter_review_info extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private ArrayList<ReviewInfo> reviewList;
     private Context context;
+    private Interface_review_item_click listener;
 
+    public void setListener(Interface_review_item_click listener){
+        this.listener=listener;
+    }
     public Adapter_review_info(ArrayList<ReviewInfo> reviewList, Context context) {
         this.reviewList = reviewList;
         this.context = context;
@@ -128,6 +132,7 @@ public class Adapter_review_info extends RecyclerView.Adapter<RecyclerView.ViewH
         public ReviewInfoViewHolder(@NonNull View itemView) {
             super(itemView);
 
+
             reviewWriter=itemView.findViewById(R.id.post_seller_review_nickname);
             reviewContents=itemView.findViewById(R.id.post_seller_review_contents);
             reviewProduct=itemView.findViewById(R.id.post_seller_review_buy_product);
@@ -135,6 +140,45 @@ public class Adapter_review_info extends RecyclerView.Adapter<RecyclerView.ViewH
 
             profileImage=itemView.findViewById(R.id.post_seller_review_writer_profile);
             reviewRating=itemView.findViewById(R.id.post_seller_review_rating);
+
+            reviewWriter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    int position= getAdapterPosition();
+
+                    if(listener!=null){
+                        listener.onUserInfoClick(position);
+                    }
+
+                }
+            });
+
+            profileImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if(listener!=null){
+                        listener.onUserInfoClick(position);
+                    }
+                }
+            });
+
+            reviewProduct.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position= getAdapterPosition();
+                    if(listener!=null){
+                        listener.onReviewProductClick(position);
+                    }
+                }
+            });
+
         }
+    }
+
+    public interface Interface_review_item_click{
+        void onReviewProductClick(int position);
+        void onUserInfoClick(int position);
     }
 }

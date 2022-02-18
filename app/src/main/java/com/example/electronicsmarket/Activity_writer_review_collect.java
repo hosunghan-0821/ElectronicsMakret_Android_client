@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -34,8 +35,9 @@ public class Activity_writer_review_collect extends AppCompatActivity {
     private String id;
     private String cursorPostNum, phasingNum;
     private String userId;
+    private ImageView backImage;
     private boolean isFinalPhase = false, onCreateViewIsSet = false, scrollCheck = true;
-
+    private String nickname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +46,14 @@ public class Activity_writer_review_collect extends AppCompatActivity {
         variableInit();
         Intent intent = getIntent();
         userId = intent.getStringExtra("email");
-
+        nickname=intent.getStringExtra("nickname");
         RetrofitService service = retrofit.create(RetrofitService.class);
-        Call<ReviewAllInfo> call = service.getReviewInfo(cursorPostNum, phasingNum, userId);
+        Call<ReviewAllInfo> call = service.getReviewInfo(cursorPostNum, phasingNum, userId,nickname);
         call.enqueue(new Callback<ReviewAllInfo>() {
             @Override
             public void onResponse(Call<ReviewAllInfo> call, Response<ReviewAllInfo> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     ReviewAllInfo reviewAllInfo = response.body();
-//                    Log.e("123",response.body().getReviewInfo().get(0).getReviewContents());
 
                     for (int i = 0; i < reviewAllInfo.getReviewInfo().size(); i++) {
                         try {
@@ -92,7 +93,7 @@ public class Activity_writer_review_collect extends AppCompatActivity {
 
                         if (!isFinalPhase) {
                             RetrofitService service = retrofit.create(RetrofitService.class);
-                            Call<ReviewAllInfo> call = service.getReviewInfo(cursorPostNum, phasingNum, userId);
+                            Call<ReviewAllInfo> call = service.getReviewInfo(cursorPostNum, phasingNum, userId,null);
                             call.enqueue(new Callback<ReviewAllInfo>() {
                                 @Override
                                 public void onResponse(Call<ReviewAllInfo> call, Response<ReviewAllInfo> response) {
@@ -131,9 +132,38 @@ public class Activity_writer_review_collect extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "버전이 낮아서 스크롤링 페이징 안됨;", Toast.LENGTH_SHORT).show();
         }
 
+
+
+
+        adapter.setListener(new Adapter_review_info.Interface_review_item_click() {
+            @Override
+            public void onReviewProductClick(int position) {
+                Intent intent =new Intent(Activity_writer_review_collect.this,Activity_post_read.class);
+                intent.putExtra("postNum",reviewList.get(position).getPostNum());
+                startActivity(intent);
+            }
+
+            @Override
+            public void onUserInfoClick(int position) {
+                Intent intent = new Intent(Activity_writer_review_collect.this,Activity_seller_info.class);
+                intent.putExtra("postNum",reviewList.get(position).getPostNum());
+                intent.putExtra("nickname",reviewList.get(position).getReviewWriter());
+                startActivity(intent);
+            }
+        });
     }
 
     public void variableInit() {
+        //기본 xml
+
+        backImage=findViewById(R.id.writer_review_collect_back_arrow);
+        backImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         //거래관련
         cursorPostNum = "0";
         phasingNum = "5";

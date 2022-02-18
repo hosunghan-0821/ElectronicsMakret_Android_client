@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +38,7 @@ public class Fragment_sell_selling extends Fragment {
     private String cursorPostNum,phasingNum;
     private boolean isFinalPhase=false,scrollCheck=true,onCreateViewIsSet=false;
     private String id;
+    private SwipeRefreshLayout refreshLayout;
 
 
 
@@ -137,15 +139,7 @@ public class Fragment_sell_selling extends Fragment {
                                 }
                             });
                         }
-
-
                     }
-//                    else if(!v.canScrollVertically(-1)){
-//                        //Toast.makeText(getActivity(), "스크롤의 최상단입니다.", Toast.LENGTH_SHORT).show();
-//                    }
-
-
-
                 }
             });
         }
@@ -153,10 +147,42 @@ public class Fragment_sell_selling extends Fragment {
             Toast.makeText(getActivity(), "버전이 낮아서 스크롤링 페이징 안됨;", Toast.LENGTH_SHORT).show();
         }
 
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
 
+                RetrofitService service = retrofit.create(RetrofitService.class);
+                //Log.e("123","onRefresh CursorPostNum"+cursorPostNum);
+                Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,"update","sellingInfo",id);
+                call.enqueue(new Callback<PostAllInfo>() {
+                    @Override
+                    public void onResponse(Call<PostAllInfo> call, Response<PostAllInfo> response) {
 
+                        System.out.println("getProductNum : "+response.body().getProductNum());
+                        sellingList.clear();
+                        PostAllInfo postAllInfo =response.body();
+                        for(int i=0;i<postAllInfo.postInfo.size();i++){
+                            try{
+                                postAllInfo.postInfo.get(i).setViewType(0);
+                                sellingList.add(postAllInfo.postInfo.get(i));
+                            }catch (Exception e){
 
+                            }
+                        }
+                        adapter.setPostList(sellingList);
+                        adapter.notifyDataSetChanged();
+                        //새로고침 완료 돌아가는거 멈추는거
+                        refreshLayout.setRefreshing(false);
+                    }
 
+                    @Override
+                    public void onFailure(Call<PostAllInfo> call, Throwable t) {
+                        Log.e("123", t.getMessage());
+
+                    }
+                });
+            }
+        });
         return view;
     }
 
@@ -197,6 +223,8 @@ public class Fragment_sell_selling extends Fragment {
 
     public void variableInit(View view){
 
+        //
+        refreshLayout=view.findViewById(R.id.sell_selling_refresh_layout);
 
         // shared 값 가져오기
         SharedPreferences sharedPreferences=this.getActivity().getSharedPreferences("autoLogin", Context.MODE_PRIVATE);

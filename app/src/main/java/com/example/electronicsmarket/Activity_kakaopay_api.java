@@ -132,11 +132,13 @@ public class Activity_kakaopay_api extends AppCompatActivity {
 
                 if (response.isSuccessful() && response.body() != null) {
                     Log.e("123", "통신성공");
+
                     String url = response.body().getRedirectUrl();
                     String tid = response.body().getTid();
                     webView.loadUrl(url);
                     tidPin = tid;
                     appURL = response.body().getAppUrl();
+                    Log.e("123","tid : "+tidPin);
                 } else {
 
 
@@ -237,7 +239,6 @@ public class Activity_kakaopay_api extends AppCompatActivity {
                         if (response.isSuccessful() && response.body() != null) {
                             Log.e("123", "최종결제 통신성공");
 
-
                             Intent intent = getIntent();
                             //기존즈소지 설정
                             if(intent.getStringExtra("setStandardAddress")!=null){
@@ -251,7 +252,9 @@ public class Activity_kakaopay_api extends AppCompatActivity {
                             RequestBody tradeTypeBody = RequestBody.create(MediaType.parse("text/plain"), "택배거래");
                             RequestBody buyerId = RequestBody.create(MediaType.parse("text/plain"), intent.getStringExtra("buyerId"));
                             RequestBody buyerName = RequestBody.create(MediaType.parse("text/plain"), intent.getStringExtra("buyerName"));
+                            RequestBody tidBody =RequestBody.create(MediaType.parse("text/plain"), tidPin);
 
+                            requestMap.put("tid",tidBody);
                             requestMap.put("buyerName", buyerName);
                             requestMap.put("postNum", postNumBody);
                             requestMap.put("payType", payTypeBody);

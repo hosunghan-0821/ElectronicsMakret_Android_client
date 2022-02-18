@@ -156,8 +156,25 @@ public interface RetrofitService {
     Call<PostInfo> sendReviewInfo(@PartMap HashMap<String,RequestBody> params);
 
     @FormUrlEncoded
-    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/getReviewInfo.php")
-    Call<ReviewAllInfo> getReviewInfo(@Field("finalPostNum")String finalPostNum,@Field("phasingNum")String phasingNum,@Field("email")String email);
+    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/paymentApi/getReviewAllInfo.php")
+    Call<ReviewAllInfo> getReviewInfo(@Field("finalPostNum")String finalPostNum,@Field("phasingNum")String phasingNum,@Field("email")String email,@Field("nickname")String nickname);
+
+
+    @FormUrlEncoded
+    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/paymentApi/getReviewInfo.php")
+    Call<ReviewInfo> getReviewOneInfo(@Field("postNum") String postNum);
+
+    @Multipart
+    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/paymentApi/updateReviewInfo.php")
+    Call<PostInfo> updateReviewInfo(@PartMap HashMap<String,RequestBody> params);
+
+    @FormUrlEncoded
+    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/paymentApi/deleteReviewInfo.php")
+    Call<PostInfo> deleteReviewInfo(@Field("postNum") String postNum);
+
+    @FormUrlEncoded
+    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/paymentApi/productRefund.php")
+    Call<RefundInfo> productRefund (@Field("tradeNum") String tradeNum,@Field("email")String id,@Field("reason") String reason,@Field("deliveryStatus") String status);
 
 
     //여기서부터 다른 restapi 사용하기 위한 것들
@@ -166,6 +183,17 @@ public interface RetrofitService {
 
             @Header("Authorization")String Key,
             @Query("query") String query
+    );
+
+    @FormUrlEncoded
+    @Headers({"content-type:application/x-www-form-urlencoded"})
+    @POST("https://kapi.kakao.com/v1/payment/cancel")
+    Call<KaKaoPayResult> sendKaKaoPayCancelRequest(
+            @Header("Authorization") String Key ,
+            @Field("cid") String cid,
+            @Field("tid") String tid,
+            @Field("cancel_amount") String cancel_amount,
+            @Field("cancel_tax_free_amount") String cancel_tax_free_amount
     );
 
 
@@ -199,4 +227,8 @@ public interface RetrofitService {
             @Field("pg_token") String pg_token,
             @Field("tid") String tid
     );
+
+    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/lib/example.php")
+    Call<rExample> getJson ();
+
 }

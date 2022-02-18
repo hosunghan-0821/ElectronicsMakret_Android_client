@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,7 +32,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Fragment_buy_bought extends Fragment {
 
 
-
     private ArrayList<PostInfo> boughtList;
     private LinearLayoutManager linearLayoutManager;
     private Adapter_post_all_info adapter;
@@ -40,12 +40,13 @@ public class Fragment_buy_bought extends Fragment {
     private String cursorPostNum, phasingNum;
     private String id;
     private boolean isFinalPhase = false, scrollCheck = true, onCreateViewIsSet = false;
+    private SwipeRefreshLayout refreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view=inflater.inflate(R.layout.fragment_buy_bought,container,false);
+        View view = inflater.inflate(R.layout.fragment_buy_bought, container, false);
         variableInit(view);
 
         RetrofitService service = retrofit.create(RetrofitService.class);
@@ -60,7 +61,7 @@ public class Fragment_buy_bought extends Fragment {
                     for (int i = 0; i < postAllInfo.postInfo.size(); i++) {
                         try {
                             postAllInfo.postInfo.get(i).setViewType(0);
-                           boughtList.add(postAllInfo.postInfo.get(i));
+                            boughtList.add(postAllInfo.postInfo.get(i));
                         } catch (Exception e) {
 
                         }
@@ -72,7 +73,7 @@ public class Fragment_buy_bought extends Fragment {
                         cursorPostNum = boughtList.get(boughtList.size() - 1).getTradeConfirmTime();
                     }
 
-                    if (!response.body().getProductNum().equals("5")) {
+                    if (!response.body().getProductNum().equals("4")) {
                         isFinalPhase = true;
                     }
                     onCreateViewIsSet = true;
@@ -126,8 +127,8 @@ public class Fragment_buy_bought extends Fragment {
                                     if (boughtList.size() != 0) {
                                         cursorPostNum = boughtList.get(boughtList.size() - 1).getTradeConfirmTime();
                                     }
-                                    //응답 온 데이터 갯수가 5개가 아니라면 마지막 phase.
-                                    if (!response.body().getProductNum().equals("5")) {
+                                    //응답 온 데이터 갯수가 4개가 아니라면 마지막 phase.
+                                    if (!response.body().getProductNum().equals("4")) {
                                         isFinalPhase = true;
                                     }
                                     scrollCheck = true;
@@ -146,6 +147,45 @@ public class Fragment_buy_bought extends Fragment {
         } else {
             Toast.makeText(getActivity(), "버전이 낮아서 스크롤링 페이징 안됨;", Toast.LENGTH_SHORT).show();
         }
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                RetrofitService service = retrofit.create(RetrofitService.class);
+                //Log.e("123","onRefresh CursorPostNum"+cursorPostNum);
+                Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,"update","boughtInfo",id);
+                call.enqueue(new Callback<PostAllInfo>() {
+                    @Override
+                    public void onResponse(Call<PostAllInfo> call, Response<PostAllInfo> response) {
+
+                        System.out.println("getProductNum : "+response.body().getProductNum());
+                        boughtList.clear();
+                        PostAllInfo postAllInfo =response.body();
+                        for(int i=0;i<postAllInfo.postInfo.size();i++){
+                            try{
+                                postAllInfo.postInfo.get(i).setViewType(0);
+                                boughtList.add(postAllInfo.postInfo.get(i));
+                            }catch (Exception e){
+
+                            }
+                        }
+                        adapter.setPostList(boughtList);
+                        adapter.notifyDataSetChanged();
+                        //새로고침 완료 돌아가는거 멈추는거
+                        refreshLayout.setRefreshing(false);
+                    }
+
+                    @Override
+                    public void onFailure(Call<PostAllInfo> call, Throwable t) {
+                        Log.e("123", t.getMessage());
+
+                    }
+                });
+            }
+        });
+
+
 
         return view;
     }
@@ -187,14 +227,17 @@ public class Fragment_buy_bought extends Fragment {
         }
     }
 
-    public void variableInit(View view){
+    public void variableInit(View view) {
+
+        //refreshlayout
+        refreshLayout=view.findViewById(R.id.buy_bought_refresh_layout);
         // shared 값 가져오기
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences("autoLogin", Context.MODE_PRIVATE);
         id = sharedPreferences.getString("userId", "");
 
         //커서 페이징 하기위해서 사용
         cursorPostNum = "0";
-        phasingNum = "5";
+        phasingNum = "4";
 
         //retrofit2 관련
         Gson gson = new GsonBuilder()
@@ -210,6 +253,34 @@ public class Fragment_buy_bought extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getActivity()); //or getContext();
         adapter = new Adapter_post_all_info(boughtList, getActivity()); //or getContext();
 
+        adapter.setStatus("review");
+        adapter.setConfirmListener(new Adapter_post_all_info.Interface_buy_confirm_click() {
+            @Override
+            public void onConfirmClick(int position) {
+                Log.e("123", "onconfirmclick");
+                Intent intent = new Intent(getActivity(), Activity_review_write.class);
+                intent.putExtra("postNum", boughtList.get(position).getPostNum());
+                startActivity(intent);
+            }
+        });
+        adapter.setReviewListener(new Adapter_post_all_info.Interface_review_update_delete() {
+            @Override
+            public void onReviewUpdateClick(int position) {
+                Intent intent = new Intent(getActivity(), Activity_review_write.class);
+                intent.putExtra("postNum", boughtList.get(position).getPostNum());
+                intent.putExtra("isReview", true);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onReviewDeleteClick(int position) {
+                Intent intent =new Intent(getActivity(),Activity_review_write.class);
+                intent.putExtra("postNum",boughtList.get(position).getPostNum());
+                intent.putExtra("isReview",true);
+                intent.putExtra("deleteReview",true);
+                startActivity(intent);
+            }
+        });
         adapter.setItemClickListener(new Adapter_post_all_info.Interface_info_item_click() {
             @Override
             public void onItemClick(int position) {
@@ -224,7 +295,6 @@ public class Fragment_buy_bought extends Fragment {
         boughtRecyclerView.setAdapter(adapter);
         boughtRecyclerView.setLayoutManager(linearLayoutManager);
     }
-
 
 
 }

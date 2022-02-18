@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,6 +42,7 @@ public class Fragment_buy_buying extends Fragment {
     private String cursorPostNum, phasingNum;
     private boolean isFinalPhase = false, scrollCheck = true, onCreateViewIsSet = false;
     private String id;
+    private SwipeRefreshLayout refreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -208,6 +210,43 @@ public class Fragment_buy_buying extends Fragment {
             }
         });
 
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                RetrofitService service = retrofit.create(RetrofitService.class);
+                //Log.e("123","onRefresh CursorPostNum"+cursorPostNum);
+                Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,"update","buyingInfo",id);
+                call.enqueue(new Callback<PostAllInfo>() {
+                    @Override
+                    public void onResponse(Call<PostAllInfo> call, Response<PostAllInfo> response) {
+
+                        System.out.println("getProductNum : "+response.body().getProductNum());
+                        buyingList.clear();
+                        PostAllInfo postAllInfo =response.body();
+                        for(int i=0;i<postAllInfo.postInfo.size();i++){
+                            try{
+                                postAllInfo.postInfo.get(i).setViewType(0);
+                                buyingList.add(postAllInfo.postInfo.get(i));
+                            }catch (Exception e){
+
+                            }
+                        }
+                        adapter.setPostList(buyingList);
+                        adapter.notifyDataSetChanged();
+                        //새로고침 완료 돌아가는거 멈추는거
+                        refreshLayout.setRefreshing(false);
+                    }
+
+                    @Override
+                    public void onFailure(Call<PostAllInfo> call, Throwable t) {
+                        Log.e("123", t.getMessage());
+
+                    }
+                });
+            }
+        });
+
 
         return view;
     }
@@ -251,6 +290,8 @@ public class Fragment_buy_buying extends Fragment {
     }
 
     public void variableInit(View view) {
+
+        refreshLayout=view.findViewById(R.id.buy_buying_refresh_layout);
         // shared 값 가져오기
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences("autoLogin", Context.MODE_PRIVATE);
         id = sharedPreferences.getString("userId", "");
@@ -274,6 +315,7 @@ public class Fragment_buy_buying extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getActivity()); //or getContext();
         adapter = new Adapter_post_all_info(buyingList, getActivity()); //or getContext();
         adapter.setStatus("buy");
+
 
         adapter.setItemClickListener(new Adapter_post_all_info.Interface_info_item_click() {
             @Override

@@ -20,6 +20,8 @@ import java.util.Date;
 
 public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+
+    private Interface_review_update_delete reviewListener;
     private Interface_info_item_click listener;
     private ArrayList<PostInfo> postList;
     private Context context;
@@ -30,6 +32,9 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
     public Adapter_post_all_info(ArrayList<PostInfo> postList,Context context) {
         this.postList = postList;
         this.context=context;
+    }
+    public void setReviewListener(Interface_review_update_delete reviewListener){
+        this.reviewListener=reviewListener;
     }
     public void setStatus(String status){
         this.status=status;
@@ -159,6 +164,7 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
                 ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.VISIBLE);
                 if(status!=null){
                     if(status.equals("buy")){
+                        ((AllInfoViewHolder) holder).postBuyConfirm.setText("구매확정");
                         ((AllInfoViewHolder) holder).postBuyConfirm.setVisibility(View.VISIBLE);
                     }
                 }
@@ -172,7 +178,36 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
                 ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.GONE);
                 ((AllInfoViewHolder) holder).postSellStatus.setText("판매완료 (구매확정)");
                 ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.VISIBLE);
-                ((AllInfoViewHolder) holder).postBuyConfirm.setVisibility(View.GONE);
+
+                if(status!=null){
+                    if(status.equals("review")){
+                        if(postList.get(position).isReview()){
+                            ((AllInfoViewHolder) holder).postReviewUpdate.setVisibility(View.VISIBLE);
+                            ((AllInfoViewHolder) holder).postReviewDelete.setVisibility(View.VISIBLE);
+                            ((AllInfoViewHolder) holder).postBuyConfirm.setVisibility(View.INVISIBLE);
+
+                        }
+                        else{
+                            ((AllInfoViewHolder) holder).postBuyConfirm.setVisibility(View.VISIBLE);
+                            ((AllInfoViewHolder) holder).postReviewUpdate.setVisibility(View.GONE);
+                            ((AllInfoViewHolder) holder).postReviewDelete.setVisibility(View.GONE);
+                            ((AllInfoViewHolder) holder).postBuyConfirm.setText("리뷰작성");
+                        }
+                    }
+
+                }
+                else{
+                    ((AllInfoViewHolder) holder).postReviewUpdate.setVisibility(View.GONE);
+                    ((AllInfoViewHolder) holder).postReviewDelete.setVisibility(View.GONE);
+                    ((AllInfoViewHolder) holder).postBuyConfirm.setVisibility(View.GONE);
+                }
+            }
+
+            else if(postList.get(position).getPostStatus().equals("RF") ){
+                ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.GONE);
+                ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.GONE);
+                ((AllInfoViewHolder) holder).postSellStatus.setText("환불처리(환불승인)");
+                ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.VISIBLE);
             }
             else{
                 ((AllInfoViewHolder) holder).postBuyConfirm.setVisibility(View.GONE);
@@ -192,8 +227,6 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
                     ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.GONE);
                 }
             }
-
-
 
             if(postList.get(position).getPostLocationName()!=null){
                 if(!postList.get(position).getPostLocationName().equals("장소정보 없음")){
@@ -232,14 +265,16 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
 
         protected ImageView imageView,postImageLocation,cancelImage;
         protected TextView  postLocationName,postTitle,postPrice,postSellType1,postSellType2,postTime,postView,postLike;
-        protected TextView postSellStatus,postBuyConfirm;
+        protected TextView postSellStatus,postBuyConfirm,postReviewUpdate,postReviewDelete;
 
 
         public AllInfoViewHolder(@NonNull View itemView) {
 
             super(itemView);
-
+            postReviewUpdate=itemView.findViewById(R.id.post_all_review_update);
             postBuyConfirm=itemView.findViewById(R.id.post_all_info_buy_confirm);
+            postReviewDelete=itemView.findViewById(R.id.post_all_review_delete);
+
             cancelImage=itemView.findViewById(R.id.post_all_cancel_image);
             postImageLocation=itemView.findViewById(R.id.post_all_location_image);
             postLocationName=itemView.findViewById(R.id.post_all_location);
@@ -265,6 +300,24 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
                 }
             });
 
+            postReviewUpdate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position=getAdapterPosition();
+                    if(reviewListener!=null){
+                        reviewListener.onReviewUpdateClick(position);
+                    }
+                }
+            });
+            postReviewDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position=getAdapterPosition();
+                    if(reviewListener!=null){
+                        reviewListener.onReviewDeleteClick(position);
+                    }
+                }
+            });
             postBuyConfirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -297,6 +350,10 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
     }
     public interface Interface_buy_confirm_click{
         void onConfirmClick(int position);
+    }
+    public interface Interface_review_update_delete{
+        void onReviewUpdateClick(int position);
+        void onReviewDeleteClick(int position);
     }
 
 

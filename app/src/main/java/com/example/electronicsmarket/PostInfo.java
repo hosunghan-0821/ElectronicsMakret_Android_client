@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class PostInfo {
 
 
+    private String refundRegTime;
     private String buyRegTime;
     private String tradeConfirmTime;
     private String productNum;
@@ -21,6 +22,24 @@ public class PostInfo {
     private int viewType;
     private boolean clientIsLike;
     private String clientNickname,clientPhoneNumber;
+
+    public boolean isReview;
+
+    public String getRefundRegTime() {
+        return refundRegTime;
+    }
+
+    public void setRefundRegTime(String refundRegTime) {
+        this.refundRegTime = refundRegTime;
+    }
+
+    public boolean isReview() {
+        return isReview;
+    }
+
+    public void setReview(boolean review) {
+        isReview = review;
+    }
 
     public boolean isSuccess() {
         return isSuccess;

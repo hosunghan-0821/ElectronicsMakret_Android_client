@@ -5,6 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".Fragment_buy_bought">
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buy_bought_refresh_layout">
 
     <androidx.recyclerview.widget.RecyclerView
         android:scrollbars="vertical"
@@ -12,6 +16,7 @@
         android:id="@+id/buy_bought_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <TextView
         android:id="@+id/buy_bought_no_result_text"

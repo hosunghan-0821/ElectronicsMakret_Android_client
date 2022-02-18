@@ -184,8 +184,24 @@
         app:layout_constraintStart_toStartOf="@+id/love_list_image"
         app:layout_constraintTop_toBottomOf="@+id/love_list_image" />
 
+
+    <RatingBar
+        android:id="@+id/mypage_rating_bar"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:isIndicator="true"
+        android:numStars="5"
+        android:rating="0"
+        android:stepSize="0.5"
+        app:layout_constraintStart_toEndOf="@+id/circleImageView"
+        app:layout_constraintTop_toBottomOf="@+id/user_nickname"
+        tools:ignore="SpeakableTextPresentCheck" />
+
     <TextView
-        android:id="@+id/textView13"
+        android:id="@+id/mypage_review_num"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -251,6 +267,30 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView13" />
+        app:layout_constraintTop_toBottomOf="@+id/mypage_review_num" />
+
+    <TextView
+        android:id="@+id/mypage_score_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:textColor="@color/black"
+        android:textSize="15dp"
+        app:layout_constraintStart_toEndOf="@+id/mypage_rating_bar"
+        app:layout_constraintTop_toTopOf="@+id/mypage_rating_bar" />
+
+    <TextView
+        android:id="@+id/mypage_no_result_text"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="받은 거래후기가 없습니다."
+        android:textColor="@color/black"
+        android:textSize="25dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/mypage_review_recyclerview"
+        app:layout_constraintEnd_toEndOf="@+id/mypage_review_recyclerview"
+        app:layout_constraintStart_toStartOf="@+id/mypage_review_recyclerview"
+        app:layout_constraintTop_toTopOf="@+id/mypage_review_recyclerview" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

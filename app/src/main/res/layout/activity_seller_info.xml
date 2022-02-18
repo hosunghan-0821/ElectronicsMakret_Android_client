@@ -43,7 +43,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:text="판매자 정보"
+        android:text="회원 정보"
         android:textColor="@color/black"
         android:textSize="20dp"
         app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline1"
@@ -75,6 +75,23 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
+
+
+            <RatingBar
+                android:id="@+id/post_seller_rating_bar"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:isIndicator="true"
+
+                android:numStars="5"
+                android:rating="0"
+                app:layout_constraintBottom_toBottomOf="@+id/post_seller_profile_image"
+                app:layout_constraintStart_toEndOf="@+id/post_seller_profile_image"
+                app:layout_constraintTop_toBottomOf="@+id/post_seller_nickname"
+                tools:ignore="SpeakableTextPresentCheck" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/post_seller_profile_image"
@@ -111,29 +128,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/post_seller_profile_image" />
 
-            <ImageView
-                android:id="@+id/post_seller_star_image"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                app:layout_constraintStart_toEndOf="@+id/post_seller_profile_image"
-                app:layout_constraintTop_toBottomOf="@+id/post_seller_nickname"
-                app:srcCompat="@drawable/ic_baseline_star_outline_24" />
 
             <TextView
-                android:id="@+id/textView43"
+                android:id="@+id/post_seller_score_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
                 android:gravity="center"
                 android:text="(0/5)"
-                android:textSize="20dp"
-                app:layout_constraintBottom_toBottomOf="@+id/post_seller_star_image"
-                app:layout_constraintStart_toEndOf="@+id/post_seller_star_image"
-                app:layout_constraintTop_toBottomOf="@+id/post_seller_nickname" />
-
+                android:textSize="15dp"
+                app:layout_constraintStart_toEndOf="@+id/post_seller_rating_bar"
+                app:layout_constraintTop_toTopOf="@+id/post_seller_rating_bar" />
 
             <LinearLayout
                 android:id="@+id/linear_seller_sell_info_all"
@@ -325,6 +330,32 @@
                 android:textSize="20dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/view6" />
+
+            <TextView
+                android:id="@+id/post_seller_review_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="후기 더보기"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/post_seller_product_recyclerview" />
+
+            <TextView
+                android:id="@+id/post_seller_review_no_result"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:text="받은 거래후기가 없습니다"
+                android:textColor="@color/black"
+                android:textSize="25dp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@+id/post_seller_review_recyclerview"
+                app:layout_constraintEnd_toEndOf="@+id/post_seller_review_recyclerview"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/post_seller_review_recyclerview" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

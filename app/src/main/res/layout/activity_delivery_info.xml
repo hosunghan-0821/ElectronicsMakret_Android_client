@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".Activity_delivery_info">
 
+
+    <View
+        android:id="@+id/view_top"
+        android:layout_width="wrap_content"
+        android:layout_height="2dp"
+        android:background="#808080"
+        app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/horizontal_guideline1"
         android:layout_width="wrap_content"
@@ -91,6 +101,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView86" />
 
     <LinearLayout
+        android:background="@drawable/textview_border"
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="50dp"
@@ -186,14 +197,14 @@
         app:layout_constraintTop_toBottomOf="@+id/delivery_info_receiver" />
 
     <TextView
-        android:textSize="20dp"
-        android:textColor="@color/black"
         android:id="@+id/delivery_info_delivery_num"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:text="TextView"
+        android:textColor="@color/black"
+        android:textSize="20dp"
         app:layout_constraintStart_toStartOf="@+id/vertical_guideline1"
         app:layout_constraintTop_toBottomOf="@+id/delivery_info_delivery_company" />
 
@@ -207,5 +218,27 @@
         android:textSize="20dp"
         app:layout_constraintStart_toStartOf="@+id/vertical_guideline1"
         app:layout_constraintTop_toBottomOf="@+id/delivery_info_delivery_num" />
+
+    <ImageView
+        android:id="@+id/delivery_info_delivery_num_copy"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintStart_toEndOf="@+id/delivery_info_delivery_num"
+        app:layout_constraintTop_toTopOf="@+id/delivery_info_delivery_num"
+        app:srcCompat="@drawable/ic_baseline_content_copy_24" />
+
+    <TextView
+        android:id="@+id/delivery_info_delviery_home_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="#dcdcdc"
+        android:text="택배사 홈페이지 이동"
+        android:textColor="@color/black"
+        android:textSize="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/horizontal_guideline2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

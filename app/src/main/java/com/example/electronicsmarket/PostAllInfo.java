@@ -23,6 +23,8 @@ public class PostAllInfo {
 
 
 
+
+
     public String getProductNum() {
         return productNum;
     }

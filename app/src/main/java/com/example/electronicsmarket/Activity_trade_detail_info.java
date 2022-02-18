@@ -39,7 +39,7 @@ public class Activity_trade_detail_info extends AppCompatActivity {
     private TextView tradeInfoDeliveryRequire, tradeInfoSellerInfo;
     private Activity_buy_product_delivery buyProductActivity;
     private String readType;
-
+    private String stringDeliveryStatus;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,9 +83,27 @@ public class Activity_trade_detail_info extends AppCompatActivity {
                         }
                     }
                     if (response.body().getTradeDeliveryStatus() != null && readType != null) {
+                        stringDeliveryStatus=response.body().getTradeDeliveryStatus();
                         if (readType.equals("seller") && response.body().getTradeDeliveryStatus().equals("배송대기")) {
                             tradeInfoAnnounce.setText("결제완료. \n배송대기 상태입니다.\n회원정보를 확인하고 택배발송 후 운송장을 입력해주세요");
                         }
+                        else if(readType.equals("seller") && response.body().getTradeDeliveryStatus().equals("배송중")){
+                            tradeInfoAnnounce.setText("결제완료. \n상품이 배송중 입니다.\n구매자의 구매확정 이후 대금이 지금됩니다.");
+                        }
+                        else if(readType.equals("seller") && response.body().getTradeDeliveryStatus().equals("배송완료")){
+                            tradeInfoAnnounce.setText("결제완료. \n상품이 배송완료 되었습니다.\n구매자의 구매확정을 기다려주세요");
+                        }
+                        else if(readType.equals("buyer") && response.body().getTradeDeliveryStatus().equals("배송대기")){
+                            tradeInfoAnnounce.setText("결제완료. \n배송대기 상태입니다.\n판매자의 배송을 기다려주세요");
+                        }
+                        else if(readType.equals("buyer") && response.body().getTradeDeliveryStatus().equals("배송중")){
+                            tradeInfoAnnounce.setText("결제완료. \n배송중 입니다. 배송을 기다려주세요");
+                        }
+                        else if(readType.equals("buyer") && response.body().getTradeDeliveryStatus().equals("배송완료")){
+                            tradeInfoAnnounce.setText("결제완료. \n배송완료 되었입니다. 상품 검수후 구매확정 눌러주세요");
+                        }
+
+
                     }
 
                     //결제수단
@@ -163,6 +181,14 @@ public class Activity_trade_detail_info extends AppCompatActivity {
         tradeInfoDeliveryInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //예외처리
+                if(tradeInfoDeliveryCompany.getText().toString()!=null){
+                    if(tradeInfoDeliveryCompany.getText().toString().equals("배송대기")){
+                        Toast.makeText(getApplicationContext(), "판매자의 운송장 입력을 기다려주세요", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+
                 Intent intent = new Intent(Activity_trade_detail_info.this, Activity_delivery_info.class);
                 intent.putExtra("tradeNum", tradeNum);
                 intent.putExtra("deliveryCompany", tradeInfoDeliveryCompany.getText().toString());
@@ -203,6 +229,44 @@ public class Activity_trade_detail_info extends AppCompatActivity {
             }
         });
 
+        //구매자 환불요청 누를경우
+        tradeInfoRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(readType!=null){
+                    //여기서 구매자가 환불 요청할 경우,
+                    if(readType.equals("buyer")){
+
+                        //발송 전이면 바로 환불처리 가능
+                        if( stringDeliveryStatus.equals("배송대기")){
+
+                            Intent intent =new Intent(Activity_trade_detail_info.this,Activity_trade_refund_cancel.class);
+                            intent.putExtra("tradeNum",tradeNum);
+                            intent.putExtra("readType","buyer");
+                            intent.putExtra("deliveryStatus","배송대기");
+                            intent.putExtra("productPrice",tradeInfoPayPrice.getText().toString());
+                            startActivity(intent);
+
+                        }
+
+                        //발송 후면 환불처리 판매자 동의가 필요함
+                        else if(stringDeliveryStatus.equals("배송중")||stringDeliveryStatus.equals("배송완료")){
+
+                        }
+
+                    }
+                    //여기서 판매자가 거래 취소할 경우우
+                    else if(readType.equals("seller")){
+
+                    }
+
+
+                }
+
+            }
+        });
+
 
     }
 
@@ -233,7 +297,16 @@ public class Activity_trade_detail_info extends AppCompatActivity {
                                 if (response.isSuccessful() && response.body() != null) {
                                     if (response.body().isSuccess) {
                                         Toast.makeText(Activity_trade_detail_info.this, "운송장 등록 성공!", Toast.LENGTH_SHORT).show();
-                                        tradeInfoAnnounce.setText("결제완료\n배송중입니다.\n구매자의 구매확정 이후 대금이 지급됩니다.");
+
+                                        if(response.body().getDeliveryStatus()!=null){
+                                            if(response.body().getDeliveryStatus().equals("배송완료")){
+                                                tradeInfoAnnounce.setText("결제완료. \n상품이 배송완료 되었습니다.\n구매자의 구매확정을 기다려주세요");
+                                            }
+                                        }
+                                        else{
+                                            tradeInfoAnnounce.setText("결제완료. \n상품이 배송중 입니다.\n구매자의 구매확정 이후 대금이 지금됩니다.");
+                                        }
+
                                     } else {
                                         Toast.makeText(Activity_trade_detail_info.this, "운송장 등록 실패!", Toast.LENGTH_SHORT).show();
                                     }
