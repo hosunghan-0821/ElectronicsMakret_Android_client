@@ -21,6 +21,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ElectronicsMarket"
         android:usesCleartextTraffic="true">
+        <service
+            android:stopWithTask="false"
+            android:name=".Service_Example"
+            android:enabled="true"
+            android:exported="true"></service>
+
+        <activity
+            android:name=".Activity_trade_chat"
+            android:exported="false" />
+        <activity
+            android:name=".example_chat"
+            android:exported="false" />
         <activity
             android:name=".Activity_trade_refund_cancel"
             android:exported="false" />

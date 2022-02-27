@@ -110,6 +110,7 @@ public class Activity_place_search_previous extends AppCompatActivity {
             public void mainItemClick(Adapter_place_search_previous.PreviousViewHolder viewHolder, int position) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(Activity_place_search_previous.this);
 
+
                 builder.setTitle("거래 장소 선택");
                 builder.setMessage("다음 거래 장소를 선택합니다.\n"+locationSelectList.get(position).getPlaceName());
                 builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {

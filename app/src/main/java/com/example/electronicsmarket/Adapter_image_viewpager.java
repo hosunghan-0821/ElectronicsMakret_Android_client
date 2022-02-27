@@ -50,6 +50,7 @@ public class Adapter_image_viewpager extends RecyclerView.Adapter<Adapter_image_
 
         holder.bindSliderImage(imageRoute.get(position),status);
 
+
     }
 
     @Override

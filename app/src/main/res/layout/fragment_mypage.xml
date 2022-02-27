@@ -47,7 +47,6 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="30dp"
         android:background="@android:color/transparent"
-
         android:foregroundGravity="center"
         app:civ_border_color="@color/black"
         app:civ_border_overlay="true"

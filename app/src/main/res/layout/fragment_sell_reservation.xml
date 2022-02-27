@@ -3,7 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment_sell_reservation">
+    tools:context=".Fragment_sell_cancel">
+
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/sell_cancel_refresh_layout">
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:scrollbars="vertical"
+        android:scrollbarFadeDuration="0"
+        android:id="@+id/sell_cancel_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <TextView
         android:textSize="20dp"
@@ -14,7 +30,6 @@
         android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
 
 
 

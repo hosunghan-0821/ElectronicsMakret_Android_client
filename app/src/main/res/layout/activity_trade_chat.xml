@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity_trade_chat">
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <ImageView
+        android:id="@+id/imageView9"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_arrow_back_24" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:text="채팅 상대방 이름"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/imageView9"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView11"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="20dp"
+
+        android:layout_marginEnd="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_setting" />
+
+
+<!--    <androidx.core.widget.NestedScrollView-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/linearLayout6"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/textView13">-->
+<!--    </androidx.core.widget.NestedScrollView>-->
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline5">
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/horizontal_guideline1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0" />
+
+
+
+
+        <ImageView
+            android:id="@+id/trade_chat_product_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/imageview_border_gray"
+            android:padding="2dp"
+            android:scaleType="fitXY"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/horizontal_guideline1" />
+
+        <TextView
+            android:id="@+id/trade_chat_product_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="50dp"
+            android:text="TextView"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            app:layout_constraintStart_toEndOf="@+id/trade_chat_product_image"
+            app:layout_constraintTop_toTopOf="@+id/horizontal_guideline1" />
+
+        <TextView
+            android:id="@+id/trade_chat_product_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:text="TextView"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            app:layout_constraintStart_toEndOf="@+id/trade_chat_product_image"
+            app:layout_constraintTop_toBottomOf="@+id/trade_chat_product_name" />
+
+        <TextView
+            android:id="@+id/trade_chat_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:text="TextView"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            app:layout_constraintStart_toEndOf="@+id/trade_chat_product_image"
+            app:layout_constraintTop_toBottomOf="@+id/trade_chat_product_price" />
+
+<!--        <androidx.constraintlayout.widget.Guideline-->
+<!--            android:id="@+id/horizontal_guideline2"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            app:layout_constraintGuide_percent="0.2" />-->
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:scrollbars="vertical"
+            android:scrollbarFadeDuration="0"
+            android:id="@+id/trade_chat_recyclerview"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/textview_border"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/trade_chat_product_image"
+            app:layout_constraintVertical_bias="1.0" />
+
+<!--        <TextView-->
+<!--            android:id="@+id/trade_chat_scroll_height_text"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="20dp"-->
+<!--            android:text="TextView"-->
+<!--            android:visibility="invisible"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+        <TextView
+            android:id="@+id/textView43"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:text="문의 상품정보"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/horizontal_guideline1" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/textview_border"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/trade_chat_send_image"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_baseline_image_24" />
+
+        <EditText
+            android:id="@+id/trade_chat_send_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.3"
+            android:background="@drawable/textview_border"
+            android:hint="메세지를 입력하세요"
+            android:textSize="20dp"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <ImageView
+            android:id="@+id/trade_chat_send_text_image"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_baseline_send_24" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

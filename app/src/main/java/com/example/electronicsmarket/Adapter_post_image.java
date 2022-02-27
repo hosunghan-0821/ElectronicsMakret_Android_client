@@ -43,6 +43,7 @@ public class Adapter_post_image extends RecyclerView.Adapter<Adapter_post_image.
         //Glide.with(getApplicationContext()).load(info.getMemberImage().toString()).into(circleImageView);
         Glide.with(context).load(imageList.get(position).getImgUrl()).into(holder.image);
 
+
     }
 
     @Override

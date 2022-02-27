@@ -48,8 +48,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Activity_post_read extends AppCompatActivity implements Dialog_bottom_sheet.BottomSheetListener {
 
-
-    private TextView postReadBuyProductDelivery;
+    private String nickName;
+    private TextView postReadBuyProductDelivery,postReadChat;
     private Retrofit retrofit;
     private ViewPager2 sliderViewPager;
     private LinearLayout layoutIndicator, postReadLinearBottomOption;
@@ -80,13 +80,12 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_read);
         variableInit();
 
         imageRoute = new ArrayList<String>();
-        adapter = new Adapter_image_viewpager(getApplicationContext(), imageRoute);
+        adapter = new Adapter_image_viewpager(Activity_post_read.this, imageRoute);
 
         //게시글 읽기위해 intent로 postNum 받기
         Intent intent = getIntent();
@@ -118,7 +117,17 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
             }
         });
 
-
+        //채팅문의 눌렀을 경우 이동 intent.
+        postReadChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(Activity_post_read.this,Activity_trade_chat.class);
+                intent.putExtra("seller",postReadNickname.getText().toString());
+                intent.putExtra("postNum",postNum);
+                intent.putExtra("buyer",nickName);
+                startActivity(intent);
+            }
+        });
 
         //택배결제 버튼 눌럿을 경우 이동 intent.
         postReadBuyProductDelivery.setOnClickListener(new View.OnClickListener() {
@@ -662,10 +671,12 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
     public void variableInit() {
 
 
+        postReadChat=findViewById(R.id.post_read_chat);
         postReadStatus=findViewById(R.id.post_read_status_text);
 
         sharedPreferences = getSharedPreferences("autoLogin", MODE_PRIVATE);
         id = sharedPreferences.getString("userId", "");
+        nickName= sharedPreferences.getString("nickName","");
 
         //postReadTitle,postReadPrice,postReadDelivery,postReadSellType1,PostReadSellType2,postReadCategory,postReadContents;
         Gson gson = new GsonBuilder()

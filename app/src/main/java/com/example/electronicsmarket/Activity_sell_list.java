@@ -2,17 +2,11 @@ package com.example.electronicsmarket;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -27,7 +21,7 @@ public class Activity_sell_list extends AppCompatActivity {
     private Adapter_sell_viewpager adapter;
 
     private Fragment_sell_selling sellingFrag;
-    private Fragment_sell_reservation reservationFrag;
+    private Fragment_sell_cancel cancelFrag;
     private Fragment_sell_sold soldFrag;
     private ImageView backImage;
 
@@ -53,7 +47,7 @@ public class Activity_sell_list extends AppCompatActivity {
         backImage=findViewById(R.id.sell_list_back_arrow);
         //사용할 fragment 정의
         sellingFrag=new Fragment_sell_selling();
-        reservationFrag=new Fragment_sell_reservation();
+        cancelFrag =new Fragment_sell_cancel();
         soldFrag=new Fragment_sell_sold();
 
         //viewpager 관련 정의
@@ -61,8 +55,8 @@ public class Activity_sell_list extends AppCompatActivity {
 
         adapter= new Adapter_sell_viewpager(getSupportFragmentManager(),getLifecycle());
         adapter.addFragment(sellingFrag);
-        adapter.addFragment(reservationFrag);
         adapter.addFragment(soldFrag);
+        adapter.addFragment(cancelFrag);
         viewPager.setAdapter(adapter);
         viewPager.setUserInputEnabled(true);
 
@@ -102,8 +96,8 @@ public class Activity_sell_list extends AppCompatActivity {
 
         ArrayList<String> tabElement = new ArrayList<String>();
         tabElement.add("판매중");
-        tabElement.add("예약중");
         tabElement.add("판매완료");
+        tabElement.add("취소/환불");
 
         //tablayout + viewpager2 연결
         new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {

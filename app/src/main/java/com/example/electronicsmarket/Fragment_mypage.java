@@ -252,6 +252,15 @@ public class Fragment_mypage extends Fragment  {
                     Log.e("123","응답옴");
                   MemberSignup memberInfo=response.body();
                   nickname.setText(memberInfo.getNickname());
+
+
+
+                  //변한 닉네임 입력 shared 값 저장하기
+                  sharedPreferences= getContext().getSharedPreferences("autoLogin",MODE_PRIVATE);
+                  SharedPreferences.Editor editor = sharedPreferences.edit();
+                  editor.putString("nickName",memberInfo.getNickname());
+                  editor.commit();
+
                   String imageRoute= memberInfo.imageRoute;
                   if(imageRoute.equals("")){
                      circleImageView.setImageResource(R.drawable.ic_baseline_person_black);
