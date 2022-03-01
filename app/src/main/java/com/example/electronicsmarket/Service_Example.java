@@ -24,7 +24,7 @@ import java.net.Socket;
 
 public class Service_Example extends Service {
 
-    public final String CHANGE_LINE_CHAR="_!@#$%_";
+    public static final String CHANGE_LINE_CHAR="_!@#$%_";
 
     private Socket socket;
     private PrintWriter out;
@@ -87,7 +87,7 @@ public class Service_Example extends Service {
 
                 try {
                     //먼저 port 와 host(ip) 값을 통해서 서버와 연결을한다.
-                    socket = new Socket("192.168.0.6", 80);
+                    socket = new Socket("192.168.163.1", 80);
                     //192.168.163.1
 
                     Log.e("123", "통신성공");

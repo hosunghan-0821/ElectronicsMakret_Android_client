@@ -3,6 +3,7 @@ package com.example.electronicsmarket;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -44,6 +46,9 @@ public class Fragment_chat extends Fragment {
     private ArrayList<DataChatRoom> roomList;
     private String nickName;
     private Adapter_chat_room adapter;
+    private String cursorChatRoomNum,phasingNum;
+    private boolean isFinalPhase=false,onCreateViewIsSet=false,scrollCheck=true;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,7 +60,7 @@ public class Fragment_chat extends Fragment {
 
         //서버로부터 데이터 가져오기..
         RetrofitService service = retrofit.create(RetrofitService.class);
-        Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName);
+        Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName,phasingNum,cursorChatRoomNum);
         call.enqueue(new Callback<DataChatRoomAll>() {
             @Override
             public void onResponse(Call<DataChatRoomAll> call, Response<DataChatRoomAll> response) {
@@ -74,6 +79,13 @@ public class Fragment_chat extends Fragment {
 
                     }
                     adapter.notifyDataSetChanged();
+                    if(roomList.size()!=0){
+                        cursorChatRoomNum=roomList.get(roomList.size()-1).getFinalChatTime();
+                    }
+                    if(!response.body().getRoomCount().equals(phasingNum)){
+                        isFinalPhase=true;
+                    }
+                    onCreateViewIsSet=true;
                 }
             }
 
@@ -82,10 +94,66 @@ public class Fragment_chat extends Fragment {
                 Log.e("123",t.getMessage());
             }
         });
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            chatRecyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+                @Override
+                public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                    if(!v.canScrollVertically(1)&&scrollCheck){
+                        scrollCheck=false;
+                        if(!isFinalPhase){
+                            Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName,phasingNum,cursorChatRoomNum);
+                            call.enqueue(new Callback<DataChatRoomAll>() {
+                                @Override
+                                public void onResponse(Call<DataChatRoomAll> call, Response<DataChatRoomAll> response) {
+
+                                    if(response.isSuccessful() && response.body()!=null){
+                                        Log.e("123","통신옴2");
+                                        DataChatRoomAll dataChatRoomALL =response.body();
+                                        Log.e("123",dataChatRoomALL.getRoomList().toString());
+                                        for(int i=0;i<dataChatRoomALL.getRoomList().size();i++){
+                                            try{
+                                                roomList.add(dataChatRoomALL.getRoomList().get(i));
+                                            }catch (Exception e){
+
+                                            }
+
+                                        }
+                                        adapter.notifyDataSetChanged();
+                                        if(roomList.size()!=0){
+                                            cursorChatRoomNum=roomList.get(roomList.size()-1).getFinalChatTime();
+                                        }
+                                        if(!response.body().getRoomCount().equals(phasingNum)){
+                                            isFinalPhase=true;
+                                        }
+                                        onCreateViewIsSet=true;
+                                        scrollCheck=true;
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<DataChatRoomAll> call, Throwable t) {
+
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        }
+        else{
+            Toast.makeText(getActivity(), "버전이 낮아서 스크롤링 페이징 안됨;", Toast.LENGTH_SHORT).show();
+        }
+
+
         return view;
     }
 
     public void variableInit(View view) {
+
+        cursorChatRoomNum="0";
+        phasingNum="7";
 
         //기본 xml 연결.
         chatNotificationImage = view.findViewById(R.id.chat_notification);

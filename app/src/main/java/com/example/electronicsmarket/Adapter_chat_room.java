@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -42,13 +44,21 @@ public class Adapter_chat_room extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
         if(holder instanceof RoomViewHolder){
+
             ((RoomViewHolder) holder).chatOtherNickname.setText(roomList.get(position).getOtherUserNickname());
+            ((RoomViewHolder) holder).chatFinalChat.setText(roomList.get(position).getFinalChat());
+            //날짜 가공
+            String chatTime=roomList.get(position).getFinalChatTime();
+
+            chatTime=finalChatTimeProcess(chatTime);
+
+
+            ((RoomViewHolder) holder).chatFinalChatDate.setText(chatTime);
             if(roomList.get(position).getOtherUserImageRoute()==null){
                 ((RoomViewHolder) holder).chatOtherProfileImage.setImageResource(R.drawable.ic_baseline_person_black);
             }
             else{
                 Glide.with(context).load(roomList.get(position).getOtherUserImageRoute()).into(((RoomViewHolder) holder).chatOtherProfileImage);
-
             }
 
         }
@@ -87,4 +97,33 @@ public class Adapter_chat_room extends RecyclerView.Adapter<RecyclerView.ViewHol
     public interface Adapter_chat_room_click{
         void onItemClick(int position);
     }
+
+    public String finalChatTimeProcess(String chatTime){
+
+        //String chatting 시간 Date 로 변환
+        Date chatDate;
+        //현재 날짜 가져오기
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+
+        SimpleDateFormat chatDateFormat= new SimpleDateFormat("MM월dd일");
+        SimpleDateFormat chatTimeDateFormat = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat chatTimeDbDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        try{
+            //날짜가 같을 경우 시간을 작성
+            chatDate=chatTimeDbDateFormat.parse(chatTime);
+            if(chatDateFormat.format(date).equals(chatDateFormat.format(chatDate))){
+                return chatTimeDateFormat.format(chatDate);
+            }
+            //날짜가 다를경우 날짜를 작성
+            else{
+                return chatDateFormat.format(chatDate);
+            }
+        }catch (Exception e){
+
+        }
+
+        return "";
+    };
 }

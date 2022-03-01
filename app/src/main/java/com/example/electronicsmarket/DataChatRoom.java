@@ -1,12 +1,29 @@
 package com.example.electronicsmarket;
 
 public class DataChatRoom {
+    private String finalChat,finalChatTime;
     private String postNum,postTitle,postPrice,postStatus,imageRoute;
     private String postLocationName,postLocationAddress;
     private Double postLocationLatitude,postLocationLongitude;
     private String roomNum;
     private String otherUserNickname;
     private String otherUserImageRoute;
+
+    public String getFinalChat() {
+        return finalChat;
+    }
+
+    public void setFinalChat(String finalChat) {
+        this.finalChat = finalChat;
+    }
+
+    public String getFinalChatTime() {
+        return finalChatTime;
+    }
+
+    public void setFinalChatTime(String finalChatTime) {
+        this.finalChatTime = finalChatTime;
+    }
 
     public String getOtherUserNickname() {
         return otherUserNickname;

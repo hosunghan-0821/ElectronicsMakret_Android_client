@@ -178,11 +178,15 @@ public interface RetrofitService {
 
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/chatApi/roomNumCheck.php")
-    Call<DataChatRoom> roomNumCheck (@Field("postNum") String postNum, @Field("seller")String seller, @Field("buyer") String buyer,@Field("roomNum") String roomNum);
+    Call<DataChatRoom> roomNumCheck (@Field("postNum") String postNum, @Field("seller")String seller, @Field("buyer") String buyer,@Field("roomNum") String roomNum,@Field("nickname")String nickName);
 
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/chatApi/getRoomAllInfo.php")
-    Call<DataChatRoomAll> getRoomAllInfo (@Field("nickname") String nickname);
+    Call<DataChatRoomAll> getRoomAllInfo (@Field("nickname") String nickname,@Field("phasingNum") String phasingNum,@Field("cursorChatRoom") String cursorChatRoomNum);
+
+    @FormUrlEncoded
+    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/chatApi/getRoomChatInfo.php")
+    Call<DataChatAll> getRoomChatInfo (@Field("roomNum") String roomNum,@Field("phasingNum")String phasingNum,@Field("cursorChatNum") String cursorChatNum);
 
 
 

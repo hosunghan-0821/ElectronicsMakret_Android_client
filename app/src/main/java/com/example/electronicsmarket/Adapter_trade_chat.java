@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
@@ -19,10 +21,14 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private ArrayList<DataChat> chatList;
     private Context context;
+    private Interface_itemHeightCheck checkHeightInterface;
 
     public Adapter_trade_chat(ArrayList<DataChat> chatList) {
         this.chatList = chatList;
 
+    }
+    public void setInterfaceCheckHeight(Interface_itemHeightCheck checkHeightInterface){
+        this.checkHeightInterface=checkHeightInterface;
     }
 
     public Adapter_trade_chat(ArrayList<DataChat> chatList, Context context) {
@@ -52,17 +58,29 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+
         if(holder instanceof LeftViewHolder){
             ((LeftViewHolder) holder).chatText.setText(chatList.get(position).getChat());
             ((LeftViewHolder) holder).nickname.setText(chatList.get(position).getNickname());
             //시간 가공
-//            ((LeftViewHolder) holder).chatTime.setText(chatList.get(position).getChatTime());
+            ((LeftViewHolder) holder).chatTime.setText(chatList.get(position).getChatTime());
+            //상대방 회원 프로필 사진
+
+            if(chatList.get(position).getProfileImageRoute()==null){
+                ((LeftViewHolder) holder).profileImage.setImageResource(R.drawable.ic_baseline_person_black);
+            }
+            else{
+                Glide.with(context).load(chatList.get(position).getProfileImageRoute()).into(((LeftViewHolder) holder).profileImage);
+            }
+
+
         }
         else if (holder instanceof  RightViewHolder){
             ((RightViewHolder) holder).chatText.setText(chatList.get(position).getChat());
 
             //여기서 시간 가공 하면되지.
-//            ((RightViewHolder) holder).chatTime.setText(chatList.get(position).getChatTime());
+            ((RightViewHolder) holder).chatTime.setText(chatList.get(position).getChatTime());
+
         }
     }
 
@@ -89,6 +107,7 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
             chatText = itemView.findViewById(R.id.chat_left_text);
             chatTime = itemView.findViewById(R.id.chat_left_time);
             nickname=itemView.findViewById(R.id.chat_left_nickname);
+
         }
     }
 
@@ -100,7 +119,12 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
         public RightViewHolder(@NonNull View itemView) {
             super(itemView);
             chatText = itemView.findViewById(R.id.chat_right_text);
-            chatTime = itemView.findViewById(R.id.chat_left_time);
+            chatTime = itemView.findViewById(R.id.chat_right_time);
+
         }
+    }
+
+    public interface Interface_itemHeightCheck{
+        public void getViewHeight(View itemView,int viewType);
     }
 }

@@ -6,20 +6,21 @@ public class DataChat {
     private String chat,chatTime;
     private String profileImageRoute;
     private String nickname;
+    private String isReadChat;
 
+
+    public DataChat(int viewType, String chat, String chatTime, String nickname,String profileImageRoute) {
+        this.viewType = viewType;
+        this.chat = chat;
+        this.chatTime = chatTime;
+        this.nickname = nickname;
+        this.profileImageRoute=profileImageRoute;
+    }
 
     public DataChat(int viewType, String chat, String chatTime, String nickname) {
         this.viewType = viewType;
         this.chat = chat;
         this.chatTime = chatTime;
-        this.nickname = nickname;
-    }
-
-    public DataChat(int viewType, String chat, String chatTime, String profileImageRoute, String nickname) {
-        this.viewType = viewType;
-        this.chat = chat;
-        this.chatTime = chatTime;
-        this.profileImageRoute = profileImageRoute;
         this.nickname = nickname;
     }
 
