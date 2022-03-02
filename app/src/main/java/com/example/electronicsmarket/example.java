@@ -45,33 +45,23 @@ public class example extends AppCompatActivity {
 
 
     Retrofit retrofit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_example);
+        Activity_trade_chat.activity_trade_chat.finish();
 
-        Gson gson=new GsonBuilder()
-                .setLenient()
-                .create();
-        retrofit = new Retrofit.Builder()
-                .baseUrl("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/")
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Intent intent = getIntent();
+        intent.getStringExtra("roomNum");
 
-        RetrofitService service = retrofit.create(RetrofitService.class);
-        Call<rExample> call = service.getJson();
-        Log.e("123","123");
-        call.enqueue(new Callback<rExample>() {
-            @Override
-            public void onResponse(Call<rExample> call, Response<rExample> response) {
-               rExample rExample =response.body();
-               Log.e("123",rExample.getTrackingDetails().get(0).getTransTime());
-            }
+        Intent newIntent = new Intent(example.this, Activity_trade_chat.class);
+        newIntent.putExtra("roomNum", intent.getStringExtra("roomNum"));
+        overridePendingTransition(0, 0); //인텐트 애니메이션 없애기
+        startActivity(newIntent); //현재 액티비티 재실행 실시
+        overridePendingTransition(0, 0); //인텐트 애니메이션 없애기
+        finish();
 
-            @Override
-            public void onFailure(Call<rExample> call, Throwable t) {
-                Log.e("123",t.toString());
-            }
-        });
+
     }
 }

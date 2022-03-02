@@ -1,7 +1,12 @@
 package com.example.electronicsmarket;
 
+import static android.content.Intent.FLAG_ACTIVITY_MULTIPLE_TASK;
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -25,11 +30,14 @@ import java.net.Socket;
 public class Service_Example extends Service {
 
     public static final String CHANGE_LINE_CHAR="_!@#$%_";
+    public static final String ALARM_ORDER="__alarm__";
+    public static final String CHANNEL_ID = "Default1";
+    public static final String CHANNEL_ID_HEAD = "Default2";
 
     private Socket socket;
     private PrintWriter out;
     private NotificationCompat.Builder builder = null;
-    public static final String CHANNEL_ID = "ChatServiceChannel";
+
     private   NotificationManager notificationManager;
     private boolean isCloseSocket=false;
 
@@ -158,14 +166,43 @@ public class Service_Example extends Service {
                     System.out.println("readvalue + :" + readValue);
 
                     if (readValue != null) {
-                        if (readValue.equals("곽민준:noti")) {
+                        //알람 보내는 명령일 경우
+                        try{
+                            if(readValue.split(":")[0].equals(ALARM_ORDER)){
 
-                            builder =new NotificationCompat.Builder(Service_Example.this,CHANNEL_ID)
-                                    .setContentTitle("실험")
-                                    .setContentText("123415")
-                                    .setSmallIcon(R.drawable.ic_baseline_favorite_24);
+                                //채팅방 밖에 있고, 채팅목록화면에 있다면, 데이터 reload 해야함. 전달될 때마다.
+                                Intent intent = new Intent("reloadRoomList");
+                                readValue=readValue.replace(CHANGE_LINE_CHAR,"\n");
+                                intent.putExtra("message", readValue);
+                                LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
 
-                            notificationManager.notify(1000,builder.build());
+                                Intent notifyIntent = new Intent(Service_Example.this,Activity_trade_chat.class);
+                                //notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP| Intent.FLAG_ACTIVITY_NEW_TASK);
+                                notifyIntent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+//                                notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                notifyIntent.putExtra("roomNum",readValue.split(":")[1]);
+                                PendingIntent notifyPendingIntent =
+                                        PendingIntent.getActivity(
+                                                getApplicationContext(),
+                                                0,
+                                                notifyIntent,
+                                                PendingIntent.FLAG_UPDATE_CURRENT
+                                        );
+                                builder =new NotificationCompat.Builder(Service_Example.this,CHANNEL_ID)
+                                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                                        .setContentTitle("채팅 알림 메시지")
+                                        .setContentIntent(notifyPendingIntent)
+                                        .setContentText(readValue.split(":")[2]+":"+readValue.split(":")[3])
+                                        .setSmallIcon(R.drawable.ic_baseline_favorite_24)
+                                        .setAutoCancel(true);
+                                notificationManager.notify(1000,builder.build());
+
+                                continue;
+                            }
+
+                        }catch (Exception e){
+                            System.out.println("알림 체크하는 부분 오류");
+                            e.printStackTrace();
                         }
                     }
                     Intent intent = new Intent("chatData");
@@ -188,13 +225,12 @@ public class Service_Example extends Service {
     public void createNotificationChannel() {
         //Manager, builder,channel 활용해서 notification 만든다.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationManager = getSystemService(NotificationManager.class);
-            builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID);
+            notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
             NotificationChannel serviceChannel = new NotificationChannel(
                     CHANNEL_ID,
                     "Foreground Service Channel",
-                    NotificationManager.IMPORTANCE_DEFAULT);
+                    NotificationManager.IMPORTANCE_HIGH);
 
             if(notificationManager!= null){
                 notificationManager.createNotificationChannel(serviceChannel);

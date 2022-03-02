@@ -45,6 +45,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Activity_trade_chat extends AppCompatActivity {
 
 
+    public static Activity_trade_chat activity_trade_chat;
     private boolean isFinalPhase=false,onCreateViewIsSet=false,scrollCheck=true;
     private int heightSum;
     private ImageView tradeChatImage;
@@ -65,6 +66,8 @@ public class Activity_trade_chat extends AppCompatActivity {
     private String otherUserImageRoute;
     private String cursorChatNum,phasingNum;
     private Adapter_trade_chat.Interface_itemHeightCheck checkHeight;
+    private boolean roomNumCheck=false;
+    private String otherUserNickname;
 
     private BroadcastReceiver dataReceiver = new BroadcastReceiver() {
         @Override
@@ -81,9 +84,10 @@ public class Activity_trade_chat extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("123","oncreate()");
         setContentView(R.layout.activity_trade_chat);
         variableInit();
-
+        activity_trade_chat=Activity_trade_chat.this;
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         Intent intent = getIntent();
@@ -114,6 +118,8 @@ public class Activity_trade_chat extends AppCompatActivity {
             public void onResponse(Call<DataChatRoom> call, Response<DataChatRoom> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     DataChatRoom dataChatRoom = response.body();
+
+                    otherUserNickname=dataChatRoom.getOtherUserNickname();
                     roomNum=dataChatRoom.getRoomNum();
                     otherUserImageRoute=dataChatRoom.getOtherUserImageRoute();
                     tradeChatProductTitle.setText(dataChatRoom.getPostTitle());
@@ -126,7 +132,7 @@ public class Activity_trade_chat extends AppCompatActivity {
                     //  데이터 보낼 떄 쓸 것들
                     //  채팅방 입장!!
                     Intent intent = new Intent("chatDataToServer");
-                    intent.putExtra("message", dataChatRoom.getRoomNum());
+                    intent.putExtra("message", roomNum+":"+otherUserNickname);
                     LocalBroadcastManager.getInstance(Activity_trade_chat.this).sendBroadcast(intent);
 
                     // 채팅방 정보 입력한 후에, 데이터를 받을 준비를 완료 시킨다.
@@ -392,26 +398,54 @@ public class Activity_trade_chat extends AppCompatActivity {
         //shared로 내 닉네임 가져오기
         SharedPreferences sharedPreferences = getSharedPreferences("autoLogin", MODE_PRIVATE);
         nickName = sharedPreferences.getString("nickName", "");
-
-
     }
+
+
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.e("123","onResume() : tradechat ");
+        Log.e("123","onResume : 새로고침1");
+        Log.e("123","roomNumcehck"+roomNumCheck);
+        if(roomNumCheck){
+            Log.e("123","onResume : 새로고침2");
+//            // 채팅방 정보 입력한 후에, 데이터를 받을 준비를 완료 시킨다.
+            LocalBroadcastManager.getInstance(Activity_trade_chat.this).registerReceiver(dataReceiver, new IntentFilter("chatData"));
+            //  데이터 보낼 떄 쓸 것들
+            //  채팅방 입장!!
+            Intent intent = new Intent("chatDataToServer");
+            intent.putExtra("message", roomNum+":"+otherUserNickname);
+            LocalBroadcastManager.getInstance(Activity_trade_chat.this).sendBroadcast(intent);
+//            Intent intent = getIntent();
+//            finish(); //현재 액티비티 종료 실시
+//            overridePendingTransition(0, 0); //인텐트 애니메이션 없애기
+//            startActivity(intent); //현재 액티비티 재실행 실시
+//            overridePendingTransition(0, 0); //인텐트 애니메이션 없애기
 
+        }
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //채팅방 화면 나갈 때, 채팅방 나간 것을 자바 채팅서버에 데이터 전송해서 알려야함.
+    protected void onPause() {
+        super.onPause();
+        Log.e("123","onPause()");
+        roomNumCheck=true;
+        Log.e("123","onpause roomNumcehck"+roomNumCheck);
         Intent intent = new Intent("chatDataToServer");
 
         intent.putExtra("message", "quit");
         LocalBroadcastManager.getInstance(Activity_trade_chat.this).sendBroadcast(intent);
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(dataReceiver);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.e("123","onDestroy()");
+        //채팅방 화면 나갈 때, 채팅방 나간 것을 자바 채팅서버에 데이터 전송해서 알려야함.
+
     }
 
     @Override

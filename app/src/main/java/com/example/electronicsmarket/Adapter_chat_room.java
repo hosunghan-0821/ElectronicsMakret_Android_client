@@ -25,6 +25,10 @@ public class Adapter_chat_room extends RecyclerView.Adapter<RecyclerView.ViewHol
     private ArrayList<DataChatRoom> roomList;
     private Adapter_chat_room_click listener;
 
+    public void setRoomList(ArrayList<DataChatRoom> roomList){
+        this.roomList=roomList;
+    }
+
     public Adapter_chat_room(Context context, ArrayList<DataChatRoom> roomList) {
         this.context = context;
         this.roomList = roomList;
