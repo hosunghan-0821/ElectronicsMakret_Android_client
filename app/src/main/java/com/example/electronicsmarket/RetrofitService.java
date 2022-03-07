@@ -186,7 +186,7 @@ public interface RetrofitService {
 
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/chatApi/getRoomChatInfo.php")
-    Call<DataChatAll> getRoomChatInfo (@Field("roomNum") String roomNum,@Field("phasingNum")String phasingNum,@Field("cursorChatNum") String cursorChatNum);
+    Call<DataChatAll> getRoomChatInfo (@Field("roomNum") String roomNum,@Field("phasingNum")String phasingNum,@Field("cursorChatNum") String cursorChatNum,@Field("nickname") String nickname);
 
 
 

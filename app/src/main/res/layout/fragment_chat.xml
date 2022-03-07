@@ -27,7 +27,7 @@
         android:id="@+id/view_top"
         android:layout_width="wrap_content"
         android:layout_height="2dp"
-        android:background="#808080"
+        android:background="#dcdcdc"
         app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

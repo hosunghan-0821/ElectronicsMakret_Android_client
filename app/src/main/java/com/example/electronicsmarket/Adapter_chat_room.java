@@ -50,20 +50,41 @@ public class Adapter_chat_room extends RecyclerView.Adapter<RecyclerView.ViewHol
         if(holder instanceof RoomViewHolder){
 
             ((RoomViewHolder) holder).chatOtherNickname.setText(roomList.get(position).getOtherUserNickname());
-            ((RoomViewHolder) holder).chatFinalChat.setText(roomList.get(position).getFinalChat());
+            //채팅 가공
+            String finalChat="";
+            try{
+                finalChat=roomList.get(position).getFinalChat().replace(Service_Example.CHANGE_LINE_CHAR,"\n");
+            }catch (Exception e){
+
+            }
+
+            ((RoomViewHolder) holder).chatFinalChat.setText(finalChat);
             //날짜 가공
             String chatTime=roomList.get(position).getFinalChatTime();
-
             chatTime=finalChatTimeProcess(chatTime);
-
-
             ((RoomViewHolder) holder).chatFinalChatDate.setText(chatTime);
+
+            //프로필 이미지
             if(roomList.get(position).getOtherUserImageRoute()==null){
                 ((RoomViewHolder) holder).chatOtherProfileImage.setImageResource(R.drawable.ic_baseline_person_black);
             }
             else{
                 Glide.with(context).load(roomList.get(position).getOtherUserImageRoute()).into(((RoomViewHolder) holder).chatOtherProfileImage);
             }
+            //읽지 않은 메시지
+            String noReadMessageNum=roomList.get(position).getNoReadMessageNum();
+            if(noReadMessageNum!=null){
+
+                if(roomList.get(position).getNoReadMessageNum().equals("0")){
+                    ((RoomViewHolder) holder).chatNoReadMessage.setVisibility(View.INVISIBLE);
+                }
+                else{
+                    ((RoomViewHolder) holder).chatNoReadMessage.setVisibility(View.VISIBLE);
+                    ((RoomViewHolder)holder).chatNoReadMessage.setText(roomList.get(position).getNoReadMessageNum());
+
+                }
+            }
+
 
         }
     }
@@ -76,7 +97,7 @@ public class Adapter_chat_room extends RecyclerView.Adapter<RecyclerView.ViewHol
     public class RoomViewHolder extends RecyclerView.ViewHolder{
 
         protected CircleImageView chatOtherProfileImage;
-        protected TextView chatOtherNickname,chatFinalChat,chatFinalChatDate;
+        protected TextView chatOtherNickname,chatFinalChat,chatFinalChatDate,chatNoReadMessage;
 
 
         public RoomViewHolder(@NonNull View itemView) {
@@ -91,7 +112,7 @@ public class Adapter_chat_room extends RecyclerView.Adapter<RecyclerView.ViewHol
                     }
                 }
             });
-
+            chatNoReadMessage=itemView.findViewById(R.id.chat_room_no_read_message);
             chatOtherProfileImage=itemView.findViewById(R.id.chat_room_profile_image);
             chatOtherNickname=itemView.findViewById(R.id.chat_room_other_user_nickname);
             chatFinalChat=itemView.findViewById(R.id.chat_room_final_chat);

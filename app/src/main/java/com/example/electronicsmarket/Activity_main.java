@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -67,13 +68,17 @@ public class Activity_main extends AppCompatActivity {
                                     if(autoLogin.isChecked()){
 
                                         //자동로그인 체크되면 0
+                                        Log.e("123","닉네임"+response.body().getNickname());
                                         editor.putString("autoLogin","0");
+                                        editor.putString("nickName",response.body().getNickname());
                                         editor.putString("userId",loginId.getText().toString());
                                         editor.putString("userPassword",loginPassword.getText().toString());
                                         editor.commit();
                                     }
                                     else{
+                                        Log.e("123","닉네임"+response.body().getNickname());
                                         editor.putString("autoLogin","1");
+                                        editor.putString("nickName",response.body().getNickname());
                                         editor.putString("userId",loginId.getText().toString());
                                         editor.putString("userPassword",loginPassword.getText().toString());
                                         editor.commit();
@@ -134,7 +139,6 @@ public class Activity_main extends AppCompatActivity {
                 .build();
     }
     private void getPreferences(){
-
 
         sharedPreferences= getSharedPreferences("autoLogin",MODE_PRIVATE);
         String autoLoginNum=sharedPreferences.getString("autoLogin","");

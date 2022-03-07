@@ -49,7 +49,7 @@ public class Activity_trade_chat extends AppCompatActivity {
     private boolean isFinalPhase=false,onCreateViewIsSet=false,scrollCheck=true;
     private int heightSum;
     private ImageView tradeChatImage;
-    private TextView tradeChatProductTitle, tradeChatProductPrice, tradeChatLocation;
+    private TextView tradeChatProductTitle, tradeChatProductPrice, tradeChatLocation,tradeChatOtherUserNickname;
     private Retrofit retrofit;
     private TextView scrollHeight;
     private String postNum, seller, buyer,roomNum;
@@ -68,6 +68,8 @@ public class Activity_trade_chat extends AppCompatActivity {
     private Adapter_trade_chat.Interface_itemHeightCheck checkHeight;
     private boolean roomNumCheck=false;
     private String otherUserNickname;
+    private ImageView backImage,tradeChatLocationImage;
+
 
     private BroadcastReceiver dataReceiver = new BroadcastReceiver() {
         @Override
@@ -87,10 +89,10 @@ public class Activity_trade_chat extends AppCompatActivity {
         Log.e("123","oncreate()");
         setContentView(R.layout.activity_trade_chat);
         variableInit();
-        activity_trade_chat=Activity_trade_chat.this;
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         Intent intent = getIntent();
+
 
         //이 채팅방으로 들어오는 경우를 두가지로 나누어서, 생각하고 있다
         //1번. 채팅문의하기를 통해 채팅방 들어오기
@@ -103,6 +105,14 @@ public class Activity_trade_chat extends AppCompatActivity {
         else{
             roomNum=intent.getStringExtra("roomNum");
         }
+        Log.e("123","위치확인1");
+        Log.e("123","Service_Example instance "+Service_Example.tcpService);
+        if(Service_Example.tcpService==null){
+            Log.e("123","pendingIntent로 들어왔을 경우 service 재시작");
+            Intent serviceIntent = new Intent(getApplicationContext(), Service_Example.class);
+            startService(serviceIntent);
+        }
+        Log.e("123","위치확인2");
 
         //        Log.e("123","postNum : "+postNum);
         //        Log.e("123","seller : "+ seller);
@@ -121,10 +131,22 @@ public class Activity_trade_chat extends AppCompatActivity {
 
                     otherUserNickname=dataChatRoom.getOtherUserNickname();
                     roomNum=dataChatRoom.getRoomNum();
+
+                    tradeChatOtherUserNickname.setText(otherUserNickname);
                     otherUserImageRoute=dataChatRoom.getOtherUserImageRoute();
                     tradeChatProductTitle.setText(dataChatRoom.getPostTitle());
                     tradeChatProductPrice.setText(dataChatRoom.getPostPrice() + "원");
-                    tradeChatLocation.setText(dataChatRoom.getPostLocationName() + dataChatRoom.getPostLocationAddress());
+                    //장소 정보 없을 경우에는 화면에 나타나지 않게.
+                    if(dataChatRoom.getPostLocationName()!=null){
+                        if(dataChatRoom.getPostLocationName().equals("장소정보 없음")){
+                            tradeChatLocation.setVisibility(View.INVISIBLE);
+                            tradeChatLocationImage.setVisibility(View.INVISIBLE);
+                        }
+                        else{
+                            tradeChatLocation.setText("거래장소 : "+dataChatRoom.getPostLocationName()+"\n상세위치 : "+dataChatRoom.getPostLocationDetail());
+                        }
+                    }
+
                     Glide.with(Activity_trade_chat.this).load(dataChatRoom.getImageRoute()).into(tradeChatImage);
 
                     // 채팅방 정보 받아와서 데이터를 입력해야함.
@@ -139,7 +161,7 @@ public class Activity_trade_chat extends AppCompatActivity {
                     LocalBroadcastManager.getInstance(Activity_trade_chat.this).registerReceiver(dataReceiver, new IntentFilter("chatData"));
 
                     //이런 데이터들 다 불러오고 나서 채팅방 대화내용도 서버로부터 불러오기
-                    Call<DataChatAll> chatDataCall = service.getRoomChatInfo(roomNum,phasingNum,cursorChatNum);
+                    Call<DataChatAll> chatDataCall = service.getRoomChatInfo(roomNum,phasingNum,cursorChatNum,nickName);
                     chatDataCall.enqueue(new Callback<DataChatAll>() {
                         @Override
                         public void onResponse(Call<DataChatAll> call, Response<DataChatAll> response) {
@@ -213,7 +235,7 @@ public class Activity_trade_chat extends AppCompatActivity {
                         scrollCheck=false;
                         if(!isFinalPhase){
 
-                            Call<DataChatAll> chatDataCall = service.getRoomChatInfo(roomNum,phasingNum,cursorChatNum);
+                            Call<DataChatAll> chatDataCall = service.getRoomChatInfo(roomNum,phasingNum,cursorChatNum,nickName);
                             chatDataCall.enqueue(new Callback<DataChatAll>() {
                                 @Override
                                 public void onResponse(Call<DataChatAll> call, Response<DataChatAll> response) {
@@ -346,6 +368,12 @@ public class Activity_trade_chat extends AppCompatActivity {
             }
         });
 
+        backImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     public void setStackFromEnd(){
@@ -385,6 +413,7 @@ public class Activity_trade_chat extends AppCompatActivity {
                 .build();
 
         //xml 기본 연결
+        tradeChatOtherUserNickname=(TextView) findViewById(R.id.trade_chat_other_nickname);
         tradeChatProductPrice = (TextView) findViewById(R.id.trade_chat_product_price);
         tradeChatProductTitle = (TextView) findViewById(R.id.trade_chat_product_name);
         tradeChatImage = (ImageView) findViewById(R.id.trade_chat_product_image);
@@ -393,6 +422,9 @@ public class Activity_trade_chat extends AppCompatActivity {
         tradeChatSendText = (EditText) findViewById(R.id.trade_chat_send_text);
         tradeChatImageSend = (ImageView) findViewById(R.id.trade_chat_send_image);
         tradeChatSendTextImage = (ImageView) findViewById(R.id.trade_chat_send_text_image);
+
+        backImage=(ImageView) findViewById(R.id.trade_chat_back_arrow);
+        tradeChatLocationImage=(ImageView) findViewById(R.id.trade_chat_loactin_image);
 
 
         //shared로 내 닉네임 가져오기

@@ -181,7 +181,7 @@ public class Fragment_chat extends Fragment {
 
                 //이 부분 수정해야함
                 RetrofitService service = retrofit.create(RetrofitService.class);
-                Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName,phasingNum,cursorChatRoomNum);
+                Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName,"update",cursorChatRoomNum);
                 call.enqueue(new retrofit2.Callback<DataChatRoomAll>() {
                     @Override
                     public void onResponse(Call<DataChatRoomAll> call, Response<DataChatRoomAll> response) {

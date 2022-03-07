@@ -1,6 +1,7 @@
 package com.example.electronicsmarket;
 
 public class DataChatRoom {
+    private String postLocationDetail;
     private String finalChat,finalChatTime;
     private String postNum,postTitle,postPrice,postStatus,imageRoute;
     private String postLocationName,postLocationAddress;
@@ -8,6 +9,23 @@ public class DataChatRoom {
     private String roomNum;
     private String otherUserNickname;
     private String otherUserImageRoute;
+    private String noReadMessageNum;
+
+    public String getPostLocationDetail() {
+        return postLocationDetail;
+    }
+
+    public void setPostLocationDetail(String postLocationDetail) {
+        this.postLocationDetail = postLocationDetail;
+    }
+
+    public String getNoReadMessageNum() {
+        return noReadMessageNum;
+    }
+
+    public void setNoReadMessageNum(String noReadMessageNum) {
+        this.noReadMessageNum = noReadMessageNum;
+    }
 
     public String getFinalChat() {
         return finalChat;

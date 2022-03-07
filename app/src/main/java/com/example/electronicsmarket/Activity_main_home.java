@@ -1,5 +1,7 @@
 package com.example.electronicsmarket;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -7,6 +9,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -60,9 +63,15 @@ public class Activity_main_home extends AppCompatActivity {
         });
 
         Intent serviceIntent = new Intent(getApplicationContext(), Service_Example.class);
-        Log.e("123","nickName : "+nickName);
-        serviceIntent.putExtra("nickName",nickName);
         startService(serviceIntent);
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            Log.e(TAG, "Service is not running - START FOREGROUND SERVICE");
+//            getApplicationContext().startForegroundService(serviceIntent);
+//        } else {
+//            Log.e(TAG, "Service is not running - START SERVICE");
+//            getApplicationContext().startService(serviceIntent);
+//        }
     }
 
     private void changeFragment(Fragment fragment) {
@@ -78,5 +87,11 @@ public class Activity_main_home extends AppCompatActivity {
         nickName = sharedPreferences.getString("nickName", "");
 
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.e("123","main_home_destroy() ");
     }
 }
