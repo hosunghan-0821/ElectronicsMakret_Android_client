@@ -52,6 +52,12 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
             RightViewHolder rightViewHolder = new RightViewHolder(view);
             return rightViewHolder;
         }
+        //알림 채팅일 경우
+        else if(viewType==2){
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_chat_center, parent, false);
+            CenterViewHolder centerViewHolder= new CenterViewHolder(view);
+            return centerViewHolder;
+        }
 
         return null;
     }
@@ -75,12 +81,29 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 
         }
+
         else if (holder instanceof  RightViewHolder){
             ((RightViewHolder) holder).chatText.setText(chatList.get(position).getChat());
 
             //여기서 시간 가공 하면되지.
             ((RightViewHolder) holder).chatTime.setText(chatList.get(position).getChatTime());
+            //읽음 표시 읽지 않은 표시
+            if(chatList.get(position).getIsReadChat()!=null){
 
+                if(chatList.get(position).getIsReadChat().equals("0")){
+                    ((RightViewHolder) holder).chatRead.setText("1");
+                }
+//                else if(chatList.get(position).getIsReadChat().equals("1")){
+//                    ((RightViewHolder) holder).chatRead.setText("");
+//                }
+                else{
+                    ((RightViewHolder) holder).chatRead.setText("");
+                }
+            }
+        }
+
+        else if (holder instanceof CenterViewHolder){
+            ((CenterViewHolder) holder).chatDate.setText(chatList.get(position).getChat());
         }
     }
 
@@ -115,13 +138,25 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         protected TextView chatText;
         protected TextView chatTime;
+        protected TextView chatRead;
 
         public RightViewHolder(@NonNull View itemView) {
             super(itemView);
+            chatRead = itemView.findViewById(R.id.chat_right_read);
             chatText = itemView.findViewById(R.id.chat_right_text);
             chatTime = itemView.findViewById(R.id.chat_right_time);
 
         }
+    }
+
+    public class CenterViewHolder extends RecyclerView.ViewHolder{
+
+        protected TextView chatDate;
+        public CenterViewHolder(@NonNull View itemView) {
+            super(itemView);
+            chatDate=itemView.findViewById(R.id.chat_center_date);
+        }
+
     }
 
     public interface Interface_itemHeightCheck{

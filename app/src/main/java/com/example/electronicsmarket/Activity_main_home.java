@@ -9,8 +9,10 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -72,6 +74,18 @@ public class Activity_main_home extends AppCompatActivity {
 //            Log.e(TAG, "Service is not running - START SERVICE");
 //            getApplicationContext().startService(serviceIntent);
 //        }
+        PowerManager pm = (PowerManager) getApplicationContext().getSystemService(POWER_SERVICE);
+        boolean isWhiteListing = false;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            isWhiteListing = pm.isIgnoringBatteryOptimizations(getApplicationContext().getPackageName());
+        }
+        if (!isWhiteListing) {
+            Intent perMissionIntent = new Intent();
+            perMissionIntent.setAction(android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+            perMissionIntent.setData(Uri.parse("package:" + getApplicationContext().getPackageName()));
+            startActivity(perMissionIntent);
+        }
+
     }
 
     private void changeFragment(Fragment fragment) {

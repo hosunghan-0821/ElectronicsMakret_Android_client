@@ -1,6 +1,8 @@
 package com.example.electronicsmarket;
 
 public class DataChatRoom {
+
+    private String postSellType;
     private String postLocationDetail;
     private String finalChat,finalChatTime;
     private String postNum,postTitle,postPrice,postStatus,imageRoute;
@@ -10,6 +12,14 @@ public class DataChatRoom {
     private String otherUserNickname;
     private String otherUserImageRoute;
     private String noReadMessageNum;
+
+    public String getPostSellType() {
+        return postSellType;
+    }
+
+    public void setPostSellType(String postSellType) {
+        this.postSellType = postSellType;
+    }
 
     public String getPostLocationDetail() {
         return postLocationDetail;

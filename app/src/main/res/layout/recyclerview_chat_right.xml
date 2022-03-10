@@ -31,12 +31,24 @@
         app:layout_constraintGuide_percent="0.3" />
 
     <TextView
-        android:maxWidth="150dp"
         android:id="@+id/chat_right_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxWidth="150dp"
         android:text="시간적기"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/chat_right_text"
+        app:layout_constraintEnd_toStartOf="@+id/chat_right_text" />
+
+    <TextView
+        android:id="@+id/chat_right_read"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="3dp"
+        android:text="1"
+        android:textColor="#ff0000"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/chat_right_time"
         app:layout_constraintEnd_toStartOf="@+id/chat_right_text" />
 </androidx.constraintlayout.widget.ConstraintLayout>

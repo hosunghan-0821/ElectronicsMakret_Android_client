@@ -7,6 +7,7 @@ public class DataChat {
     private String profileImageRoute;
     private String nickname;
     private String isReadChat;
+    private String chatNum;
 
 
     public DataChat(int viewType, String chat, String chatTime, String nickname,String profileImageRoute) {
@@ -15,13 +16,33 @@ public class DataChat {
         this.chatTime = chatTime;
         this.nickname = nickname;
         this.profileImageRoute=profileImageRoute;
+        this.chatNum=chatNum;
     }
 
-    public DataChat(int viewType, String chat, String chatTime, String nickname) {
+
+    public DataChat( String chat,int viewType, String chatTime, String nickname , String isReadChat) {
         this.viewType = viewType;
         this.chat = chat;
         this.chatTime = chatTime;
         this.nickname = nickname;
+        this.isReadChat=isReadChat;
+        this.chatNum=chatNum;
+    }
+
+    public String getIsReadChat() {
+        return isReadChat;
+    }
+
+    public String getChatNum() {
+        return chatNum;
+    }
+
+    public void setChatNum(String chatNum) {
+        this.chatNum = chatNum;
+    }
+
+    public void setIsReadChat(String isReadChat) {
+        this.isReadChat = isReadChat;
     }
 
     public String getNickname() {
