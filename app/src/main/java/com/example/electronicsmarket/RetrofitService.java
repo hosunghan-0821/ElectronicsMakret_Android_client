@@ -188,6 +188,9 @@ public interface RetrofitService {
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/chatApi/getRoomChatInfo.php")
     Call<DataChatAll> getRoomChatInfo (@Field("roomNum") String roomNum,@Field("phasingNum")String phasingNum,@Field("cursorChatNum") String cursorChatNum,@Field("nickname") String nickname);
 
+    @Multipart
+    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/chatApi/setImageFiles.php")
+    Call<DataChatImageRoute> chatImageFiles(@Part ArrayList<MultipartBody.Part> files,@PartMap HashMap<String, RequestBody> params);
 
 
     //여기서부터 다른 restapi 사용하기 위한 것들

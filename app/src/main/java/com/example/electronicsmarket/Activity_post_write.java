@@ -342,6 +342,7 @@ public class Activity_post_write extends AppCompatActivity {
                             MultipartBody.Part filepart = MultipartBody.Part.createFormData("image" + i, "image", fileBody);
                             files.add(filepart);
                             Log.e("123", files.toString());
+                            //확인
                         }
 
                     }

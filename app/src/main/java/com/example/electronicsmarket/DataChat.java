@@ -8,6 +8,8 @@ public class DataChat {
     private String nickname;
     private String isReadChat;
     private String chatNum;
+    private String chatType;
+
 
 
     public DataChat(int viewType, String chat, String chatTime, String nickname,String profileImageRoute) {
@@ -27,6 +29,14 @@ public class DataChat {
         this.nickname = nickname;
         this.isReadChat=isReadChat;
         this.chatNum=chatNum;
+    }
+
+    public String getChatType() {
+        return chatType;
+    }
+
+    public void setChatType(String chatType) {
+        this.chatType = chatType;
     }
 
     public String getIsReadChat() {

@@ -8,6 +8,7 @@
     >
 
     <TextView
+
         android:id="@+id/chat_right_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -51,4 +52,6 @@
         android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/chat_right_time"
         app:layout_constraintEnd_toStartOf="@+id/chat_right_text" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

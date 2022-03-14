@@ -65,11 +65,14 @@ public class Service_Example extends Service {
             String purpose = intent.getStringExtra("purpose");
 
             if (purpose != null) {
-
+                Log.e("123","changeRoomNum : ");
                 //서버로 보내는 목적이 방번호 변경일 경우;
                 if (purpose.equals("changeRoomNum")) {
 
+                    Log.e("123","changeRoomNum : ");
                     String roomNum = intent.getStringExtra("roomNum");
+                    Log.e("123","roomNum check4 : "+roomNum);
+                    Log.e("123","purpose : "+purpose);
                     String otherUserNickname = intent.getStringExtra("otherUserNickname");
 
                     //String roomNum, String otherUserNickname, String message
@@ -85,9 +88,16 @@ public class Service_Example extends Service {
                     writeThread writeThread = new writeThread(message, "send");
                     writeThread.start();
                 }
+                //서버로 보내는 목적이 이미지 경로일 경우;
+                else if(purpose.equals("sendImage")){
+                    String message = intent.getStringExtra("message");
+                    writeThread writeThread = new writeThread(message, "sendImage");
+                    writeThread.start();
+                }
 
                 //서버로 보내는 목적이 채팅방 나가는 경우;
                 else if (purpose.equals("quit")) {
+                    Log.e("123","quit : ");
                     writeThread writeThread = new writeThread("", "quit");
                     writeThread.start();
                 }
@@ -201,7 +211,7 @@ public class Service_Example extends Service {
                     //192.168.163.1
                     //먼저 port 와 host(ip) 값을 통해서 서버와 연결을한다.
 
-                    socket = new Socket("192.168.163.1", 80);
+                    socket = new Socket("192.168.35.119", 80);
                     //연결성공하면, 서비스가 연결되었다는것을 인지지
                     tcpService = Service_Example.this;
                     //219.248.76.133  집 동적 ip /port 1234
@@ -317,7 +327,7 @@ public class Service_Example extends Service {
                         jsonObject.put("otherUserNickname", otherUserNickname);
                         out.println(jsonObject.toString());
                     }
-                    //채팅방 보내기
+                    //채팅방 채팅 보내기
                     else if (purpose.equals("send")) {
                         Log.e("123", "writeThread message :" + message);
                         JSONObject jsonObject = new JSONObject();
@@ -325,6 +335,15 @@ public class Service_Example extends Service {
                         jsonObject.put("message", message);
                         jsonObject.put("purpose", "send");
                         out.println(jsonObject.toString());
+                    }
+                    //채팅방 이미지 보내기
+                    else if(purpose.equals("sendImage")){
+                        Log.e("123", "writeThread message :" + message);
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("message", message);
+                        jsonObject.put("purpose", "sendImage");
+                        out.println(jsonObject.toString());
+
                     }
                     //채팅방 나가기
                     else if (purpose.equals("quit")) {
@@ -462,13 +481,24 @@ public class Service_Example extends Service {
                             e.printStackTrace();
                         }
                     }
-                    //알람처리가 안될 경우 (방에 둘다 있다는 뜻)
-                    Intent intent = new Intent("chatData");
-                    message = message.replace(CHANGE_LINE_CHAR, "\n");
-                    //readValue = readValue.replace(CHANGE_LINE_CHAR, "\n");
-                    intent.putExtra("writer", writer);
-                    intent.putExtra("message", message);
-                    LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
+                    else if(notice.equals("채팅전송")){
+                        //알람처리가 안될 경우 (방에 둘다 있다는 뜻)
+                        Intent intent = new Intent("chatData");
+                        message = message.replace(CHANGE_LINE_CHAR, "\n");
+                        //readValue = readValue.replace(CHANGE_LINE_CHAR, "\n");
+                        intent.putExtra("type","text");
+                        intent.putExtra("writer", writer);
+                        intent.putExtra("message", message);
+                        LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
+                    }
+                    else if(notice.equals("이미지전송")){
+                        Intent intent = new Intent("chatData");
+                        intent.putExtra("type","image");
+                        intent.putExtra("writer", writer);
+                        intent.putExtra("message", message);
+                        LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
+                    }
+
 
                 }
                 reader.close();

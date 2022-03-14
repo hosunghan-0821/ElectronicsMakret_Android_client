@@ -6,11 +6,13 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,15 +29,24 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 
-import java.text.DateFormat;
+import java.io.File;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
+import gun0912.tedbottompicker.TedBottomPicker;
+import gun0912.tedbottompicker.TedBottomSheetDialogFragment;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,6 +56,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Activity_trade_chat extends AppCompatActivity {
 
 
+    private HashMap<String, RequestBody> requestMap;
     public static Activity_trade_chat activity_trade_chat;
     private boolean isFinalPhase = false, onCreateViewIsSet = false, scrollCheck = true;
     private int heightSum;
@@ -71,6 +83,13 @@ public class Activity_trade_chat extends AppCompatActivity {
     private ImageView backImage, tradeChatLocationImage;
     private int peopleNum;
     private TextView tradeChatSellType;
+    private PermissionListener permissionlistener;
+    private boolean permissionCheck=false;
+    private ArrayList<File> imageFileCollect;
+    private ArrayList<MultipartBody.Part> files;
+
+
+
 
     private BroadcastReceiver dataReceiver = new BroadcastReceiver() {
         @Override
@@ -98,10 +117,12 @@ public class Activity_trade_chat extends AppCompatActivity {
                 return;
             }
             //상대방으로부터 채팅 데이터 받는 용인지.
+            String type=intent.getStringExtra("type");
             String message = intent.getStringExtra("message");
             String writer = intent.getStringExtra("writer");
             Message msg = new Message();
             Bundle bundle = new Bundle();
+            bundle.putString("type",type);
             bundle.putString("purpose", "getData");
             bundle.putString("writer", writer);
             bundle.putString("message", message);
@@ -120,6 +141,22 @@ public class Activity_trade_chat extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         Intent intent = getIntent();
 
+        //권한체크
+        permissionlistener=new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                permissionCheck=true;
+                //Toast.makeText(Activity_trade_chat.this, "사진,이미지 권한허용", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                Toast.makeText(Activity_trade_chat.this, "이미지 전송하기 위해선 권한필요", Toast.LENGTH_SHORT).show();
+            }
+        };
+
+
+
         //이 채팅방으로 들어오는 경우를 두가지로 나누어서, 생각하고 있다
         //1번. 채팅문의하기를 통해 채팅방 들어오기
         //2번. 현재 존재하는 채팅목록으로 부터 들어오기
@@ -130,6 +167,7 @@ public class Activity_trade_chat extends AppCompatActivity {
         } else {
             roomNum = intent.getStringExtra("roomNum");
         }
+        Log.e("123","roomNum check1 : "+roomNum);
 
         Log.e("123", "Service_Example instance " + Service_Example.tcpService);
         if (Service_Example.tcpService == null) {
@@ -145,7 +183,6 @@ public class Activity_trade_chat extends AppCompatActivity {
         RetrofitService service = retrofit.create(RetrofitService.class);
         Call<DataChatRoom> call = service.roomNumCheck(postNum, seller, buyer, roomNum, nickName);
 
-
         //채팅방 들어갔을 때, 기본적인 데이터들 가져오기
         call.enqueue(new Callback<DataChatRoom>() {
             @Override
@@ -157,6 +194,7 @@ public class Activity_trade_chat extends AppCompatActivity {
                     otherUserNickname = dataChatRoom.getOtherUserNickname();
                     roomNum = dataChatRoom.getRoomNum();
 
+                    Log.e("123","roomNum check2 : "+roomNum);
                     tradeChatOtherUserNickname.setText(otherUserNickname);
                     otherUserImageRoute = dataChatRoom.getOtherUserImageRoute();
                     tradeChatProductTitle.setText(dataChatRoom.getPostTitle());
@@ -199,13 +237,16 @@ public class Activity_trade_chat extends AppCompatActivity {
                     Intent intent = new Intent("chatDataToServer");
                     intent.putExtra("purpose", "changeRoomNum");
                     intent.putExtra("roomNum", roomNum);
+                    Log.e("123","roomNum check3 : "+roomNum);
                     intent.putExtra("otherUserNickname", otherUserNickname);
                     intent.putExtra("message", roomNum + ":" + otherUserNickname);
                     LocalBroadcastManager.getInstance(Activity_trade_chat.this).sendBroadcast(intent);
 
                     // 채팅방 정보 입력한 후에, 데이터를 받을 준비를 완료 시킨다.
                     LocalBroadcastManager.getInstance(Activity_trade_chat.this).registerReceiver(dataReceiver, new IntentFilter("chatData"));
-
+                    //권한 체크. 권한 체크할 때, onresume/onpause 발생해서, 채팅방 나가고 들어오는 현상 생김.. socket통신할 때,
+                    //어떻게 처리할지 생각해볼 필요는 있겠다.
+                    requestPermission();
                     //이런 데이터들 다 불러오고 나서 채팅방 대화내용도 서버로부터 불러오기
                     Call<DataChatAll> chatDataCall = service.getRoomChatInfo(roomNum, phasingNum, cursorChatNum, nickName);
                     chatDataCall.enqueue(new Callback<DataChatAll>() {
@@ -219,6 +260,7 @@ public class Activity_trade_chat extends AppCompatActivity {
                                 for (int i = 0; i < chatArrayList.size(); i++) {
                                     //chatList에 넣기위해 가공 및 데이터 분류
 
+                                    String chatType =chatArrayList.get(i).getChatType();
                                     String writerNickname = chatArrayList.get(i).getNickname();
                                     String chatText = chatArrayList.get(i).getChat();
                                     chatText = chatText.replace(Service_Example.CHANGE_LINE_CHAR, "\n");
@@ -236,7 +278,16 @@ public class Activity_trade_chat extends AppCompatActivity {
                                     }
                                     //나 자신일 경우
                                     if (writerNickname.equals(nickName)) {
-                                        chatList.add(0, new DataChat(chatText, 1, chatTime, writerNickname, isReadChat));
+
+                                        if(chatType!=null){
+                                            if(chatType.equals("text")){
+                                                chatList.add(0, new DataChat(chatText, 1, chatTime, writerNickname, isReadChat));
+                                            }
+                                            else if(chatType.equals("image")){
+                                                chatList.add(0, new DataChat(chatText, 3, chatTime, writerNickname, isReadChat));
+                                            }
+                                        }
+
                                     }
                                     //서버일 경우
                                     else if (writerNickname.equals("server")) {
@@ -244,9 +295,18 @@ public class Activity_trade_chat extends AppCompatActivity {
                                     }
                                     //상대방일 경우
                                     else {
-                                        chatList.add(0, new DataChat(0, chatText, chatTime, writerNickname, otherUserImageRoute));
-                                    }
 
+                                        if(chatType!=null){
+
+                                            if(chatType.equals("text")){
+                                                chatList.add(0, new DataChat(0, chatText, chatTime, writerNickname, otherUserImageRoute));
+                                            }
+                                            else if(chatType.equals("image")){
+                                                chatList.add(0,new DataChat(4,chatText,chatTime,writerNickname,otherUserImageRoute));
+                                            }
+
+                                        }
+                                    }
                                 }
                                 setStackFromEnd();
                                 adapter.notifyDataSetChanged();
@@ -287,7 +347,6 @@ public class Activity_trade_chat extends AppCompatActivity {
 
                         scrollCheck = false;
                         if (!isFinalPhase) {
-
                             Call<DataChatAll> chatDataCall = service.getRoomChatInfo(roomNum, phasingNum, cursorChatNum, nickName);
                             chatDataCall.enqueue(new Callback<DataChatAll>() {
                                 @Override
@@ -298,12 +357,11 @@ public class Activity_trade_chat extends AppCompatActivity {
                                         ArrayList<DataChat> chatArrayList = dataChatAllList.getDataChatAllList();
                                         for (int i = 0; i < chatArrayList.size(); i++) {
 
-
+                                            String chatType =chatArrayList.get(i).getChatType();
                                             String writerNickname = chatArrayList.get(i).getNickname();
                                             String chatText = chatArrayList.get(i).getChat();
                                             String isReadChat = chatArrayList.get(i).getIsReadChat();
                                             chatText = chatText.replace(Service_Example.CHANGE_LINE_CHAR, "\n");
-
                                             String chatTime = chatArrayList.get(i).getChatTime();
                                             Date chatDate;
                                             SimpleDateFormat chatTimedateFormat = new SimpleDateFormat("HH:mm");
@@ -316,7 +374,16 @@ public class Activity_trade_chat extends AppCompatActivity {
                                             }
                                             //나 자신일 경우
                                             if (writerNickname.equals(nickName)) {
-                                                chatList.add(0, new DataChat(chatText, 1, chatTime, writerNickname, isReadChat));
+
+                                                if(chatType!=null){
+                                                    if(chatType.equals("text")){
+                                                        chatList.add(0, new DataChat(chatText, 1, chatTime, writerNickname, isReadChat));
+                                                    }
+                                                    else if(chatType.equals("image")){
+                                                        chatList.add(0, new DataChat(chatText, 3, chatTime, writerNickname, isReadChat));
+                                                    }
+                                                }
+
                                             }
                                             //서버일 경우
                                             else if (writerNickname.equals("server")) {
@@ -324,20 +391,30 @@ public class Activity_trade_chat extends AppCompatActivity {
                                             }
                                             //상대방일 경우
                                             else {
-                                                chatList.add(0, new DataChat(0, chatText, chatTime, writerNickname, otherUserImageRoute));
+                                                if(chatType!=null){
+
+                                                    if(chatType.equals("text")){
+                                                        chatList.add(0, new DataChat(0, chatText, chatTime, writerNickname, otherUserImageRoute));
+                                                    }
+                                                    else if(chatType.equals("image")){
+                                                        chatList.add(0,new DataChat(4,chatText,chatTime,writerNickname,otherUserImageRoute));
+                                                    }
+
+                                                }
                                             }
                                             adapter.notifyItemInserted(0);
                                         }
+
                                         setStackFromEnd();
                                         try {
                                             if (chatList.size() != 0) {
                                                 cursorChatNum = chatArrayList.get(chatArrayList.size() - 1).getChatNum();
+                                                Log.e("123","cursorChatNum"+cursorChatNum);
                                                 // cursorChatNum = chatArrayList.get(chatArrayList.size() - 1).getChatTime();
                                             }
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
-
                                         if (!response.body().getChatNum().equals(phasingNum)) {
                                             isFinalPhase = true;
                                         }
@@ -370,13 +447,10 @@ public class Activity_trade_chat extends AppCompatActivity {
 
                 //채팅 데이터 넘어올 경우
                 if (purpose.equals("getData")) {
+                    String type = bundle.getString("type");
                     String message = bundle.getString("message");
                     String writerNickname = bundle.getString("writer");
                     try {
-                        System.out.println("여기 들어옴?");
-//                    String writerNickname = data.split(":")[0];
-//                    String message = data.split(":")[1];
-
                         String formatedNow = getMessageTime();
 
                         //작성자가 나 자신일 경우.. 근데 이거 서버에서 이제 안보내서.. 의미 x
@@ -389,7 +463,13 @@ public class Activity_trade_chat extends AppCompatActivity {
                         }
                         //상대방으로부터 온 경우
                         else {
-                            chatList.add(new DataChat(0, message, formatedNow, writerNickname, otherUserImageRoute));
+                            if(type.equals("text")){
+                                chatList.add(new DataChat(0, message, formatedNow, writerNickname, otherUserImageRoute));
+                            }
+                            else if(type.equals("image")){
+                                chatList.add(new DataChat(4,message,formatedNow,writerNickname,otherUserImageRoute));
+                            }
+
                         }
                         setStackFromEnd();
                         adapter.notifyItemInserted(chatList.size() - 1);
@@ -413,17 +493,22 @@ public class Activity_trade_chat extends AppCompatActivity {
             }
         };
 
-//        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-//                super.onScrollStateChanged(recyclerView, newState);
-//                Log.e("123","3333");
-//                if(recyclerView.canScrollVertically(1)||recyclerView.canScrollVertically(-1)){
-//                    Log.e("123","4444");
-//                    linearLayoutManager.setStackFromEnd(true);
-//                }
-//            }
-//        });
+        //이미지 전송 버튼 누를 경우.
+        tradeChatImageSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(permissionCheck){
+                    //Toast.makeText(Activity_trade_chat.this, "권한승인", Toast.LENGTH_SHORT).show();
+                    openImagesPicker();
+                }
+                else{
+                    requestPermission();
+                }
+
+            }
+        });
+
+
 
         //텍스트 전송 버튼 누를 경우.
         tradeChatSendTextImage.setOnClickListener(new View.OnClickListener() {
@@ -463,14 +548,100 @@ public class Activity_trade_chat extends AppCompatActivity {
                 linearLayoutManager.setStackFromEnd(true);
             }
         }
+    }
+    private void requestPermission(){
 
+        TedPermission.with(Activity_trade_chat.this)
+                .setPermissionListener(permissionlistener)
+                .setRationaleMessage("사진을 추가하기 위해서는 권한 설정이 필요합니다.")
+                .setDeniedMessage("[설정] > [권한] 에서 권한을 허용할 수 있습니다..")
+                .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA
+                        ,Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .check();
+
+    }
+    private void openImagesPicker() {
+        final InputStream[] in = {null};
+
+        TedBottomPicker.with(Activity_trade_chat.this)
+                .setPeekHeight(1600)
+                .showCameraTile(true) //카메라 보이기
+                .setPreviewMaxCount(1000)
+                .setSelectMaxCount(20)
+                .setSelectMaxCountErrorText("20장 이하로 선택해주세요.")
+                .showTitle(true)
+                .showGalleryTile(true)
+                .setCompleteButtonText("선택")
+                .setEmptySelectionText("No Select")
+                .showMultiImage(new TedBottomSheetDialogFragment.OnMultiImageSelectedListener() {
+                    @Override
+                    public void onImagesSelected(List<Uri> uriList) {
+
+                        //선택한 이미지 절대경로로, 파일 만들어서 서버에 올리기
+                        imageFileCollect.clear();
+                        files.clear();
+                        requestMap.clear();
+
+                        for(int i=0;i<uriList.size();i++){
+                            //uri를 통해 이미지 client에 표시하기
+                            chatList.add(new DataChat(uriList.get(i).toString(),3, getMessageTime(), nickName, Integer.toString(peopleNum)));
+                            recyclerView.scrollToPosition(chatList.size() - 1);
+                            adapter.notifyItemInserted(chatList.size() - 1);
+                            Log.e("123",uriList.get(i).getPath());
+                            //uri를 통해 서버 업로드 하기 위해서 file 생성 및 multipart에 삽입
+                            File uriFile = new File(uriList.get(i).getPath());
+                            Log.e("123", uriFile.getPath());
+                            imageFileCollect.add(uriFile);
+                            RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), uriFile);
+                            MultipartBody.Part filepart = MultipartBody.Part.createFormData("image" + i, "image", fileBody);
+                            files.add(filepart);
+                        }
+
+
+                        RequestBody roomNumBody,nickNameBody;
+                        roomNumBody=RequestBody.create(MediaType.parse("text/plain"), roomNum);
+                        nickNameBody=RequestBody.create(MediaType.parse("text/plain"),nickName);
+
+                        requestMap.put("roomNum",roomNumBody);
+                        requestMap.put("nickname",nickNameBody);
+
+                        RetrofitService service = retrofit.create(RetrofitService.class);
+                        Call<DataChatImageRoute> call = service.chatImageFiles(files,requestMap);
+                        call.enqueue(new Callback<DataChatImageRoute>() {
+                            @Override
+                            public void onResponse(Call<DataChatImageRoute> call, Response<DataChatImageRoute> response) {
+                                if(response.isSuccessful()&&response.body()!=null){
+                                    ArrayList<String> imageRoute = response.body().getImageRoute();
+                                    for(int i=0;i<imageRoute.size();i++){
+                                        //경로를 이제 service_example broadcast에 보내야함
+                                        //Log.e("123",imageRoute.get(i));
+                                        Intent intent = new Intent("chatDataToServer");
+                                        intent.putExtra("purpose", "sendImage");
+                                        intent.putExtra("message", imageRoute.get(i));
+                                        LocalBroadcastManager.getInstance(Activity_trade_chat.this).sendBroadcast(intent);
+
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<DataChatImageRoute> call, Throwable t) {
+
+                            }
+                        });
+                    }
+                });
 
     }
 
+
+
     public void variableInit() {
 
+        imageFileCollect=new ArrayList<>();
+        files=new ArrayList<>();
+        requestMap = new HashMap<>();
 
-        //
         cursorChatNum = "0";
         phasingNum = "10";
 

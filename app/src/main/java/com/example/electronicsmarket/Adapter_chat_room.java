@@ -54,6 +54,9 @@ public class Adapter_chat_room extends RecyclerView.Adapter<RecyclerView.ViewHol
             String finalChat="";
             try{
                 finalChat=roomList.get(position).getFinalChat().replace(Service_Example.CHANGE_LINE_CHAR,"\n");
+                if(finalChat.contains(Adapter_trade_chat.imageRoute)){
+                    finalChat="(이미지)";
+                }
             }catch (Exception e){
 
             }
