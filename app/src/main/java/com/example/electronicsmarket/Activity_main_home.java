@@ -64,8 +64,11 @@ public class Activity_main_home extends AppCompatActivity {
             }
         });
 
-        Intent serviceIntent = new Intent(getApplicationContext(), Service_Example.class);
-        startService(serviceIntent);
+        if(Service_Example.tcpService==null){
+            Intent serviceIntent = new Intent(getApplicationContext(), Service_Example.class);
+            startService(serviceIntent);
+        }
+
 
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 //            Log.e(TAG, "Service is not running - START FOREGROUND SERVICE");

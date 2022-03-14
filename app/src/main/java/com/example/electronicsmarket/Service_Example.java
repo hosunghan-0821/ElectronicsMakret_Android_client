@@ -31,6 +31,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.util.Calendar;
 
@@ -53,6 +54,7 @@ public class Service_Example extends Service {
     private boolean isCloseSocket = false;
     private ListenThread listenThread;
     public static Service_Example tcpService;
+    private Thread connectThread;
 
     private BroadcastReceiver dataReceiver = new BroadcastReceiver() {
         @Override
@@ -130,8 +132,57 @@ public class Service_Example extends Service {
     public void onCreate() {
         super.onCreate();
         LocalBroadcastManager.getInstance(this).registerReceiver(dataReceiver, new IntentFilter("chatDataToServer"));
-        tcpService = Service_Example.this;
+//        tcpService = Service_Example.this;
+////        String nickName = intent.getStringExtra("nickName");
+//        createNotificationChannel();
+//        // shared 값 가져오기
+//        SharedPreferences sharedPreferences = getSharedPreferences("autoLogin", MODE_PRIVATE);
+//        String nickName = sharedPreferences.getString("nickName", "");
+//
+//        Thread thread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                try {
+//                    //192.168.163.1
+//                    //먼저 port 와 host(ip) 값을 통해서 서버와 연결을한다.
+//                    socket = new Socket("219.248.76.133", 1234);
+//                    //192.168.163.1
+//                    //192.168.0.6
+//                    Log.e("123", "통신성공");
+//                    //연결이 성공 했다면, 듣는 쓰레드 지속적으로 유지시켜야함.
+//                    listenThread = new ListenThread();
+//                    listenThread.setDaemon(true);
+//                    listenThread.start();
+//                    //OutputStream
+//                    out = new PrintWriter(socket.getOutputStream(), true);
+//                    // shared 값 가져오기 JSON으로 넘기기
+//                    JSONObject jsonObject = new JSONObject();
+//                    jsonObject.put("nickname", nickName);
+//                    out.println(jsonObject.toString());
+//
+//                }
+//                catch(ConnectException ea){
+//                    tcpService=null;
+//                    Intent intent =new Intent(getApplicationContext(),Service_Example.class);
+//                    startService(intent);
+//                }
+//                catch (Exception e) {
+//                    System.out.println(e);
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//        });
+//        thread.start();
+        Log.e("123", "service onCreate()");
+    }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+
+        Log.e("123", "service onStartCommand()");
 
 //        String nickName = intent.getStringExtra("nickName");
         createNotificationChannel();
@@ -139,16 +190,24 @@ public class Service_Example extends Service {
         SharedPreferences sharedPreferences = getSharedPreferences("autoLogin", MODE_PRIVATE);
         String nickName = sharedPreferences.getString("nickName", "");
 
-        Thread thread = new Thread(new Runnable() {
+        if(tcpService!=null){
+            return START_NOT_STICKY;
+        }
+        connectThread = new Thread(new Runnable() {
             @Override
             public void run() {
 
                 try {
                     //192.168.163.1
                     //먼저 port 와 host(ip) 값을 통해서 서버와 연결을한다.
-                    socket = new Socket("219.248.76.133", 1234);
-                    //192.168.163.1
+
+                    socket = new Socket("192.168.163.1", 80);
+                    //연결성공하면, 서비스가 연결되었다는것을 인지지
+                    tcpService = Service_Example.this;
+                    //219.248.76.133  집 동적 ip /port 1234
+                    //192.168.163.1  local ip / port 80
                     //192.168.0.6
+                    //192.168.0.5    집 무선인터넷
                     Log.e("123", "통신성공");
                     //연결이 성공 했다면, 듣는 쓰레드 지속적으로 유지시켜야함.
                     listenThread = new ListenThread();
@@ -161,71 +220,25 @@ public class Service_Example extends Service {
                     jsonObject.put("nickname", nickName);
                     out.println(jsonObject.toString());
 
-                } catch (Exception e) {
+                }
+                catch(ConnectException ea){
+                    if(tcpService==null){
+                        Intent intent =new Intent(getApplicationContext(),Service_Example.class);
+                        startService(intent);
+                    }
+                    else{
+                        Log.e("123","이미연결되어있음");
+                    }
+                }
+                catch (Exception e) {
                     System.out.println(e);
                     e.printStackTrace();
                 }
 
             }
         });
-        thread.start();
-        Log.e("123", "service onCreate()");
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e("123", "service onStartCommand()");
-
-//        createNotificationChannel();
-//        SharedPreferences sharedPreferences=getSharedPreferences("autoLogin",MODE_PRIVATE);
-//        String nickName=sharedPreferences.getString("nickName","");
-//
-//        Thread thread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//                try {
-//                    //192.168.163.1
-//                    //먼저 port 와 host(ip) 값을 통해서 서버와 연결을한다.
-//                    socket = new Socket("192.168.0.6", 80);
-//                    //192.168.163.1
-//                    //192.168.0.6
-//
-//                    Log.e("123", "통신성공");
-//                    //연결이 성공 했다면, 듣는 쓰레드 지속적으로 유지시켜야함.
-//                    ListenThread listenThread = new ListenThread();
-//                    listenThread.start();
-//                    //OutputStream
-//                    out = new PrintWriter(socket.getOutputStream(), true);
-//                    // shared 값 가져오기
-//                    out.println(nickName);
-//
-//                } catch (Exception e) {
-//                    System.out.println(e);
-//                    e.printStackTrace();
-//                }
-//
-//            }
-//        });
-//        thread.start();
-//        builder = new NotificationCompat.Builder(Service_Example.this, CHANNEL_ID_HEAD)
-//                .setContentTitle("채팅 알림 메시지")
-//                .setSmallIcon(R.drawable.ic_baseline_favorite_24)
-//                .setAutoCancel(true);
-//
-//        startForeground(1234, builder.build());
-
-//        try{
-//            Thread.sleep(2000);
-//        }catch (Exception e){
-//
-//        }
-//
-//        builder= new NotificationCompat.Builder(Service_Example.this, CHANNEL_ID_HEAD)
-//                .setContentTitle("채팅 알림 메시지")
-//                .setSmallIcon(R.drawable.ic_baseline_favorite_24);
-//        foreNotificationManager.notify(1234,builder.build());
-//        foreNotificationManager.cancel(1234);
+        connectThread.setDaemon(true);
+        connectThread.start();
 
         //** return START_STICKY;
         return START_NOT_STICKY;
@@ -237,19 +250,20 @@ public class Service_Example extends Service {
         Log.e("123", "service onDestroy()");
         tcpService = null;
 
-        //Thread.currentThread().interrupt();
+        Thread.currentThread().interrupt();
 
         if (listenThread != null) {
             //Log.e("123","listenThread interrupt");
             listenThread.interrupt();
             Log.e("123","listenThtread isAlive"+listenThread.isAlive());
             Log.e("123","Thread.currentThread isAlive"+Thread.currentThread().isAlive());
+            try{
+                socket.close();
+            }catch (Exception ea){
+                Log.e("123",ea.toString());
+            }
         }
-        try{
-            socket.close();
-        }catch (Exception ea){
-            Log.e("123",ea.toString());
-        }
+
         LocalBroadcastManager.getInstance(this).unregisterReceiver(dataReceiver);
 
     }

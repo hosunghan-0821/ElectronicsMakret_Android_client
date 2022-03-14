@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:background="#dcdcdc"
+        android:background="#eee6c4"
         android:padding="5dp"
         android:text="2022년 3월 4일 금요일"
         android:textColor="@color/black"
