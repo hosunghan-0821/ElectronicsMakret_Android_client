@@ -101,10 +101,18 @@ public class Adapter_chat_room extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         protected CircleImageView chatOtherProfileImage;
         protected TextView chatOtherNickname,chatFinalChat,chatFinalChatDate,chatNoReadMessage;
-
+        protected  ImageView chatRoomOption;
 
         public RoomViewHolder(@NonNull View itemView) {
             super(itemView);
+
+
+            chatRoomOption=itemView.findViewById(R.id.chat_room_room_options);
+            chatNoReadMessage=itemView.findViewById(R.id.chat_room_no_read_message);
+            chatOtherProfileImage=itemView.findViewById(R.id.chat_room_profile_image);
+            chatOtherNickname=itemView.findViewById(R.id.chat_room_other_user_nickname);
+            chatFinalChat=itemView.findViewById(R.id.chat_room_final_chat);
+            chatFinalChatDate=itemView.findViewById(R.id.chat_room_final_chat_day);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -115,15 +123,21 @@ public class Adapter_chat_room extends RecyclerView.Adapter<RecyclerView.ViewHol
                     }
                 }
             });
-            chatNoReadMessage=itemView.findViewById(R.id.chat_room_no_read_message);
-            chatOtherProfileImage=itemView.findViewById(R.id.chat_room_profile_image);
-            chatOtherNickname=itemView.findViewById(R.id.chat_room_other_user_nickname);
-            chatFinalChat=itemView.findViewById(R.id.chat_room_final_chat);
-            chatFinalChatDate=itemView.findViewById(R.id.chat_room_final_chat_day);
+
+            chatRoomOption.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if(listener!=null){
+                        listener.onOptionClick(position,chatRoomOption);
+                    }
+                }
+            });
         }
     }
     public interface Adapter_chat_room_click{
         void onItemClick(int position);
+        void onOptionClick(int position,View view);
     }
 
     public String finalChatTimeProcess(String chatTime){

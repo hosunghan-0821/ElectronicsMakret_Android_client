@@ -19,10 +19,13 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -292,6 +295,56 @@ public class Fragment_chat extends Fragment {
                 Intent intent = new Intent(getActivity(),Activity_trade_chat.class);
                 intent.putExtra("roomNum", roomList.get(position).getRoomNum());
                 startActivity(intent);
+            }
+            @Override
+            public void onOptionClick(int position,View view) {
+                PopupMenu popup = new PopupMenu(getActivity(),view);
+                MenuInflater inflate = popup.getMenuInflater();
+                inflate.inflate(R.menu.chat_room_menu, popup.getMenu());
+                popup.show();
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        int id = item.getItemId();
+                        if(id==R.id.chat_room_out){
+                            //채팅방 나가기
+                            Log.e("123","채팅방 나가기 position : "+position);
+                            RetrofitService service = retrofit.create(RetrofitService.class);
+                            Call<DataChatRoom> call = service.userRoomOut(roomList.get(position).getRoomNum(),nickName,roomList.get(position).getOtherUserNickname());
+                            call.enqueue(new Callback<DataChatRoom>() {
+                                @Override
+                                public void onResponse(Call<DataChatRoom> call, Response<DataChatRoom> response) {
+
+                                    if(response.isSuccessful() &&response.body()!=null){
+
+                                        //여기서 해당 포지션 삭제해야함.
+                                        if(response.body().getSuccess()){
+                                            Log.e("123","채팅방 나가기 성공");
+                                            roomList.remove(position);
+                                            adapter.notifyItemRemoved(position);
+                                        }
+                                    }
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<DataChatRoom> call, Throwable t) {
+
+                                }
+                            });
+                        }
+
+                        else if(id==R.id.chat_room_announce_off){
+                            //채팅방 알림끄기
+                            Log.e("123","채팅방 알림끄기 position : "+position);
+                        }
+                        else if(id==R.id.chat_room_block){
+                            //상대방 차단하기
+                            Log.e("123","상대방 차단하기 position : "+position);
+                        }
+                        return false;
+                    }
+                });
             }
         });
 

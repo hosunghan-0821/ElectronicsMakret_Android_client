@@ -9,6 +9,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -69,9 +70,9 @@ public class Service_Example extends Service {
                 //서버로 보내는 목적이 방번호 변경일 경우;
                 if (purpose.equals("changeRoomNum")) {
 
-                    Log.e("123","changeRoomNum : ");
+                    Log.e("123","위치확인3");
                     String roomNum = intent.getStringExtra("roomNum");
-                    Log.e("123","roomNum check4 : "+roomNum);
+
                     Log.e("123","purpose : "+purpose);
                     String otherUserNickname = intent.getStringExtra("otherUserNickname");
 
@@ -211,9 +212,10 @@ public class Service_Example extends Service {
                     //192.168.163.1
                     //먼저 port 와 host(ip) 값을 통해서 서버와 연결을한다.
 
-                    socket = new Socket("192.168.35.119", 80);
+                    socket = new Socket("219.248.76.133", 12345);
                     //연결성공하면, 서비스가 연결되었다는것을 인지지
                     tcpService = Service_Example.this;
+                    //219.248.76.133  집 본체 동적ip /port 12345
                     //219.248.76.133  집 동적 ip /port 1234
                     //192.168.163.1  local ip / port 80
                     //192.168.0.6
@@ -343,6 +345,7 @@ public class Service_Example extends Service {
                         jsonObject.put("message", message);
                         jsonObject.put("purpose", "sendImage");
                         out.println(jsonObject.toString());
+                        Log.e("123","위치확인4");
 
                     }
                     //채팅방 나가기
@@ -383,11 +386,14 @@ public class Service_Example extends Service {
                 InputStream input = socket.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(input));
                 String readValue;
+                //데이터 읽기 시작
                 while ((readValue = reader.readLine()) != null) {
                     System.out.println("readvalue  :" + readValue);
                     String writer = null;
                     String message = null;
                     String notice = null;
+
+                    //서버로부터 오는 데이터 받아서 상황에 맞게 처리
                     JSONObject jsonObject = new JSONObject(readValue);
                     try {
                         System.out.println("Notice : " + jsonObject.getString("notice"));
@@ -431,7 +437,6 @@ public class Service_Example extends Service {
                     if (notice.equals("알림전송")) {
                         //알람 보내는 명령일 경우
                         try {
-
                             String notifyRoom =jsonObject.getString("notifyRoom");
                             //채팅방 밖에 있고, 채팅목록화면에 있다면, 데이터 reload 해야함. 전달될 때마다.
                             Intent intent = new Intent("reloadRoomList");
@@ -441,9 +446,18 @@ public class Service_Example extends Service {
 
                             //Notification 만들기
                             Intent notifyIntent = new Intent(Service_Example.this, Activity_trade_chat.class);
+                            TaskStackBuilder stackBuilder = TaskStackBuilder.create(Service_Example.this);
+                            stackBuilder.addNextIntentWithParentStack(notifyIntent);
+                            Intent backStackIntent=stackBuilder.editIntentAt(0);
+                            backStackIntent.putExtra("chatFragment","chatFragment");
+//                            Intent backStack2Intent=stackBuilder.editIntentAt(1);
+//                            backStack2Intent.putExtra("check","123");
+
+                            //notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             notifyIntent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                             Log.e("123", "notifyRoom" + notifyRoom);
                             notifyIntent.putExtra("roomNum", notifyRoom);
+
                             PendingIntent notifyPendingIntent =
                                     PendingIntent.getActivity(
                                             getApplicationContext(),
@@ -451,13 +465,14 @@ public class Service_Example extends Service {
                                             notifyIntent,
                                             PendingIntent.FLAG_CANCEL_CURRENT
                                     );
+                            PendingIntent notifyStackPendingIntent =stackBuilder.getPendingIntent(Integer.parseInt(notifyRoom),PendingIntent.FLAG_CANCEL_CURRENT);
                             builder = new NotificationCompat.Builder(Service_Example.this, CHANNEL_ID)
                                     .setPriority(NotificationCompat.PRIORITY_MAX)
                                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                                     .setContentTitle("채팅 알림 메시지")
                                     .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
 
-                                    .setContentIntent(notifyPendingIntent)
+                                    .setContentIntent(notifyStackPendingIntent)
 
                                     .setContentText(writer+ " : "+ message)
                                     .setSmallIcon(R.drawable.ic_baseline_favorite_24)

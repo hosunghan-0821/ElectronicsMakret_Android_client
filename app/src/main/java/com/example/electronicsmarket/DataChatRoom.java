@@ -2,6 +2,7 @@ package com.example.electronicsmarket;
 
 public class DataChatRoom {
 
+    private Boolean isSuccess;
     private String postSellType;
     private String postLocationDetail;
     private String finalChat,finalChatTime;
@@ -12,6 +13,14 @@ public class DataChatRoom {
     private String otherUserNickname;
     private String otherUserImageRoute;
     private String noReadMessageNum;
+
+    public Boolean getSuccess() {
+        return isSuccess;
+    }
+
+    public void setSuccess(Boolean success) {
+        isSuccess = success;
+    }
 
     public String getPostSellType() {
         return postSellType;

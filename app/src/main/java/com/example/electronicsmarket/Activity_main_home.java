@@ -32,14 +32,16 @@ public class Activity_main_home extends AppCompatActivity {
         variableInit();
 
         Intent intent = getIntent();
+        Log.e("123","Activity_main_home intent() : "+intent.getStringExtra("chatFragment"));
+        Log.e("123","Activity_main_home intent() : "+intent.toString());
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         getSupportFragmentManager().beginTransaction().add(R.id.main_frame, new Fragment_home()).commit();
 
-        if (intent.getStringExtra("fragmentNum") != null) {
-            if (intent.getStringExtra("fragmentNum").equals("3")) {
-                bottomNavigationView.setSelectedItemId(R.id.mypage_fragment);
-                changeFragment(new Fragment_mypage());
+        if (intent.getStringExtra("chatFragment") != null) {
+            if (intent.getStringExtra("chatFragment").equals("chatFragment")) {
+                bottomNavigationView.setSelectedItemId(R.id.chat_fragment);
+                changeFragment(new Fragment_chat());
             }
         }
 

@@ -27,10 +27,13 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
     private ArrayList<DataChat> chatList;
     private Context context;
     private Interface_itemHeightCheck checkHeightInterface;
+    private Interface_imageClick imageClickListener;
 
     public Adapter_trade_chat(ArrayList<DataChat> chatList) {
         this.chatList = chatList;
-
+    }
+    public void setImageClickListener(Interface_imageClick imageClickListener){
+        this.imageClickListener=imageClickListener;
     }
 
     public void setInterfaceCheckHeight(Interface_itemHeightCheck checkHeightInterface) {
@@ -182,6 +185,16 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
             chatTime=itemView.findViewById(R.id.chat_left_image_time);
             nickname=itemView.findViewById(R.id.chat_left_nickname);
             profileImage=itemView.findViewById(R.id.chat_left_image_profile_image);
+
+            chatImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if(imageClickListener!=null){
+                        imageClickListener.getImage(position);
+                    }
+                }
+            });
         }
     }
 
@@ -196,6 +209,15 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
             chatImage = itemView.findViewById(R.id.chat_right_image);
             chatTime = itemView.findViewById(R.id.chat_right_image_time);
             chatRead = itemView.findViewById(R.id.chat_right_image_read);
+            chatImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if(imageClickListener!=null){
+                        imageClickListener.getImage(position);
+                    }
+                }
+            });
         }
     }
 
@@ -228,5 +250,8 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public interface Interface_itemHeightCheck {
         public void getViewHeight(View itemView, int viewType);
+    }
+    public interface Interface_imageClick{
+        public void getImage(int position);
     }
 }

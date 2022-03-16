@@ -192,6 +192,10 @@ public interface RetrofitService {
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/chatApi/setImageFiles.php")
     Call<DataChatImageRoute> chatImageFiles(@Part ArrayList<MultipartBody.Part> files,@PartMap HashMap<String, RequestBody> params);
 
+    @FormUrlEncoded
+    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/chatApi/userRoomOut.php")
+    Call<DataChatRoom> userRoomOut (@Field("roomNum") String roomNum,@Field("nickname")String nickname,@Field("otherUserNickname") String otherUserNickname);
+
 
     //여기서부터 다른 restapi 사용하기 위한 것들
     @GET("https://dapi.kakao.com/v2/local/search/keyword.json")
