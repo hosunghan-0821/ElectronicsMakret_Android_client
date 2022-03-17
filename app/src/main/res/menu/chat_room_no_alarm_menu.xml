@@ -8,11 +8,7 @@
         />
     <item
 
-        android:title="채팅방 알림끄기"
-        android:id="@+id/chat_room_announce_off"
+        android:title="채팅방 알림켜기"
+        android:id="@+id/chat_room_announce_on"
         />
-<!--    <item-->
-<!--        android:title="상대방 차단"-->
-<!--        android:id="@+id/chat_room_block"-->
-<!--        />-->
 </menu>

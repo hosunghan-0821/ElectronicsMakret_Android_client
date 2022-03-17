@@ -397,12 +397,9 @@ public class Activity_place_search extends AppCompatActivity implements OnMapRea
 
         String objectToString = gson.toJson(previousArrayList, arraylistType);
 
-
         SharedPreferences.Editor editor = previousPreferences.edit();
         editor.putString("previousArrayList", objectToString);
         editor.apply();
-
-
 
     }
 

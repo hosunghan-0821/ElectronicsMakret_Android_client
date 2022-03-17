@@ -66,6 +66,8 @@ public class Activity_trade_chat extends AppCompatActivity {
 
     private HashMap<String, RequestBody> requestMap;
     public static Activity_trade_chat activity_trade_chat;
+    public static String roomNumGlobal;
+    public static String otherUserNicknameGlobal;
     private boolean isFinalPhase = false, onCreateViewIsSet = false, scrollCheck = true;
     private int heightSum;
     private ImageView tradeChatImage;
@@ -176,6 +178,9 @@ public class Activity_trade_chat extends AppCompatActivity {
         } else {
             roomNum = intent.getStringExtra("roomNum");
         }
+        activity_trade_chat=Activity_trade_chat.this;
+
+
 
 
         Log.e("123", "Service_Example instance " + Service_Example.tcpService);
@@ -202,6 +207,9 @@ public class Activity_trade_chat extends AppCompatActivity {
 
                     otherUserNickname = dataChatRoom.getOtherUserNickname();
                     roomNum = dataChatRoom.getRoomNum();
+
+                    roomNumGlobal=roomNum;
+                    otherUserNicknameGlobal=otherUserNickname;
 
 
                     tradeChatOtherUserNickname.setText(otherUserNickname);
@@ -923,6 +931,9 @@ public class Activity_trade_chat extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.e("123", "onDestroy()");
+        activity_trade_chat=null;
+        roomNumGlobal=null;
+        otherUserNicknameGlobal=null;
         //채팅방 화면 나갈 때, 채팅방 나간 것을 자바 채팅서버에 데이터 전송해서 알려야함.
 
     }

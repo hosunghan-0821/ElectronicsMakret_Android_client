@@ -1,6 +1,7 @@
 package com.example.electronicsmarket;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,6 +29,7 @@ public class Adapter_chat_room extends RecyclerView.Adapter<RecyclerView.ViewHol
     private Context context;
     private ArrayList<DataChatRoom> roomList;
     private Adapter_chat_room_click listener;
+    private SharedPreferences sharedPreferences;
 
     public void setRoomList(ArrayList<DataChatRoom> roomList){
         this.roomList=roomList;
@@ -32,6 +38,8 @@ public class Adapter_chat_room extends RecyclerView.Adapter<RecyclerView.ViewHol
     public Adapter_chat_room(Context context, ArrayList<DataChatRoom> roomList) {
         this.context = context;
         this.roomList = roomList;
+        // shared 값 가져오기
+        sharedPreferences= context.getSharedPreferences("noAlarmArrayList",Context.MODE_PRIVATE);
     }
     public void setRoomClickListener(Adapter_chat_room_click listener){
         this.listener=listener;
@@ -87,6 +95,21 @@ public class Adapter_chat_room extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                 }
             }
+            boolean noAlarmCheck=false;
+            for(int i=0;i<getNoAlarmRoomArrayList().size();i++){
+                if(getNoAlarmRoomArrayList().get(i)!=null){
+                    if(getNoAlarmRoomArrayList().get(i).equals(roomList.get(position).getRoomNum())){
+                        noAlarmCheck=true;
+                        break;
+                    }
+                }
+            }
+            if(noAlarmCheck){
+                ((RoomViewHolder) holder).chatRoomAlarmImage.setVisibility(View.VISIBLE);
+            }
+            else{
+                ((RoomViewHolder) holder).chatRoomAlarmImage.setVisibility(View.GONE);
+            }
 
 
         }
@@ -101,12 +124,13 @@ public class Adapter_chat_room extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         protected CircleImageView chatOtherProfileImage;
         protected TextView chatOtherNickname,chatFinalChat,chatFinalChatDate,chatNoReadMessage;
-        protected  ImageView chatRoomOption;
+        protected  ImageView chatRoomOption,chatRoomAlarmImage;
+
 
         public RoomViewHolder(@NonNull View itemView) {
             super(itemView);
 
-
+            chatRoomAlarmImage=itemView.findViewById(R.id.chat_room_no_alarm_image);
             chatRoomOption=itemView.findViewById(R.id.chat_room_room_options);
             chatNoReadMessage=itemView.findViewById(R.id.chat_room_no_read_message);
             chatOtherProfileImage=itemView.findViewById(R.id.chat_room_profile_image);
@@ -134,6 +158,27 @@ public class Adapter_chat_room extends RecyclerView.Adapter<RecyclerView.ViewHol
                 }
             });
         }
+    }
+    public ArrayList<String> getNoAlarmRoomArrayList(){
+
+        //gson 을 활용하여서 shared에 저장된 string을 object로 변환
+        Gson gson=new GsonBuilder().create();
+
+        ArrayList<String> noAlarmArrayList;
+        String stringToObject = sharedPreferences.getString("noAlarmArrayList", "");
+        Type arraylistType = new TypeToken<ArrayList<String>>() {                           //Type, TypeToken을 이용하여서 변환시킨 객체 타입을 얻어낸다.
+        }.getType();
+        try{
+            noAlarmArrayList=gson.fromJson(stringToObject,arraylistType);
+            if(noAlarmArrayList==null){
+                noAlarmArrayList= new ArrayList<String>();
+            }
+            return noAlarmArrayList;
+        }catch (Exception e){
+            e.printStackTrace();
+            return noAlarmArrayList=new ArrayList<>();
+        }
+
     }
     public interface Adapter_chat_room_click{
         void onItemClick(int position);

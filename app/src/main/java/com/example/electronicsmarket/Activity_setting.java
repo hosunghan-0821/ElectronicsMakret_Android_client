@@ -2,6 +2,7 @@ package com.example.electronicsmarket;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -72,6 +73,16 @@ public class Activity_setting extends AppCompatActivity {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.clear();
                     editor.commit();
+
+                    sharedPreferences=getSharedPreferences("noAlarmArrayList",MODE_PRIVATE);
+                    editor=sharedPreferences.edit();
+                    editor.clear();
+                    editor.commit();
+
+                    Intent closeIntent = new Intent("chatDataToServer");
+                    closeIntent.putExtra("purpose", "close");
+                    LocalBroadcastManager.getInstance(Activity_setting.this).sendBroadcast(closeIntent);
+
                     dialog.dismiss();
                     Intent intent =new Intent(Activity_setting.this, Activity_main.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);

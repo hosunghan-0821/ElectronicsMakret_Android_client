@@ -30,8 +30,10 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.PrintWriter;
+import java.lang.reflect.Type;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -51,10 +53,10 @@ public class Fragment_chat extends Fragment {
     private ArrayList<DataChatRoom> roomList;
     private String nickName;
     private Adapter_chat_room adapter;
-    private String cursorChatRoomNum,phasingNum;
-    private boolean isFinalPhase=false,onCreateViewIsSet=false,scrollCheck=true;
+    private String cursorChatRoomNum, phasingNum;
+    private boolean isFinalPhase = false, onCreateViewIsSet = false, scrollCheck = true;
     private Handler handler;
-
+    private SharedPreferences sharedPreferences;
 
     private BroadcastReceiver dataReceiver = new BroadcastReceiver() {
         @Override
@@ -66,7 +68,7 @@ public class Fragment_chat extends Fragment {
             Bundle bundle = new Bundle();
             bundle.putString("message", readValue);
             msg.setData(bundle);
-            Log.e("123","hadnler");
+            Log.e("123", "hadnler");
             //__alarm__:1:한포성:asdasd
             handler.sendMessage(msg);
         }
@@ -83,38 +85,38 @@ public class Fragment_chat extends Fragment {
 
         //서버로부터 데이터 가져오기..
         RetrofitService service = retrofit.create(RetrofitService.class);
-        Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName,phasingNum,cursorChatRoomNum);
+        Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, phasingNum, cursorChatRoomNum);
         call.enqueue(new Callback<DataChatRoomAll>() {
             @Override
             public void onResponse(Call<DataChatRoomAll> call, Response<DataChatRoomAll> response) {
-                Log.e("123","통신옴");
+                Log.e("123", "통신옴");
 
-                if(response.isSuccessful() && response.body()!=null){
-                    Log.e("123","통신옴2");
-                    DataChatRoomAll dataChatRoomALL =response.body();
-                    Log.e("123",dataChatRoomALL.getRoomList().toString());
-                    for(int i=0;i<dataChatRoomALL.getRoomList().size();i++){
-                        try{
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.e("123", "통신옴2");
+                    DataChatRoomAll dataChatRoomALL = response.body();
+                    Log.e("123", dataChatRoomALL.getRoomList().toString());
+                    for (int i = 0; i < dataChatRoomALL.getRoomList().size(); i++) {
+                        try {
                             roomList.add(dataChatRoomALL.getRoomList().get(i));
-                        }catch (Exception e){
+                        } catch (Exception e) {
 
                         }
 
                     }
                     adapter.notifyDataSetChanged();
-                    if(roomList.size()!=0){
-                        cursorChatRoomNum=roomList.get(roomList.size()-1).getFinalChatTime();
+                    if (roomList.size() != 0) {
+                        cursorChatRoomNum = roomList.get(roomList.size() - 1).getFinalChatTime();
                     }
-                    if(!response.body().getRoomCount().equals(phasingNum)){
-                        isFinalPhase=true;
+                    if (!response.body().getRoomCount().equals(phasingNum)) {
+                        isFinalPhase = true;
                     }
-                    onCreateViewIsSet=true;
+                    onCreateViewIsSet = true;
                 }
             }
 
             @Override
             public void onFailure(Call<DataChatRoomAll> call, Throwable t) {
-                Log.e("123",t.getMessage());
+                Log.e("123", t.getMessage());
             }
         });
 
@@ -123,35 +125,35 @@ public class Fragment_chat extends Fragment {
             chatRecyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
                 @Override
                 public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                    if(!v.canScrollVertically(1)&&scrollCheck){
-                        scrollCheck=false;
-                        if(!isFinalPhase){
-                            Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName,phasingNum,cursorChatRoomNum);
+                    if (!v.canScrollVertically(1) && scrollCheck) {
+                        scrollCheck = false;
+                        if (!isFinalPhase) {
+                            Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, phasingNum, cursorChatRoomNum);
                             call.enqueue(new Callback<DataChatRoomAll>() {
                                 @Override
                                 public void onResponse(Call<DataChatRoomAll> call, Response<DataChatRoomAll> response) {
 
-                                    if(response.isSuccessful() && response.body()!=null){
-                                        Log.e("123","통신옴2");
-                                        DataChatRoomAll dataChatRoomALL =response.body();
-                                        Log.e("123",dataChatRoomALL.getRoomList().toString());
-                                        for(int i=0;i<dataChatRoomALL.getRoomList().size();i++){
-                                            try{
+                                    if (response.isSuccessful() && response.body() != null) {
+                                        Log.e("123", "통신옴2");
+                                        DataChatRoomAll dataChatRoomALL = response.body();
+                                        Log.e("123", dataChatRoomALL.getRoomList().toString());
+                                        for (int i = 0; i < dataChatRoomALL.getRoomList().size(); i++) {
+                                            try {
                                                 roomList.add(dataChatRoomALL.getRoomList().get(i));
-                                            }catch (Exception e){
+                                            } catch (Exception e) {
 
                                             }
 
                                         }
                                         adapter.notifyDataSetChanged();
-                                        if(roomList.size()!=0){
-                                            cursorChatRoomNum=roomList.get(roomList.size()-1).getFinalChatTime();
+                                        if (roomList.size() != 0) {
+                                            cursorChatRoomNum = roomList.get(roomList.size() - 1).getFinalChatTime();
                                         }
-                                        if(!response.body().getRoomCount().equals(phasingNum)){
-                                            isFinalPhase=true;
+                                        if (!response.body().getRoomCount().equals(phasingNum)) {
+                                            isFinalPhase = true;
                                         }
-                                        onCreateViewIsSet=true;
-                                        scrollCheck=true;
+                                        onCreateViewIsSet = true;
+                                        scrollCheck = true;
                                     }
                                 }
 
@@ -164,16 +166,15 @@ public class Fragment_chat extends Fragment {
                     }
                 }
             });
-        }
-        else{
+        } else {
             Toast.makeText(getActivity(), "버전이 낮아서 스크롤링 페이징 안됨;", Toast.LENGTH_SHORT).show();
         }
 
-        handler = new Handler(Looper.getMainLooper()){
+        handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
-                Log.e("123","fragment확인");
+                Log.e("123", "fragment확인");
                 Bundle bundle = msg.getData();
                 String data = bundle.getString("message");
                 //데이터를 서버에서 가져올게 아니라 그냥 바로 업뎃해줄까?
@@ -184,34 +185,35 @@ public class Fragment_chat extends Fragment {
 
                 //이 부분 수정해야함
                 RetrofitService service = retrofit.create(RetrofitService.class);
-                Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName,"update",cursorChatRoomNum);
+                Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, "update", cursorChatRoomNum);
                 call.enqueue(new retrofit2.Callback<DataChatRoomAll>() {
                     @Override
                     public void onResponse(Call<DataChatRoomAll> call, Response<DataChatRoomAll> response) {
 
                         //통신 성공할 경우
-                        if(response.isSuccessful()&&response.body()!=null){
-                            Log.e("123","response");
+                        if (response.isSuccessful() && response.body() != null) {
+                            Log.e("123", "response");
                             roomList.clear();
-                            Log.e("123",response.body().getRoomList().toString());
-                            DataChatRoomAll dataChatRoomALL =response.body();
-                            for(int i=0;i<dataChatRoomALL.getRoomList().size();i++){
-                                try{
+                            Log.e("123", response.body().getRoomList().toString());
+                            DataChatRoomAll dataChatRoomALL = response.body();
+                            for (int i = 0; i < dataChatRoomALL.getRoomList().size(); i++) {
+                                try {
                                     roomList.add(dataChatRoomALL.getRoomList().get(i));
-                                }catch (Exception e){
+                                } catch (Exception e) {
 
                                 }
                             }
                         }
                         adapter.setRoomList(roomList);
                         adapter.notifyDataSetChanged();
-                        if(roomList.size()!=0){
-                            cursorChatRoomNum=roomList.get(roomList.size()-1).getFinalChatTime();
+                        if (roomList.size() != 0) {
+                            cursorChatRoomNum = roomList.get(roomList.size() - 1).getFinalChatTime();
                         }
-                        if(!response.body().getRoomCount().equals(phasingNum)){
-                            isFinalPhase=true;
+                        if (!response.body().getRoomCount().equals(phasingNum)) {
+                            isFinalPhase = true;
                         }
                     }
+
                     @Override
                     public void onFailure(Call<DataChatRoomAll> call, Throwable t) {
                         Log.e("123", t.getMessage());
@@ -236,21 +238,21 @@ public class Fragment_chat extends Fragment {
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(dataReceiver, new IntentFilter("reloadRoomList"));
 
-        if(onCreateViewIsSet){
+        if (onCreateViewIsSet) {
             RetrofitService service = retrofit.create(RetrofitService.class);
-            Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName,"update",cursorChatRoomNum);
+            Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, "update", cursorChatRoomNum);
             call.enqueue(new Callback<DataChatRoomAll>() {
                 @Override
                 public void onResponse(Call<DataChatRoomAll> call, Response<DataChatRoomAll> response) {
 
                     //통신 성공할 경우
-                    if(response.isSuccessful()&&response.body()!=null){
+                    if (response.isSuccessful() && response.body() != null) {
                         roomList.clear();
-                        DataChatRoomAll dataChatRoomALL =response.body();
-                        for(int i=0;i<dataChatRoomALL.getRoomList().size();i++){
-                            try{
+                        DataChatRoomAll dataChatRoomALL = response.body();
+                        for (int i = 0; i < dataChatRoomALL.getRoomList().size(); i++) {
+                            try {
                                 roomList.add(dataChatRoomALL.getRoomList().get(i));
-                            }catch (Exception e){
+                            } catch (Exception e) {
 
                             }
                         }
@@ -273,53 +275,92 @@ public class Fragment_chat extends Fragment {
 
     public void variableInit(View view) {
 
-        cursorChatRoomNum="0";
-        phasingNum="7";
+        cursorChatRoomNum = "0";
+        phasingNum = "7";
 
         //기본 xml 연결.
         chatNotificationImage = view.findViewById(R.id.chat_notification);
 
         //recyclerview 관련
         chatRecyclerView = view.findViewById(R.id.chat_recyclerview);
-        linearLayoutManager=new LinearLayoutManager(getContext());
-        roomList=new ArrayList<>();
-        adapter=new Adapter_chat_room(getActivity(),roomList);
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        roomList = new ArrayList<>();
+        adapter = new Adapter_chat_room(getActivity(), roomList);
 
         chatRecyclerView.setLayoutManager(linearLayoutManager);
         chatRecyclerView.setAdapter(adapter);
+
+
+        //shared 관련
+        // shared 값 가져오기
+        sharedPreferences = getContext().getSharedPreferences("noAlarmArrayList", Context.MODE_PRIVATE);
+
 
         //adapter clickListener 장착
         adapter.setRoomClickListener(new Adapter_chat_room.Adapter_chat_room_click() {
             @Override
             public void onItemClick(int position) {
-                Intent intent = new Intent(getActivity(),Activity_trade_chat.class);
+                Intent intent = new Intent(getActivity(), Activity_trade_chat.class);
                 intent.putExtra("roomNum", roomList.get(position).getRoomNum());
                 startActivity(intent);
             }
+
             @Override
-            public void onOptionClick(int position,View view) {
-                PopupMenu popup = new PopupMenu(getActivity(),view);
+            public void onOptionClick(int position, View view) {
+                PopupMenu popup = new PopupMenu(getActivity(), view);
                 MenuInflater inflate = popup.getMenuInflater();
-                inflate.inflate(R.menu.chat_room_menu, popup.getMenu());
-                popup.show();
+                //채팅방 알림끄기 에 따라서, 알림 켜기 로 바꿔야하기 때문에, menu inflate하는걸 다르게 해야겠네.
+                boolean noAlarmCheck = false;
+                for (int i = 0; i < getNoAlarmRoomArrayList().size(); i++) {
+
+                    if (getNoAlarmRoomArrayList().get(i) != null) {
+                        if (getNoAlarmRoomArrayList().get(i).equals(roomList.get(position).getRoomNum())) {
+                            noAlarmCheck = true;
+                            break;
+                        }
+                    }
+
+                }
+                if (!noAlarmCheck) {
+                    inflate.inflate(R.menu.chat_room_menu, popup.getMenu());
+                    popup.show();
+                } else {
+                    inflate.inflate(R.menu.chat_room_no_alarm_menu, popup.getMenu());
+                    popup.show();
+                }
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         int id = item.getItemId();
-                        if(id==R.id.chat_room_out){
+                        if (id == R.id.chat_room_out) {
                             //채팅방 나가기
-                            Log.e("123","채팅방 나가기 position : "+position);
+                            Log.e("123", "채팅방 나가기 position : " + position);
                             RetrofitService service = retrofit.create(RetrofitService.class);
-                            Call<DataChatRoom> call = service.userRoomOut(roomList.get(position).getRoomNum(),nickName,roomList.get(position).getOtherUserNickname());
+                            Call<DataChatRoom> call = service.userRoomOut(roomList.get(position).getRoomNum(), nickName, roomList.get(position).getOtherUserNickname());
                             call.enqueue(new Callback<DataChatRoom>() {
                                 @Override
                                 public void onResponse(Call<DataChatRoom> call, Response<DataChatRoom> response) {
 
-                                    if(response.isSuccessful() &&response.body()!=null){
+                                    if (response.isSuccessful() && response.body() != null) {
 
                                         //여기서 해당 포지션 삭제해야함.
-                                        if(response.body().getSuccess()){
-                                            Log.e("123","채팅방 나가기 성공");
+                                        if (response.body().getSuccess()) {
+                                            Log.e("123", "채팅방 나가기 성공");
+
+                                            //채팅방 알림껏던 기록들 제거해야함
+                                            Log.e("123","채팅방 알림 켜기1");
+                                            ArrayList<String> noAlarmArrayList = getNoAlarmRoomArrayList();
+                                            for (int i = 0; i < noAlarmArrayList.size(); i++) {
+                                                if (noAlarmArrayList.get(i) != null) {
+                                                    if (noAlarmArrayList.get(i).equals(roomList.get(position).getRoomNum())) {
+                                                        Log.e("123","채팅방 알림 켜기2");
+                                                        noAlarmArrayList.remove(i);
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            Log.e("123","채팅방 알림 켜기3");
+                                            setNoAlarmRoomArrayList(noAlarmArrayList);
                                             roomList.remove(position);
                                             adapter.notifyItemRemoved(position);
                                         }
@@ -332,16 +373,30 @@ public class Fragment_chat extends Fragment {
 
                                 }
                             });
-                        }
-
-                        else if(id==R.id.chat_room_announce_off){
+                        } else if (id == R.id.chat_room_announce_off) {
                             //채팅방 알림끄기
-                            Log.e("123","채팅방 알림끄기 position : "+position);
+                            Log.e("123", "채팅방 알림끄기 position : " + position);
+                            ArrayList<String> noAlarmArrayList = getNoAlarmRoomArrayList();
+                            noAlarmArrayList.add(roomList.get(position).getRoomNum());
+                            setNoAlarmRoomArrayList(noAlarmArrayList);
+                            adapter.notifyItemChanged(position);
+                        } else if (id == R.id.chat_room_announce_on) {
+                            ArrayList<String> noAlarmArrayList = getNoAlarmRoomArrayList();
+                            for (int i = 0; i < noAlarmArrayList.size(); i++) {
+                                if (noAlarmArrayList.get(i) != null) {
+                                    if (noAlarmArrayList.get(i).equals(roomList.get(position).getRoomNum())) {
+                                        noAlarmArrayList.remove(i);
+                                        adapter.notifyItemChanged(position);
+                                        break;
+                                    }
+                                }
+                            }
+                            setNoAlarmRoomArrayList(noAlarmArrayList);
                         }
-                        else if(id==R.id.chat_room_block){
-                            //상대방 차단하기
-                            Log.e("123","상대방 차단하기 position : "+position);
-                        }
+//                        else if(id==R.id.chat_room_block){
+//                            //상대방 차단하기
+//                            Log.e("123","상대방 차단하기 position : "+position);
+//                        }
                         return false;
                     }
                 });
@@ -361,5 +416,41 @@ public class Fragment_chat extends Fragment {
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("autoLogin", Context.MODE_PRIVATE);
         nickName = sharedPreferences.getString("nickName", "");
     }
+
+    public void setNoAlarmRoomArrayList(ArrayList<String> noAlarmArrayList) {
+
+        Gson gson = new GsonBuilder().create();
+        Type arraylistType = new TypeToken<ArrayList<String>>() {       // 내가 변환한 객체의 type을 얻어내는 코드 Type 와 TypeToken .getType() 메소드를 사용한다.
+        }.getType();
+
+        String objectToString = gson.toJson(noAlarmArrayList, arraylistType);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("noAlarmArrayList", objectToString);
+        editor.apply();
+    }
+
+    public ArrayList<String> getNoAlarmRoomArrayList() {
+
+        //gson 을 활용하여서 shared에 저장된 string을 object로 변환
+        Gson gson = new GsonBuilder().create();
+
+        ArrayList<String> noAlarmArrayList;
+        String stringToObject = sharedPreferences.getString("noAlarmArrayList", "");
+        Type arraylistType = new TypeToken<ArrayList<String>>() {                           //Type, TypeToken을 이용하여서 변환시킨 객체 타입을 얻어낸다.
+        }.getType();
+        try {
+            noAlarmArrayList = gson.fromJson(stringToObject, arraylistType);
+            if (noAlarmArrayList == null) {
+                noAlarmArrayList = new ArrayList<String>();
+            }
+            return noAlarmArrayList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return noAlarmArrayList = new ArrayList<>();
+        }
+
+    }
+
 
 }

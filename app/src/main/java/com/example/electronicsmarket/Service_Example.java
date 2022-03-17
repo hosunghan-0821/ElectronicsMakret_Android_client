@@ -17,14 +17,21 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
 
@@ -32,8 +39,13 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.lang.reflect.Type;
 import java.net.ConnectException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
+import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class Service_Example extends Service {
@@ -49,13 +61,14 @@ public class Service_Example extends Service {
     private PrintWriter out;
     private NotificationCompat.Builder builder = null;
     private NotificationCompat.Builder summaryBuilder = null;
-
+    private SharedPreferences sharedPreferences;
     private NotificationManager foreNotificationManager;
     private NotificationManager notificationManager;
     private boolean isCloseSocket = false;
     private ListenThread listenThread;
     public static Service_Example tcpService;
     private Thread connectThread;
+    private Handler handler;
 
     private BroadcastReceiver dataReceiver = new BroadcastReceiver() {
         @Override
@@ -66,14 +79,14 @@ public class Service_Example extends Service {
             String purpose = intent.getStringExtra("purpose");
 
             if (purpose != null) {
-                Log.e("123","changeRoomNum : ");
+                Log.e("123", "changeRoomNum : ");
                 //서버로 보내는 목적이 방번호 변경일 경우;
                 if (purpose.equals("changeRoomNum")) {
 
-                    Log.e("123","위치확인3");
+                    Log.e("123", "위치확인3");
                     String roomNum = intent.getStringExtra("roomNum");
 
-                    Log.e("123","purpose : "+purpose);
+                    Log.e("123", "purpose : " + purpose);
                     String otherUserNickname = intent.getStringExtra("otherUserNickname");
 
                     //String roomNum, String otherUserNickname, String message
@@ -90,7 +103,7 @@ public class Service_Example extends Service {
                     writeThread.start();
                 }
                 //서버로 보내는 목적이 이미지 경로일 경우;
-                else if(purpose.equals("sendImage")){
+                else if (purpose.equals("sendImage")) {
                     String message = intent.getStringExtra("message");
                     writeThread writeThread = new writeThread(message, "sendImage");
                     writeThread.start();
@@ -98,14 +111,22 @@ public class Service_Example extends Service {
 
                 //서버로 보내는 목적이 채팅방 나가는 경우;
                 else if (purpose.equals("quit")) {
-                    Log.e("123","quit : ");
+                    Log.e("123", "quit : ");
                     writeThread writeThread = new writeThread("", "quit");
                     writeThread.start();
+                }
+                else if(purpose.equals("close")){
+                    Log.e("123", "close : 소켓종료 ");
+                    writeThread writeThread = new writeThread("close", "closeSocket");
+                    writeThread.start();
+
+                    stopSelf();
                 }
 
             }
             //purpose가 없을 떄.. 좀 있다 바꿀꺼야
             else {
+                Log.e("123","purpose null 일 경우");
                 writeThread writeThread = new writeThread(readValue);
                 writeThread.start();
             }
@@ -121,7 +142,7 @@ public class Service_Example extends Service {
         Log.e("123", "onTaskRemoved : ");
 //        writeThread writeThread = new writeThread("close");
 //        writeThread.start();
-        writeThread writeThread = new writeThread("close","closeSocket");
+        writeThread writeThread = new writeThread("close", "closeSocket");
         writeThread.start();
 
         stopSelf();
@@ -143,6 +164,20 @@ public class Service_Example extends Service {
     public void onCreate() {
         super.onCreate();
         LocalBroadcastManager.getInstance(this).registerReceiver(dataReceiver, new IntentFilter("chatDataToServer"));
+        // shared 값 가져오기
+        sharedPreferences = getSharedPreferences("noAlarmArrayList", MODE_PRIVATE);
+        handler=new Handler(Looper.getMainLooper()){
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                super.handleMessage(msg);
+                Bundle bundle = msg.getData();
+                String message = bundle.getString("message");
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+            }
+        };
+        //sharedPreferences= getApplicationContext().getSharedPreferences("noAlarmArrayList",Context.MODE_PRIVATE);
+
+
 //        tcpService = Service_Example.this;
 ////        String nickName = intent.getStringExtra("nickName");
 //        createNotificationChannel();
@@ -195,13 +230,14 @@ public class Service_Example extends Service {
 
         Log.e("123", "service onStartCommand()");
 
+
 //        String nickName = intent.getStringExtra("nickName");
         createNotificationChannel();
         // shared 값 가져오기
         SharedPreferences sharedPreferences = getSharedPreferences("autoLogin", MODE_PRIVATE);
         String nickName = sharedPreferences.getString("nickName", "");
 
-        if(tcpService!=null){
+        if (tcpService != null) {
             return START_NOT_STICKY;
         }
         connectThread = new Thread(new Runnable() {
@@ -212,9 +248,15 @@ public class Service_Example extends Service {
                     //192.168.163.1
                     //먼저 port 와 host(ip) 값을 통해서 서버와 연결을한다.
 
-                    socket = new Socket("219.248.76.133", 12345);
-                    //연결성공하면, 서비스가 연결되었다는것을 인지지
+//                    socket = new Socket("219.248.76.133", 12345);
+                    socket = new Socket();
+                    SocketAddress address = new InetSocketAddress("219.248.76.133", 12345);
+                    socket.connect(address,5000);
+                    //연결성공하면, 서비스가 연결되었다는것을 인지
+                    //toastMessage 생성
+                    handleMessage("서버소켓 연결성공");
                     tcpService = Service_Example.this;
+                    //192.168.35.119  이모네 wifi ip / port 80
                     //219.248.76.133  집 본체 동적ip /port 12345
                     //219.248.76.133  집 동적 ip /port 1234
                     //192.168.163.1  local ip / port 80
@@ -232,17 +274,31 @@ public class Service_Example extends Service {
                     jsonObject.put("nickname", nickName);
                     out.println(jsonObject.toString());
 
-                }
-                catch(ConnectException ea){
-                    if(tcpService==null){
-                        Intent intent =new Intent(getApplicationContext(),Service_Example.class);
+                    if(Activity_trade_chat.activity_trade_chat!=null){
+
+                        jsonObject.put("roomNum", Activity_trade_chat.roomNumGlobal);
+                        jsonObject.put("otherUserNickname",Activity_trade_chat.otherUserNicknameGlobal);
+                        out.println(jsonObject.toString());
+                    }
+
+                }catch (SocketTimeoutException e){
+                    stopSelf();
+                    if (tcpService == null) {
+                        Intent intent = new Intent(getApplicationContext(), Service_Example.class);
                         startService(intent);
-                    }
-                    else{
-                        Log.e("123","이미연결되어있음");
+                    } else {
+                        Log.e("123", "이미연결되어있음");
                     }
                 }
-                catch (Exception e) {
+                catch (ConnectException ea) {
+                    if (tcpService == null) {
+                        Intent intent = new Intent(getApplicationContext(), Service_Example.class);
+                        startService(intent);
+
+                    } else {
+                        Log.e("123", "이미연결되어있음");
+                    }
+                } catch (Exception e) {
                     System.out.println(e);
                     e.printStackTrace();
                 }
@@ -267,12 +323,12 @@ public class Service_Example extends Service {
         if (listenThread != null) {
             //Log.e("123","listenThread interrupt");
             listenThread.interrupt();
-            Log.e("123","listenThtread isAlive"+listenThread.isAlive());
-            Log.e("123","Thread.currentThread isAlive"+Thread.currentThread().isAlive());
-            try{
+            Log.e("123", "listenThtread isAlive" + listenThread.isAlive());
+            Log.e("123", "Thread.currentThread isAlive" + Thread.currentThread().isAlive());
+            try {
                 socket.close();
-            }catch (Exception ea){
-                Log.e("123",ea.toString());
+            } catch (Exception ea) {
+                Log.e("123", ea.toString());
             }
         }
 
@@ -339,13 +395,13 @@ public class Service_Example extends Service {
                         out.println(jsonObject.toString());
                     }
                     //채팅방 이미지 보내기
-                    else if(purpose.equals("sendImage")){
+                    else if (purpose.equals("sendImage")) {
                         Log.e("123", "writeThread message :" + message);
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("message", message);
                         jsonObject.put("purpose", "sendImage");
                         out.println(jsonObject.toString());
-                        Log.e("123","위치확인4");
+                        Log.e("123", "위치확인4");
 
                     }
                     //채팅방 나가기
@@ -356,7 +412,7 @@ public class Service_Example extends Service {
                         out.println(jsonObject.toString());
                     }
                     //소켓종료
-                    else if(purpose.equals("closeSocket")){
+                    else if (purpose.equals("closeSocket")) {
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("message", "close");
                         jsonObject.put("purpose", "close");
@@ -403,27 +459,27 @@ public class Service_Example extends Service {
                     } catch (Exception e) {
                     }
                     //채팅방 명수 정보 받기. 방 맨처음 들어왔을 경우
-                    if(jsonObject.getString("notice").equals("인원체크")){
+                    if (jsonObject.getString("notice").equals("인원체크")) {
                         Intent intent = new Intent("chatData");
-                        intent.putExtra("purpose","인원체크");
-                        intent.putExtra("peopleNum",jsonObject.getInt("peopleNum"));
+                        intent.putExtra("purpose", "인원체크");
+                        intent.putExtra("peopleNum", jsonObject.getInt("peopleNum"));
                         LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
                         continue;
                     }
                     //채팅방 다른 유저이 들어왔을 경우
-                    else if(jsonObject.getString("notice").equals("인원추가")){
+                    else if (jsonObject.getString("notice").equals("인원추가")) {
                         //인원추가 할 때, 데이터도 reload 해야하네
                         Intent intent = new Intent("chatData");
-                        intent.putExtra("purpose","인원추가");
-                        intent.putExtra("peopleNum",jsonObject.getInt("peopleNum"));
+                        intent.putExtra("purpose", "인원추가");
+                        intent.putExtra("peopleNum", jsonObject.getInt("peopleNum"));
                         LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
                         continue;
                     }
                     //채팅방 다른 유저 나갔을 경우
-                    else if(jsonObject.getString("notice").equals("인원감소")){
+                    else if (jsonObject.getString("notice").equals("인원감소")) {
                         Intent intent = new Intent("chatData");
-                        intent.putExtra("purpose","인원감소");
-                        intent.putExtra("peopleNum",jsonObject.getInt("peopleNum"));
+                        intent.putExtra("purpose", "인원감소");
+                        intent.putExtra("peopleNum", jsonObject.getInt("peopleNum"));
                         LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
                         continue;
                     }
@@ -437,19 +493,35 @@ public class Service_Example extends Service {
                     if (notice.equals("알림전송")) {
                         //알람 보내는 명령일 경우
                         try {
-                            String notifyRoom =jsonObject.getString("notifyRoom");
+                            String notifyRoom = jsonObject.getString("notifyRoom");
+
+
                             //채팅방 밖에 있고, 채팅목록화면에 있다면, 데이터 reload 해야함. 전달될 때마다.
                             Intent intent = new Intent("reloadRoomList");
                             message = message.replace(CHANGE_LINE_CHAR, "\n");
                             intent.putExtra("message", message);
                             LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
 
+                            //알림끄기 기능 확인해서 해당 채팅방에 대해서는 알림 보내지 않기
+                            boolean alarmCheck=false;
+                            for(int i=0; i<getNoAlarmRoomArrayList().size();i++){
+                                if(getNoAlarmRoomArrayList().get(i)!=null){
+                                    if(getNoAlarmRoomArrayList().get(i).equals(notifyRoom)){
+                                        alarmCheck=true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if(alarmCheck){
+                                continue;
+                            }
+
                             //Notification 만들기
                             Intent notifyIntent = new Intent(Service_Example.this, Activity_trade_chat.class);
                             TaskStackBuilder stackBuilder = TaskStackBuilder.create(Service_Example.this);
                             stackBuilder.addNextIntentWithParentStack(notifyIntent);
-                            Intent backStackIntent=stackBuilder.editIntentAt(0);
-                            backStackIntent.putExtra("chatFragment","chatFragment");
+                            Intent backStackIntent = stackBuilder.editIntentAt(0);
+                            backStackIntent.putExtra("chatFragment", "chatFragment");
 //                            Intent backStack2Intent=stackBuilder.editIntentAt(1);
 //                            backStack2Intent.putExtra("check","123");
 
@@ -465,7 +537,7 @@ public class Service_Example extends Service {
                                             notifyIntent,
                                             PendingIntent.FLAG_CANCEL_CURRENT
                                     );
-                            PendingIntent notifyStackPendingIntent =stackBuilder.getPendingIntent(Integer.parseInt(notifyRoom),PendingIntent.FLAG_CANCEL_CURRENT);
+                            PendingIntent notifyStackPendingIntent = stackBuilder.getPendingIntent(Integer.parseInt(notifyRoom), PendingIntent.FLAG_CANCEL_CURRENT);
                             builder = new NotificationCompat.Builder(Service_Example.this, CHANNEL_ID)
                                     .setPriority(NotificationCompat.PRIORITY_MAX)
                                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
@@ -474,7 +546,7 @@ public class Service_Example extends Service {
 
                                     .setContentIntent(notifyStackPendingIntent)
 
-                                    .setContentText(writer+ " : "+ message)
+                                    .setContentText(writer + " : " + message)
                                     .setSmallIcon(R.drawable.ic_baseline_favorite_24)
                                     .setAutoCancel(true)
                                     .setGroup(notiGroup);
@@ -495,20 +567,18 @@ public class Service_Example extends Service {
                             System.out.println("알림 체크하는 부분 오류");
                             e.printStackTrace();
                         }
-                    }
-                    else if(notice.equals("채팅전송")){
+                    } else if (notice.equals("채팅전송")) {
                         //알람처리가 안될 경우 (방에 둘다 있다는 뜻)
                         Intent intent = new Intent("chatData");
                         message = message.replace(CHANGE_LINE_CHAR, "\n");
                         //readValue = readValue.replace(CHANGE_LINE_CHAR, "\n");
-                        intent.putExtra("type","text");
+                        intent.putExtra("type", "text");
                         intent.putExtra("writer", writer);
                         intent.putExtra("message", message);
                         LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
-                    }
-                    else if(notice.equals("이미지전송")){
+                    } else if (notice.equals("이미지전송")) {
                         Intent intent = new Intent("chatData");
-                        intent.putExtra("type","image");
+                        intent.putExtra("type", "image");
                         intent.putExtra("writer", writer);
                         intent.putExtra("message", message);
                         LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
@@ -522,15 +592,21 @@ public class Service_Example extends Service {
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.e("123", "서비스 종료 ListeningThread 종료");
-                writeThread writeThread = new writeThread("close","closeSocket");
+                writeThread writeThread = new writeThread("close", "closeSocket");
                 writeThread.start();
-                stopSelf();
-                try{
+
+                try {
                     socket.close();
-                }catch (Exception ea){
-                    Log.e("123",ea.toString());
+                } catch (Exception ea) {
+                    Log.e("123", ea.toString());
                 }
 
+                //서버에 의한 강종일시, service 재시작하는 코드가 필요
+                handleMessage("서버소켓 연결끊김/ 재연결 시도");
+                //setNotificationService();
+                stopSelf();
+                Intent intent = new Intent(getApplicationContext(), Service_Example.class);
+                startService(intent);
             }
 
         }
@@ -553,6 +629,34 @@ public class Service_Example extends Service {
             }
         } else {
             builder = new NotificationCompat.Builder(getApplicationContext());
+        }
+    }
+
+    public void handleMessage(String message){
+        Message msg = new Message();
+        Bundle bundle = new Bundle();
+        bundle.putString("message", message);
+        msg.setData(bundle);
+        handler.sendMessage(msg);
+    }
+    public ArrayList<String> getNoAlarmRoomArrayList() {
+
+        //gson 을 활용하여서 shared에 저장된 string을 object로 변환
+        Gson gson = new GsonBuilder().create();
+
+        ArrayList<String> noAlarmArrayList;
+        String stringToObject = sharedPreferences.getString("noAlarmArrayList", "");
+        Type arraylistType = new TypeToken<ArrayList<String>>() {                           //Type, TypeToken을 이용하여서 변환시킨 객체 타입을 얻어낸다.
+        }.getType();
+        try {
+            noAlarmArrayList = gson.fromJson(stringToObject, arraylistType);
+            if (noAlarmArrayList == null) {
+                noAlarmArrayList = new ArrayList<String>();
+            }
+            return noAlarmArrayList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return noAlarmArrayList = new ArrayList<>();
         }
 
     }
