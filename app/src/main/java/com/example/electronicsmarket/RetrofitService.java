@@ -120,15 +120,11 @@ public interface RetrofitService {
             @Part ArrayList<MultipartBody.Part> files, @PartMap HashMap<String, RequestBody> params
             );
 
-
     @Multipart
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/postUpdate.php")
     Call<MemberSignup> sendUpdate(
             @Part ArrayList<MultipartBody.Part> files, @PartMap HashMap<String, RequestBody> params
     );
-
-
-
 
     @Multipart
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/paymentApi/paymentSuccess.php")

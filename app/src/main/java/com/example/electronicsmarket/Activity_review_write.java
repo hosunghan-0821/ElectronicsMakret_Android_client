@@ -145,6 +145,7 @@ public class Activity_review_write extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                //리뷰삭제일 경우
                 if (deleteReview) {
                     Call<PostInfo> call = service.deleteReviewInfo(postNum);
                     call.enqueue(new Callback<PostInfo>() {
@@ -180,6 +181,7 @@ public class Activity_review_write extends AppCompatActivity {
                 map.put("postNum", RequestBody.create(MediaType.parse("text/plain"), postNum));
                 map.put("email", RequestBody.create(MediaType.parse("text/plain"), id));
 
+                //수정이 아닐 경우 최초등록
                 if (!isReview) {
                     Call<PostInfo> call = service.sendReviewInfo(map);
                     call.enqueue(new Callback<PostInfo>() {
@@ -202,7 +204,9 @@ public class Activity_review_write extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "통신 오류!", Toast.LENGTH_SHORT).show();
                         }
                     });
-                } else {
+                }
+                //리뷰 수정일 경우
+                else {
                     map.put("beforeRating", RequestBody.create(MediaType.parse("text/plain"), beforeUpdateRating));
                     Call<PostInfo> call = service.updateReviewInfo(map);
                     call.enqueue(new Callback<PostInfo>() {

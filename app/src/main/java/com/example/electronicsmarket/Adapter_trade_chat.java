@@ -7,12 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import org.w3c.dom.Text;
 
@@ -28,6 +30,8 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
     private Context context;
     private Interface_itemHeightCheck checkHeightInterface;
     private Interface_imageClick imageClickListener;
+    private Interface_resendClick resendClickListener;
+    private Interface_imageResendClick imageResendClickListener;
 
     public Adapter_trade_chat(ArrayList<DataChat> chatList) {
         this.chatList = chatList;
@@ -36,8 +40,12 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
         this.imageClickListener=imageClickListener;
     }
 
-    public void setInterfaceCheckHeight(Interface_itemHeightCheck checkHeightInterface) {
-        this.checkHeightInterface = checkHeightInterface;
+    public void setResendClickListener(Interface_resendClick resendClickListener){
+        this.resendClickListener=resendClickListener;
+
+    }
+    public void setResendImageClickListener(Interface_imageResendClick imageResendClickListener){
+        this.imageResendClickListener = imageResendClickListener;
     }
 
     public Adapter_trade_chat(ArrayList<DataChat> chatList, Context context) {
@@ -97,36 +105,70 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
         } else if (holder instanceof RightViewHolder) {
 
+            //네트워크 연결 상태에 문제가 존재하지 않을 경우
+            if(chatList.get(position).getNetworkStatus()==3){
+                ((RightViewHolder) holder).chatRefresh.setVisibility(View.VISIBLE);
+                ((RightViewHolder) holder).chatTime.setVisibility(View.GONE);
+                ((RightViewHolder) holder).chatRead.setVisibility(View.GONE);
+                ((RightViewHolder) holder).chatText.setText(chatList.get(position).getChat());
+            }
+            //네트워크 연결 상태에 문제가 존재하는 경우
+            else{
+                ((RightViewHolder) holder).chatRefresh.setVisibility(View.GONE);
+                ((RightViewHolder) holder).chatTime.setVisibility(View.VISIBLE);
+                ((RightViewHolder) holder).chatRead.setVisibility(View.VISIBLE);
 
-            ((RightViewHolder) holder).chatText.setText(chatList.get(position).getChat());
+                ((RightViewHolder) holder).chatText.setText(chatList.get(position).getChat());
+                //여기서 시간 가공 하면되지.
+                ((RightViewHolder) holder).chatTime.setText(chatList.get(position).getChatTime());
+                //읽음 표시 읽지 않은 표시
+                if (chatList.get(position).getIsReadChat() != null) {
 
-            //여기서 시간 가공 하면되지.
-            ((RightViewHolder) holder).chatTime.setText(chatList.get(position).getChatTime());
-            //읽음 표시 읽지 않은 표시
-            if (chatList.get(position).getIsReadChat() != null) {
-
-                if (chatList.get(position).getIsReadChat().equals("0")) {
-                    ((RightViewHolder) holder).chatRead.setText("1");
-                }
+                    if (chatList.get(position).getIsReadChat().equals("0")) {
+                        ((RightViewHolder) holder).chatRead.setText("1");
+                    }
 //                else if(chatList.get(position).getIsReadChat().equals("1")){
 //                    ((RightViewHolder) holder).chatRead.setText("");
 //                }
-                else {
-                    ((RightViewHolder) holder).chatRead.setText("");
+                    else {
+                        ((RightViewHolder) holder).chatRead.setText("");
+                    }
                 }
+
             }
+
+
         } else if (holder instanceof CenterViewHolder) {
             ((CenterViewHolder) holder).chatDate.setText(chatList.get(position).getChat());
         } else if (holder instanceof RightImageViewHolder) {
 
-            Uri imageUri = Uri.parse(chatList.get(position).getChat());
-            Glide.with(context).load(imageUri).placeholder(R.drawable.ic_baseline_wait).thumbnail(0.1f).into(((RightImageViewHolder) holder).chatImage);
-            ((RightImageViewHolder) holder).chatTime.setText(chatList.get(position).getChatTime());
-            if (chatList.get(position).getIsReadChat().equals("0")) {
-                ((RightImageViewHolder) holder).chatRead.setText("1");
-            } else {
-                ((RightImageViewHolder) holder).chatRead.setText("");
+            //통신장애로 제대로 전송 안된 데이터
+            if(chatList.get(position).getNetworkStatus()==3){
+                ((RightImageViewHolder) holder).chatRefresh.setVisibility(View.VISIBLE);
+                ((RightImageViewHolder) holder).chatTime.setVisibility(View.GONE);
+                ((RightImageViewHolder) holder).chatRead.setVisibility(View.GONE);
+                Uri imageUri = Uri.parse(chatList.get(position).getChat());
+
+                Glide.with(context).load(imageUri).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).placeholder(R.drawable.ic_baseline_wait).thumbnail(0.1f).into(((RightImageViewHolder) holder).chatImage);
             }
+            //제대로 전송된 데이터
+            else{
+
+                ((RightImageViewHolder) holder).chatRefresh.setVisibility(View.GONE);
+                ((RightImageViewHolder) holder).chatTime.setVisibility(View.VISIBLE);
+                ((RightImageViewHolder) holder).chatRead.setVisibility(View.VISIBLE);
+
+                Uri imageUri = Uri.parse(chatList.get(position).getChat());
+                Glide.with(context).load(imageUri).placeholder(R.drawable.ic_baseline_wait).thumbnail(0.1f).into(((RightImageViewHolder) holder).chatImage);
+                ((RightImageViewHolder) holder).chatTime.setText(chatList.get(position).getChatTime());
+                if (chatList.get(position).getIsReadChat().equals("0")) {
+                    ((RightImageViewHolder) holder).chatRead.setText("1");
+                } else {
+                    ((RightImageViewHolder) holder).chatRead.setText("");
+                }
+            }
+
+
 
         }
         else if(holder instanceof LeftImageViewHolder){
@@ -203,12 +245,19 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
         protected ImageView chatImage;
         protected TextView chatTime;
         protected TextView chatRead;
+        protected  LinearLayout chatRefresh;
+        protected  ImageView chatResend,chatDelete;
 
         public RightImageViewHolder(@NonNull View itemView) {
             super(itemView);
+
             chatImage = itemView.findViewById(R.id.chat_right_image);
             chatTime = itemView.findViewById(R.id.chat_right_image_time);
             chatRead = itemView.findViewById(R.id.chat_right_image_read);
+            chatRefresh=itemView.findViewById(R.id.chat_right_image_refresh);
+            chatResend=itemView.findViewById(R.id.chat_right_image_resend);
+            chatDelete=itemView.findViewById(R.id.chat_right_image_delete);
+
             chatImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -218,6 +267,29 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
                     }
                 }
             });
+            chatResend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if(imageResendClickListener!=null){
+
+                        imageResendClickListener.reSendImage(position);
+                    }
+                }
+            });
+            chatDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if(imageResendClickListener!=null){
+
+                        imageResendClickListener.deleteImage(position);
+
+                    }
+                }
+            });
+
+
         }
     }
 
@@ -226,13 +298,38 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
         protected TextView chatText;
         protected TextView chatTime;
         protected TextView chatRead;
+        protected LinearLayout chatRefresh;
+        protected ImageView chatResend,chatDelete;
 
 
         public RightViewHolder(@NonNull View itemView) {
             super(itemView);
+
             chatRead = itemView.findViewById(R.id.chat_right_read);
             chatText = itemView.findViewById(R.id.chat_right_text);
             chatTime = itemView.findViewById(R.id.chat_right_time);
+            chatRefresh=itemView.findViewById(R.id.chat_right_refresh);
+            chatResend=itemView.findViewById(R.id.chat_right_resend);
+            chatDelete=itemView.findViewById(R.id.chat_right_delete);
+
+            chatResend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if(resendClickListener!=null){
+                        resendClickListener.reSendText(position);
+                    }
+                }
+            });
+            chatDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if(resendClickListener!=null){
+                        resendClickListener.deleteText(position);
+                    }
+                }
+            });
 
         }
     }
@@ -253,5 +350,13 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
     public interface Interface_imageClick{
         public void getImage(int position);
+    }
+    public interface Interface_resendClick{
+        public void reSendText(int position);
+        public void deleteText(int position);
+    }
+    public interface Interface_imageResendClick{
+        public void reSendImage(int position);
+        public void deleteImage(int position);
     }
 }

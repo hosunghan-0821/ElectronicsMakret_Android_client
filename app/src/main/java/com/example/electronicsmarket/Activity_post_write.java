@@ -712,9 +712,8 @@ public class Activity_post_write extends AppCompatActivity {
                                     builder.show();
                                     return;
                                 }
-                                Log.e("123", "444");
                                 Uri imageUri = clipData.getItemAt(i).getUri();
-                                Log.e("123", imageUri.toString());
+                                //Log.e("123", imageUri.toString());
                                 Data_post_image data = new Data_post_image(imageUri);
                                 data.setImgUrl(imageUri.toString());
                                 imageList.add(data);
@@ -744,6 +743,7 @@ public class Activity_post_write extends AppCompatActivity {
                 }
             }
     );
+
 
     /* 이미지 파일을 복사한 후, 그 파일의 절대 경로 반환하는 메소드 */
     public String createCopyAndReturnRealPath(Uri uri, String fileName) {

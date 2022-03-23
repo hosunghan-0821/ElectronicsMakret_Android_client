@@ -63,7 +63,7 @@ public class Fragment_chat extends Fragment {
         public void onReceive(Context context, Intent intent) {
             String readValue = intent.getStringExtra("message");
             //만약 알림이 왔을 떄, 데이터 reload 할 경우라 하나하나 데이터 가져올 때랑 비교좀 해보자.
-
+            Log.e("123","fragment reload1");
             Message msg = new Message();
             Bundle bundle = new Bundle();
             bundle.putString("message", readValue);
@@ -83,6 +83,7 @@ public class Fragment_chat extends Fragment {
 
         variableInit(view);
 
+        //Log.e("123","인터넷 상태 : "+NetworkStatus.getConnectivityStatus(getActivity()));
         //서버로부터 데이터 가져오기..
         RetrofitService service = retrofit.create(RetrofitService.class);
         Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, phasingNum, cursorChatRoomNum);
@@ -179,10 +180,6 @@ public class Fragment_chat extends Fragment {
                 String data = bundle.getString("message");
                 //데이터를 서버에서 가져올게 아니라 그냥 바로 업뎃해줄까?
                 //그러 cursor가 햇갈리게 될텐데
-
-                //시간도 받아와야하는데 .. 일단은 서버로 reload하는걸로 해보자.
-                //onresume 이랑 다르겍 없지않나..?
-
                 //이 부분 수정해야함
                 RetrofitService service = retrofit.create(RetrofitService.class);
                 Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, "update", cursorChatRoomNum);
@@ -192,7 +189,7 @@ public class Fragment_chat extends Fragment {
 
                         //통신 성공할 경우
                         if (response.isSuccessful() && response.body() != null) {
-                            Log.e("123", "response");
+                            Log.e("123","fragment reload2");
                             roomList.clear();
                             Log.e("123", response.body().getRoomList().toString());
                             DataChatRoomAll dataChatRoomALL = response.body();

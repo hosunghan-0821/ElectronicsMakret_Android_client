@@ -194,7 +194,6 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
                             ((AllInfoViewHolder) holder).postBuyConfirm.setText("리뷰작성");
                         }
                     }
-
                 }
                 else{
                     ((AllInfoViewHolder) holder).postReviewUpdate.setVisibility(View.GONE);
@@ -202,12 +201,20 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
                     ((AllInfoViewHolder) holder).postBuyConfirm.setVisibility(View.GONE);
                 }
             }
-
             else if(postList.get(position).getPostStatus().equals("RF") ){
                 ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.GONE);
                 ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.GONE);
                 ((AllInfoViewHolder) holder).postSellStatus.setText("환불처리(환불승인)");
                 ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.VISIBLE);
+            }
+            else if(postList.get(position).getPostStatus().equals("Y")&&status!=null){
+
+                if(status.equals("selling")){
+                    ((AllInfoViewHolder) holder).postBuyConfirm.setText("판매완료");
+                    ((AllInfoViewHolder) holder).postBuyConfirm.setVisibility(View.VISIBLE);
+                    ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.GONE);
+                }
+
             }
             else{
                 ((AllInfoViewHolder) holder).postBuyConfirm.setVisibility(View.GONE);

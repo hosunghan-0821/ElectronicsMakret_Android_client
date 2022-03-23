@@ -73,6 +73,7 @@ public class Activity_image_download extends AppCompatActivity {
     public void MakePhotoDir() {
         String savePath = "/Pictures/";
         //String savePath="/electronics/";
+
         dir = new File(Environment.getExternalStorageDirectory(), savePath);
         Log.e("123", "file dir" + dir);
         if (!dir.exists()) {

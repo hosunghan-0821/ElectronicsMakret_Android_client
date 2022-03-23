@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
@@ -42,6 +43,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -101,6 +103,7 @@ public class Activity_trade_chat extends AppCompatActivity {
     private int resumeAddChatCheck;
     private Thread sendThread;
     private ArrayList<String> imageRoute;
+    private ArrayList<String> roomMemberNickname;
 
 
     private BroadcastReceiver dataReceiver = new BroadcastReceiver() {
@@ -111,19 +114,51 @@ public class Activity_trade_chat extends AppCompatActivity {
             String purpose = intent.getStringExtra("purpose");
             if (purpose != null) {
                 if (purpose.equals("인원체크")) {
+
                     int chatRoomPeople = intent.getIntExtra("peopleNum", -1);
                     peopleNum = chatRoomPeople;
                 } else if (purpose.equals("인원추가")) {
-                    //데이터 reload 해야함
+                    String nickname = intent.getStringExtra("nickname");
+                    boolean nameDuplicateCheck=false;
+                    for(int i=0;i<roomMemberNickname.size();i++){
+                        if(nickname.equals(roomMemberNickname.get(i))){
+                            nameDuplicateCheck=true;
+                            break;
+                        }
+                    }
+                    if(!nameDuplicateCheck){
+                        roomMemberNickname.add(nickname);
+                        //데이터 reload 해야함
+                        Message msg = new Message();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("purpose", "reloadData");
+                        msg.setData(bundle);
+                        handler.sendMessage(msg);
+                        peopleNum++;
+                    }
+
+                } else if (purpose.equals("인원감소")) {
+                    String nickname = intent.getStringExtra("nickname");
+                    boolean nameDuplicateCheck=false;
+                    for(int i=0;i<roomMemberNickname.size();i++){
+                        if(nickname.equals(roomMemberNickname.get(i))){
+                            nameDuplicateCheck=true;
+                            roomMemberNickname.remove(i);
+                            break;
+                        }
+                    }
+                    if(nameDuplicateCheck){
+                        peopleNum--;
+                    }
+
+                } else if(purpose.equals("reload")){
+
                     Message msg = new Message();
                     Bundle bundle = new Bundle();
-                    bundle.putString("purpose", "reloadData");
+                    bundle.putString("purpose", "reloadActivity");
                     msg.setData(bundle);
                     handler.sendMessage(msg);
 
-                    peopleNum++;
-                } else if (purpose.equals("인원감소")) {
-                    peopleNum--;
                 }
                 Log.e("123", "나를 제외한 채팅방 인원수 : " + peopleNum);
                 return;
@@ -157,7 +192,7 @@ public class Activity_trade_chat extends AppCompatActivity {
         permissionlistener = new PermissionListener() {
             @Override
             public void onPermissionGranted() {
-                permissionCheck = true;
+                Activity_main_home.permissionCheck = true;
                 //Toast.makeText(Activity_trade_chat.this, "사진,이미지 권한허용", Toast.LENGTH_SHORT).show();
             }
 
@@ -166,6 +201,7 @@ public class Activity_trade_chat extends AppCompatActivity {
                 Toast.makeText(Activity_trade_chat.this, "이미지 전송하기 위해선 권한필요", Toast.LENGTH_SHORT).show();
             }
         };
+
 
 
         //이 채팅방으로 들어오는 경우를 두가지로 나누어서, 생각하고 있다
@@ -210,7 +246,6 @@ public class Activity_trade_chat extends AppCompatActivity {
 
                     roomNumGlobal=roomNum;
                     otherUserNicknameGlobal=otherUserNickname;
-
 
                     tradeChatOtherUserNickname.setText(otherUserNickname);
                     otherUserImageRoute = dataChatRoom.getOtherUserImageRoute();
@@ -260,7 +295,7 @@ public class Activity_trade_chat extends AppCompatActivity {
                     LocalBroadcastManager.getInstance(Activity_trade_chat.this).registerReceiver(dataReceiver, new IntentFilter("chatData"));
                     //권한 체크. 권한 체크할 때, onresume/onpause 발생해서, 채팅방 나가고 들어오는 현상 생김.. socket통신할 때,
                     //어떻게 처리할지 생각해볼 필요는 있겠다.
-                    requestPermission();
+//                    requestPermission();
                     //이런 데이터들 다 불러오고 나서 채팅방 대화내용도 서버로부터 불러오기
                     Call<DataChatAll> chatDataCall = service.getRoomChatInfo(roomNum, phasingNum, cursorChatNum, nickName);
                     chatDataCall.enqueue(new Callback<DataChatAll>() {
@@ -271,9 +306,24 @@ public class Activity_trade_chat extends AppCompatActivity {
 
                                 DataChatAll dataChatAllList = response.body();
                                 ArrayList<DataChat> chatArrayList = dataChatAllList.getDataChatAllList();
+
+                                //shared에 저장된 안보내진 데이터 입력 나타나게 하기;
+                                ArrayList<DataChat> noSendDataArrayList=getNoSendDataArrayList(roomNum);
+                                if(noSendDataArrayList.size()!=0){
+                                    for(int i=0;i<noSendDataArrayList.size();i++){
+                                        if(noSendDataArrayList.get(i).getChatRoomNum()!=null){
+                                            if(noSendDataArrayList.get(i).getChatRoomNum().equals(roomNum)){
+                                                chatArrayList.add(0,noSendDataArrayList.get(i));
+                                            }
+                                        }
+
+                                    }
+                                }
+
                                 for (int i = 0; i < chatArrayList.size(); i++) {
                                     //chatList에 넣기위해 가공 및 데이터 분류
 
+                                    int networkStatus = chatArrayList.get(i).getNetworkStatus();
                                     String chatType = chatArrayList.get(i).getChatType();
                                     String writerNickname = chatArrayList.get(i).getNickname();
                                     String chatText = chatArrayList.get(i).getChat();
@@ -295,9 +345,23 @@ public class Activity_trade_chat extends AppCompatActivity {
 
                                         if (chatType != null) {
                                             if (chatType.equals("text")) {
-                                                chatList.add(0, new DataChat(chatText, 1, chatTime, writerNickname, isReadChat));
+
+                                                if(networkStatus==3){
+                                                    chatList.add(0,new DataChat(chatText,1,chatTime,writerNickname,isReadChat,3,"text",chatArrayList.get(i).getIdentifyNum(),chatArrayList.get(i).getChatRoomNum()));
+                                                }
+                                                else{
+                                                    chatList.add(0, new DataChat(chatText, 1, chatTime, writerNickname, isReadChat));
+                                                }
+
                                             } else if (chatType.equals("image")) {
-                                                chatList.add(0, new DataChat(chatText, 3, chatTime, writerNickname, isReadChat));
+
+                                                if(networkStatus==3){
+                                                    chatList.add(0,new DataChat(chatText,3,chatTime,writerNickname,isReadChat,3,"image",chatArrayList.get(i).getIdentifyNum(),chatArrayList.get(i).getChatRoomNum()));
+                                                }
+                                                else{
+                                                    chatList.add(0, new DataChat(chatText, 3, chatTime, writerNickname, isReadChat));
+                                                }
+
                                             }
                                         }
 
@@ -521,6 +585,111 @@ public class Activity_trade_chat extends AppCompatActivity {
                         chatList.get(i).setIsReadChat("1");
                     }
                     adapter.notifyDataSetChanged();
+                } else if(purpose.equals("reloadActivity")){
+                    Log.e("123","reloadActivity");
+                    //화면 reload할게 아니라 onResume 처럼 데이터를 다시 가져오는 방식을 사용하자
+
+                    RetrofitService service = retrofit.create(RetrofitService.class);
+                    Call<DataChatAll> chatDataCall = service.getRoomChatInfo(roomNum, "update", cursorChatNum, nickName);
+                    chatDataCall.enqueue(new retrofit2.Callback<DataChatAll>() {
+                        @Override
+                        public void onResponse(Call<DataChatAll> call, Response<DataChatAll> response) {
+
+                            if (response.isSuccessful() && response.body() != null) {
+                                chatList.clear();
+                                DataChatAll dataChatAllList = response.body();
+                                ArrayList<DataChat> chatArrayList = dataChatAllList.getDataChatAllList();
+
+                                //shared에 저장된 안보내진 데이터 입력 나타나게 하기;
+                                ArrayList<DataChat> noSendDataArrayList=getNoSendDataArrayList(roomNum);
+                                if(noSendDataArrayList.size()!=0){
+                                    for(int i=0;i<noSendDataArrayList.size();i++){
+                                        if(noSendDataArrayList.get(i).getChatRoomNum()!=null){
+                                          if(noSendDataArrayList.get(i).getChatRoomNum().equals(roomNum)){
+                                              chatArrayList.add(0,noSendDataArrayList.get(i));
+                                          }
+                                        }
+
+                                    }
+                                }
+
+                                for (int i = 0; i < chatArrayList.size(); i++) {
+                                    String chatType = chatArrayList.get(i).getChatType();
+                                    String writerNickname = chatArrayList.get(i).getNickname();
+                                    String chatText = chatArrayList.get(i).getChat();
+                                    String isReadChat = chatArrayList.get(i).getIsReadChat();
+                                    int networkStatus = chatArrayList.get(i).getNetworkStatus();
+                                    chatText = chatText.replace(Service_Example.CHANGE_LINE_CHAR, "\n");
+                                    String chatTime = chatArrayList.get(i).getChatTime();
+                                    Date chatDate;
+                                    SimpleDateFormat chatTimedateFormat = new SimpleDateFormat("HH:mm");
+                                    SimpleDateFormat chatTimeDbDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    try {
+                                        chatDate = chatTimeDbDateFormat.parse(chatTime);
+                                        chatTime = chatTimedateFormat.format(chatDate);
+                                    } catch (Exception e) {
+
+                                    }
+                                    //나 자신일 경우
+                                    if (writerNickname.equals(nickName)) {
+
+                                        if (chatType != null) {
+
+                                            if (chatType.equals("text")) {
+
+                                                if(networkStatus==3){
+                                                    chatList.add(0,new DataChat(chatText,1,chatTime,writerNickname,isReadChat,3,"text",chatArrayList.get(i).getIdentifyNum(),chatArrayList.get(i).getChatRoomNum()));
+                                                }
+                                                else{
+                                                    chatList.add(0, new DataChat(chatText, 1, chatTime, writerNickname, isReadChat));
+                                                }
+
+                                            } else if (chatType.equals("image")) {
+                                                if(networkStatus==3){
+                                                    chatList.add(0,new DataChat(chatText,3,chatTime,writerNickname,isReadChat,3,"image",chatArrayList.get(i).getIdentifyNum(),chatArrayList.get(i).getChatRoomNum()));
+                                                }
+                                                else{
+                                                    chatList.add(0, new DataChat(chatText, 3, chatTime, writerNickname, isReadChat));
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                    //서버일 경우
+                                    else if (writerNickname.equals("server")) {
+                                        chatList.add(0, new DataChat(chatText, 2, chatTime, "server", isReadChat));
+                                    }
+                                    //상대방일 경우
+                                    else {
+                                        if (chatType != null) {
+
+                                            if (chatType.equals("text")) {
+                                                chatList.add(0, new DataChat(0, chatText, chatTime, writerNickname, otherUserImageRoute));
+                                            } else if (chatType.equals("image")) {
+                                                chatList.add(0, new DataChat(4, chatText, chatTime, writerNickname, otherUserImageRoute));
+                                            }
+
+                                        }
+                                    }
+                                    // adapter.notifyItemInserted(0);
+                                }
+                                Log.e("123", " resume resumeAddCheck : " + resumeAddChatCheck);
+                                if (resumeAddChatCheck != chatList.size()) {
+                                    Log.e("123", "resume 했을 시 안내 메시지");
+                                    tradeChatAnnounce.setVisibility(View.VISIBLE);
+                                    resumeAddChatCheck = chatList.size();
+                                }
+                                adapter.notifyDataSetChanged();
+//                        recyclerView.scrollToPosition(chatList.size() - 1);
+                                setStackFromEnd();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<DataChatAll> call, Throwable t) {
+
+                        }
+                    });
                 }
             }
         };
@@ -544,12 +713,89 @@ public class Activity_trade_chat extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        //adapter 이미지 재전송 interface 달기
+        adapter.setResendImageClickListener(new Adapter_trade_chat.Interface_imageResendClick() {
+            @Override
+            public void reSendImage(int position) {
+                ArrayList<Uri> uriList=new ArrayList<>();
+
+                ArrayList<DataChat> noSendDataArrayList =getNoSendDataArrayList(roomNum);
+                for(int i=0;i<noSendDataArrayList.size();i++){
+
+                    if(chatList.get(position).getIdentifyNum()==noSendDataArrayList.get(i).getIdentifyNum()){
+                        String imageUri = chatList.get(position).getChat();
+                        chatList.remove(position);
+                        adapter.notifyItemRemoved(position);
+                        noSendDataArrayList.remove(i);
+                        setNoSendDataArrayList(noSendDataArrayList,roomNum);
+                        uriList.add(Uri.parse(imageUri));
+                        sendImage(uriList);
+                        break;
+                    }
+
+                }
+            }
+            @Override
+            public void deleteImage(int position) {
+
+                ArrayList<DataChat> noSendDataArrayList =getNoSendDataArrayList(roomNum);
+
+                for(int i=0;i<noSendDataArrayList.size();i++){
+                    if(chatList.get(position).getIdentifyNum()==noSendDataArrayList.get(i).getIdentifyNum()){
+                        chatList.remove(position);
+                        adapter.notifyItemRemoved(position);
+                        noSendDataArrayList.remove(i);
+                        resumeAddChatCheck = chatList.size();
+                        break;
+                    }
+                }
+                setNoSendDataArrayList(noSendDataArrayList,roomNum);
+
+            }
+        });
+
+        //adapter에 재전송 interface 달기
+        adapter.setResendClickListener(new Adapter_trade_chat.Interface_resendClick() {
+            @Override
+            public void reSendText(int position) {
+                ArrayList<DataChat> noSendDataArrayList =getNoSendDataArrayList(roomNum);
+
+                for(int i=0;i<noSendDataArrayList.size();i++){
+                    if(chatList.get(position).getIdentifyNum()==noSendDataArrayList.get(i).getIdentifyNum()){
+
+                        String message = chatList.get(position).getChat();
+                        chatList.remove(position);
+                        adapter.notifyItemRemoved(position);
+                        noSendDataArrayList.remove(i);
+                        setNoSendDataArrayList(noSendDataArrayList,roomNum);
+                        sendMessage(message);
+                        break;
+                    }
+                }
+
+            }
+            @Override
+            public void deleteText(int position) {
+                ArrayList<DataChat> noSendDataArrayList =getNoSendDataArrayList(roomNum);
+
+                for(int i=0;i<noSendDataArrayList.size();i++){
+                    if(chatList.get(position).getIdentifyNum()==noSendDataArrayList.get(i).getIdentifyNum()){
+                        chatList.remove(position);
+                        adapter.notifyItemRemoved(position);
+                        noSendDataArrayList.remove(i);
+                        resumeAddChatCheck = chatList.size();
+                        break;
+                    }
+                }
+                setNoSendDataArrayList(noSendDataArrayList,roomNum);
+            }
+        });
 
         //이미지 전송 버튼 누를 경우.
         tradeChatImageSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (permissionCheck) {
+                if (Activity_main_home.permissionCheck) {
                     //Toast.makeText(Activity_trade_chat.this, "권한승인", Toast.LENGTH_SHORT).show();
                     openImagesPicker();
                 } else {
@@ -563,23 +809,7 @@ public class Activity_trade_chat extends AppCompatActivity {
         tradeChatSendTextImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (tradeChatSendText.getText().toString() != null) {
-
-                    if (!tradeChatSendText.getText().toString().equals("")) {
-                        chatList.add(new DataChat(tradeChatSendText.getText().toString(), 1, getMessageTime(), nickName, Integer.toString(peopleNum)));
-                        setStackFromEnd();
-                        recyclerView.scrollToPosition(chatList.size() - 1);
-                        adapter.notifyItemInserted(chatList.size() - 1);
-                        resumeAddChatCheck = chatList.size();
-
-                        Intent intent = new Intent("chatDataToServer");
-                        intent.putExtra("purpose", "send");
-                        intent.putExtra("message", tradeChatSendText.getText().toString());
-                        LocalBroadcastManager.getInstance(Activity_trade_chat.this).sendBroadcast(intent);
-                        tradeChatSendText.setText("");
-                    }
-                }
+                sendMessage(tradeChatSendText.getText().toString());
             }
         });
 
@@ -589,6 +819,101 @@ public class Activity_trade_chat extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    public void sendMessage(String message){
+
+        //통신연결 안되있을 경우
+        if(NetworkStatus.getConnectivityStatus(Activity_trade_chat.this)==3){
+
+            if(message!=null){
+                if(!message.equals("")){
+                    Log.e("123","message : "+ message);
+                    ArrayList<DataChat> noSendDataArrayList =getNoSendDataArrayList(roomNum);
+                    DataChat datachat=new DataChat();
+                    if(noSendDataArrayList.size()==0){
+                         datachat =new DataChat(message,1,getMessageTime(),nickName,Integer.toString(peopleNum),3,"text",0,roomNum);
+                        Log.e("123","지나감1 size=0");
+                    }
+                    else{
+                        int identifyNum=noSendDataArrayList.get(noSendDataArrayList.size()-1).getIdentifyNum();
+                        datachat =new DataChat(message,1,getMessageTime(),nickName,Integer.toString(peopleNum),3,"text",identifyNum+1,roomNum);
+                        Log.e("123","지나감1 size!=0");
+                    }
+                    chatList.add(datachat);
+                    setStackFromEnd();
+                    adapter.notifyItemInserted(chatList.size() - 1);
+                    recyclerView.scrollToPosition(chatList.size() - 1);
+                    resumeAddChatCheck = chatList.size();
+                    tradeChatSendText.setText("");
+
+                    noSendDataArrayList.add(datachat);
+                    Log.e("123","dataChat : "+datachat.getChat());
+                    Log.e("123", "noSendDataArrayList : "+noSendDataArrayList.get(noSendDataArrayList.size()-1).getChat());
+                    setNoSendDataArrayList(noSendDataArrayList,roomNum);
+                    Log.e("123","지나감2");
+                    return;
+                }
+            }
+
+        }
+        //통신연결 되있을 경우 예외처리
+        if(message!=null){
+            if (!message.equals("")) {
+
+                chatList.add(new DataChat(message, 1, getMessageTime(), nickName, Integer.toString(peopleNum)));
+                setStackFromEnd();
+                recyclerView.scrollToPosition(chatList.size() - 1);
+                adapter.notifyItemInserted(chatList.size() - 1);
+                resumeAddChatCheck = chatList.size();
+
+                Intent intent = new Intent("chatDataToServer");
+                intent.putExtra("purpose", "send");
+                intent.putExtra("message", message);
+                LocalBroadcastManager.getInstance(Activity_trade_chat.this).sendBroadcast(intent);
+                tradeChatSendText.setText("");
+            }
+        }
+
+    }
+
+
+    public void setNoSendDataArrayList(ArrayList<DataChat> noSendData,String roomNum) {
+
+
+        SharedPreferences sharedPreferences=getSharedPreferences("noSendData",MODE_PRIVATE);
+        Gson gson = new GsonBuilder().create();
+        Type arraylistType = new TypeToken<ArrayList<DataChat>>() {       // 내가 변환한 객체의 type을 얻어내는 코드 Type 와 TypeToken .getType() 메소드를 사용한다.
+        }.getType();
+
+        String objectToString = gson.toJson(noSendData, arraylistType);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(roomNum, objectToString);
+        editor.apply();
+    }
+
+    public ArrayList<DataChat> getNoSendDataArrayList(String roomNum) {
+
+        SharedPreferences sharedPreferences=getSharedPreferences("noSendData",MODE_PRIVATE);
+        //gson 을 활용하여서 shared에 저장된 string을 object로 변환
+        Gson gson = new GsonBuilder().create();
+
+        ArrayList<DataChat> noSendArrayList;
+        String stringToObject = sharedPreferences.getString(roomNum, "");
+        Type arraylistType = new TypeToken<ArrayList<DataChat>>() {                           //Type, TypeToken을 이용하여서 변환시킨 객체 타입을 얻어낸다.
+        }.getType();
+        try {
+            noSendArrayList = gson.fromJson(stringToObject, arraylistType);
+            if (noSendArrayList == null) {
+                noSendArrayList = new ArrayList<DataChat>();
+            }
+            return noSendArrayList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return noSendArrayList = new ArrayList<DataChat>();
+        }
+
     }
 
     public void setStackFromEnd() {
@@ -616,6 +941,125 @@ public class Activity_trade_chat extends AppCompatActivity {
         return linearLayoutManager.findLastCompletelyVisibleItemPosition();
     }
 
+    public void sendImage(ArrayList<Uri> uriList){
+
+        //통신이 안되 있을 경우
+        if(NetworkStatus.getConnectivityStatus(Activity_trade_chat.this)==3){
+
+            ArrayList<DataChat> noSendDataArrayList =getNoSendDataArrayList(roomNum);
+            for(int i=0;i<uriList.size();i++){
+
+                DataChat datachat=new DataChat();
+
+                Log.e("123","uri.tostirng : "+uriList.get(i).toString());
+
+                if(noSendDataArrayList.size()==0){
+                    datachat =new DataChat(uriList.get(i).toString(),3,getMessageTime(),nickName,Integer.toString(peopleNum),3,"image",0,roomNum);
+                }
+                else{
+                    int identifyNum=noSendDataArrayList.get(noSendDataArrayList.size()-1).getIdentifyNum();
+                    datachat =new DataChat(uriList.get(i).toString(),3,getMessageTime(),nickName,Integer.toString(peopleNum),3,"image",identifyNum+1,roomNum);
+                }
+
+                chatList.add(datachat);
+                setStackFromEnd();
+                adapter.notifyItemInserted(chatList.size() - 1);
+                recyclerView.scrollToPosition(chatList.size() - 1);
+                noSendDataArrayList.add(datachat);
+            }
+            resumeAddChatCheck = chatList.size();
+            setNoSendDataArrayList(noSendDataArrayList,roomNum);
+            return;
+        }
+
+        //선택한 이미지 절대경로로, 파일 만들어서 서버에 올리기
+        imageFileCollect.clear();
+        files.clear();
+        requestMap.clear();
+
+        //선택한 이미지 recyclerview에 처리
+        for (int i = 0; i < uriList.size(); i++) {
+            Log.e("123","uriList.get(i).toString() : "+uriList.get(i).toString());
+            chatList.add(new DataChat(uriList.get(i).toString(), 3, getMessageTime(), nickName, Integer.toString(peopleNum)));
+            recyclerView.scrollToPosition(chatList.size() - 1);
+            adapter.notifyItemInserted(chatList.size() - 1);
+        }
+        resumeAddChatCheck = chatList.size();
+        //쓰레드로 file compress 찍어서, 서버에 올리기기
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < uriList.size(); i++) {
+                    //uri를 통해 이미지 client에 표시하기
+
+                    File imageFile = new File(createCopyAndReturnRealPath(uriList.get(i), "image" + i));
+                    imageFileCollect.add(imageFile);
+                    Log.e("123", uriList.get(i).getPath());
+                    //uri를 통해 서버 업로드 하기 위해서 file 생성 및 multipart에 삽입
+                    //File uriFile = new File(uriList.get(i).getPath());
+                    //Log.e("123", uriFile.getPath());
+                    //imageFileCollect.add(uriFile);
+                    //RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), uriFile);
+                    RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), imageFile);
+                    MultipartBody.Part filepart = MultipartBody.Part.createFormData("image" + i, "image", fileBody);
+                    files.add(filepart);
+                }
+                RequestBody roomNumBody, nickNameBody;
+                roomNumBody = RequestBody.create(MediaType.parse("text/plain"), roomNum);
+                nickNameBody = RequestBody.create(MediaType.parse("text/plain"), nickName);
+
+                requestMap.put("roomNum", roomNumBody);
+                requestMap.put("nickname", nickNameBody);
+
+                RetrofitService service = retrofit.create(RetrofitService.class);
+                Call<DataChatImageRoute> call = service.chatImageFiles(files, requestMap);
+                call.enqueue(new Callback<DataChatImageRoute>() {
+                    @Override
+                    public void onResponse(Call<DataChatImageRoute> call, Response<DataChatImageRoute> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            Log.e("123","위치확인0");
+                            imageRoute=new ArrayList<>();
+                            imageRoute = response.body().getImageRoute();
+                            sendThread.start();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<DataChatImageRoute> call, Throwable t) {
+
+                    }
+                });
+            }
+        });
+        thread.start();
+        sendThread=new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < imageRoute.size(); i++) {
+                    //경로를 이제 service_example broadcast에 보내야함
+                    Log.e("123", "imageRoute :"+imageRoute.get(i));
+                    Log.e("123","위치확인1");
+                    Intent intent = new Intent("chatDataToServer");
+                    intent.putExtra("purpose", "sendImage");
+                    intent.putExtra("message", imageRoute.get(i));
+                    LocalBroadcastManager.getInstance(Activity_trade_chat.this).sendBroadcast(intent);
+                    Log.e("123","위치확인2");
+                    if (imageFileCollect.get(i).exists()) {
+                        imageFileCollect.get(i).delete();
+                    }
+                    try{
+                        Thread.sleep(500);
+                    }catch (Exception e){
+
+                    }
+                }
+            }
+        });
+
+
+    }
+
     private void openImagesPicker() {
         final InputStream[] in = {null};
 
@@ -633,89 +1077,120 @@ public class Activity_trade_chat extends AppCompatActivity {
                     @Override
                     public void onImagesSelected(List<Uri> uriList) {
 
-                        //선택한 이미지 절대경로로, 파일 만들어서 서버에 올리기
-                        imageFileCollect.clear();
-                        files.clear();
-                        requestMap.clear();
-
-                        //선택한 이미지 recyclerview에 처리
-                        for (int i = 0; i < uriList.size(); i++) {
-                            chatList.add(new DataChat(uriList.get(i).toString(), 3, getMessageTime(), nickName, Integer.toString(peopleNum)));
-                            recyclerView.scrollToPosition(chatList.size() - 1);
-                            adapter.notifyItemInserted(chatList.size() - 1);
-                        }
-                        resumeAddChatCheck = chatList.size();
-                        //쓰레드로 file compress 찍어서, 서버에 올리기기
-
-                        Thread thread = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                for (int i = 0; i < uriList.size(); i++) {
-                                    //uri를 통해 이미지 client에 표시하기
-
-                                    File imageFile = new File(createCopyAndReturnRealPath(uriList.get(i), "image" + i));
-                                    imageFileCollect.add(imageFile);
-                                    Log.e("123", uriList.get(i).getPath());
-                                    //uri를 통해 서버 업로드 하기 위해서 file 생성 및 multipart에 삽입
-                                    //File uriFile = new File(uriList.get(i).getPath());
-                                    //Log.e("123", uriFile.getPath());
-                                    //imageFileCollect.add(uriFile);
-                                    //RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), uriFile);
-                                    RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), imageFile);
-                                    MultipartBody.Part filepart = MultipartBody.Part.createFormData("image" + i, "image", fileBody);
-                                    files.add(filepart);
-                                }
-                                RequestBody roomNumBody, nickNameBody;
-                                roomNumBody = RequestBody.create(MediaType.parse("text/plain"), roomNum);
-                                nickNameBody = RequestBody.create(MediaType.parse("text/plain"), nickName);
-
-                                requestMap.put("roomNum", roomNumBody);
-                                requestMap.put("nickname", nickNameBody);
-
-                                RetrofitService service = retrofit.create(RetrofitService.class);
-                                Call<DataChatImageRoute> call = service.chatImageFiles(files, requestMap);
-                                call.enqueue(new Callback<DataChatImageRoute>() {
-                                    @Override
-                                    public void onResponse(Call<DataChatImageRoute> call, Response<DataChatImageRoute> response) {
-                                        if (response.isSuccessful() && response.body() != null) {
-                                            Log.e("123","위치확인0");
-                                            imageRoute=new ArrayList<>();
-                                            imageRoute = response.body().getImageRoute();
-                                            sendThread.start();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<DataChatImageRoute> call, Throwable t) {
-
-                                    }
-                                });
-                            }
-                        });
-                        thread.start();
-                        sendThread=new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                for (int i = 0; i < imageRoute.size(); i++) {
-                                    //경로를 이제 service_example broadcast에 보내야함
-                                    Log.e("123", "imageRoute :"+imageRoute.get(i));
-                                    Log.e("123","위치확인1");
-                                    Intent intent = new Intent("chatDataToServer");
-                                    intent.putExtra("purpose", "sendImage");
-                                    intent.putExtra("message", imageRoute.get(i));
-                                    LocalBroadcastManager.getInstance(Activity_trade_chat.this).sendBroadcast(intent);
-                                    Log.e("123","위치확인2");
-                                    if (imageFileCollect.get(i).exists()) {
-                                        imageFileCollect.get(i).delete();
-                                    }
-                                    try{
-                                     Thread.sleep(500);
-                                    }catch (Exception e){
-
-                                    }
-                                }
-                            }
-                        });
+                        ArrayList<Uri> arrayList = new ArrayList<>();
+                        arrayList.addAll(uriList);
+                        sendImage(arrayList);
+//                        //통신이 안되 있을 경우
+//                        if(NetworkStatus.getConnectivityStatus(Activity_trade_chat.this)==3){
+//
+//                            ArrayList<DataChat> noSendDataArrayList =getNoSendDataArrayList(roomNum);
+//                            for(int i=0;i<uriList.size();i++){
+//
+//                                DataChat datachat=new DataChat();
+//
+//                                if(noSendDataArrayList.size()==0){
+//                                    datachat =new DataChat(uriList.get(i).toString(),3,getMessageTime(),nickName,Integer.toString(peopleNum),3,"image",0,roomNum);
+//                                }
+//                                else{
+//                                    int identifyNum=noSendDataArrayList.get(noSendDataArrayList.size()-1).getIdentifyNum();
+//                                    datachat =new DataChat(uriList.get(i).toString(),3,getMessageTime(),nickName,Integer.toString(peopleNum),3,"image",identifyNum+1,roomNum);
+//                                }
+//
+//                                chatList.add(datachat);
+//                                setStackFromEnd();
+//                                adapter.notifyItemInserted(chatList.size() - 1);
+//                                recyclerView.scrollToPosition(chatList.size() - 1);
+//                                noSendDataArrayList.add(datachat);
+//                            }
+//                            resumeAddChatCheck = chatList.size();
+//                            setNoSendDataArrayList(noSendDataArrayList,roomNum);
+//                            return;
+//                        }
+//
+//                       //선택한 이미지 절대경로로, 파일 만들어서 서버에 올리기
+//                        imageFileCollect.clear();
+//                        files.clear();
+//                        requestMap.clear();
+//
+//                        //선택한 이미지 recyclerview에 처리
+//                        for (int i = 0; i < uriList.size(); i++) {
+//                            //이부분에서, 네트워크 상태 확인하면서, 3번 일 경우, shared 에 저장시키고
+//                            chatList.add(new DataChat(uriList.get(i).toString(), 3, getMessageTime(), nickName, Integer.toString(peopleNum)));
+//                            recyclerView.scrollToPosition(chatList.size() - 1);
+//                            adapter.notifyItemInserted(chatList.size() - 1);
+//                        }
+//                        resumeAddChatCheck = chatList.size();
+//                        //쓰레드로 file compress 찍어서, 서버에 올리기기
+//
+//                        Thread thread = new Thread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                for (int i = 0; i < uriList.size(); i++) {
+//                                    //uri를 통해 이미지 client에 표시하기
+//
+//                                    File imageFile = new File(createCopyAndReturnRealPath(uriList.get(i), "image" + i));
+//                                    imageFileCollect.add(imageFile);
+//                                    Log.e("123", uriList.get(i).getPath());
+//                                    //uri를 통해 서버 업로드 하기 위해서 file 생성 및 multipart에 삽입
+//                                    //File uriFile = new File(uriList.get(i).getPath());
+//                                    //Log.e("123", uriFile.getPath());
+//                                    //imageFileCollect.add(uriFile);
+//                                    //RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), uriFile);
+//                                    RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), imageFile);
+//                                    MultipartBody.Part filepart = MultipartBody.Part.createFormData("image" + i, "image", fileBody);
+//                                    files.add(filepart);
+//                                }
+//                                RequestBody roomNumBody, nickNameBody;
+//                                roomNumBody = RequestBody.create(MediaType.parse("text/plain"), roomNum);
+//                                nickNameBody = RequestBody.create(MediaType.parse("text/plain"), nickName);
+//
+//                                requestMap.put("roomNum", roomNumBody);
+//                                requestMap.put("nickname", nickNameBody);
+//
+//                                RetrofitService service = retrofit.create(RetrofitService.class);
+//                                Call<DataChatImageRoute> call = service.chatImageFiles(files, requestMap);
+//                                call.enqueue(new Callback<DataChatImageRoute>() {
+//                                    @Override
+//                                    public void onResponse(Call<DataChatImageRoute> call, Response<DataChatImageRoute> response) {
+//                                        if (response.isSuccessful() && response.body() != null) {
+//                                            Log.e("123","위치확인0");
+//                                            imageRoute=new ArrayList<>();
+//                                            imageRoute = response.body().getImageRoute();
+//                                            sendThread.start();
+//                                        }
+//                                    }
+//
+//                                    @Override
+//                                    public void onFailure(Call<DataChatImageRoute> call, Throwable t) {
+//
+//                                    }
+//                                });
+//                            }
+//                        });
+//                        thread.start();
+//                        sendThread=new Thread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                for (int i = 0; i < imageRoute.size(); i++) {
+//                                    //경로를 이제 service_example broadcast에 보내야함
+//                                    Log.e("123", "imageRoute :"+imageRoute.get(i));
+//                                    Log.e("123","위치확인1");
+//                                    Intent intent = new Intent("chatDataToServer");
+//                                    intent.putExtra("purpose", "sendImage");
+//                                    intent.putExtra("message", imageRoute.get(i));
+//                                    LocalBroadcastManager.getInstance(Activity_trade_chat.this).sendBroadcast(intent);
+//                                    Log.e("123","위치확인2");
+//                                    if (imageFileCollect.get(i).exists()) {
+//                                        imageFileCollect.get(i).delete();
+//                                    }
+//                                    try{
+//                                     Thread.sleep(500);
+//                                    }catch (Exception e){
+//
+//                                    }
+//                                }
+//                            }
+//                        });
 
 
                     }
@@ -775,6 +1250,8 @@ public class Activity_trade_chat extends AppCompatActivity {
         cursorChatNum = "0";
         phasingNum = "10";
 
+        //방에 참가한 회원닉네임 모음
+        roomMemberNickname=new ArrayList<>();
         //recyclerview 관련
         recyclerView = findViewById(R.id.trade_chat_recyclerview);
         linearLayoutManager = new LinearLayoutManager(Activity_trade_chat.this);
@@ -844,7 +1321,22 @@ public class Activity_trade_chat extends AppCompatActivity {
                         chatList.clear();
                         DataChatAll dataChatAllList = response.body();
                         ArrayList<DataChat> chatArrayList = dataChatAllList.getDataChatAllList();
+
+                        //shared에 저장된 안보내진 데이터 입력 나타나게 하기;
+                        ArrayList<DataChat> noSendDataArrayList=getNoSendDataArrayList(roomNum);
+                        if(noSendDataArrayList.size()!=0){
+                            for(int i=0;i<noSendDataArrayList.size();i++){
+                                if(noSendDataArrayList.get(i).getChatRoomNum()!=null){
+                                    if(noSendDataArrayList.get(i).getChatRoomNum().equals(roomNum)){
+                                        chatArrayList.add(0,noSendDataArrayList.get(i));
+                                    }
+                                }
+
+                            }
+                        }
+
                         for (int i = 0; i < chatArrayList.size(); i++) {
+                            int networkStatus = chatArrayList.get(i).getNetworkStatus();
                             String chatType = chatArrayList.get(i).getChatType();
                             String writerNickname = chatArrayList.get(i).getNickname();
                             String chatText = chatArrayList.get(i).getChat();
@@ -865,9 +1357,23 @@ public class Activity_trade_chat extends AppCompatActivity {
 
                                 if (chatType != null) {
                                     if (chatType.equals("text")) {
-                                        chatList.add(0, new DataChat(chatText, 1, chatTime, writerNickname, isReadChat));
+
+                                        if(networkStatus==3){
+                                            chatList.add(0,new DataChat(chatText,1,chatTime,writerNickname,isReadChat,3,"text",chatArrayList.get(i).getIdentifyNum(),chatArrayList.get(i).getChatRoomNum()));
+                                        }
+                                        else{
+                                            chatList.add(0, new DataChat(chatText, 1, chatTime, writerNickname, isReadChat));
+                                        }
+
                                     } else if (chatType.equals("image")) {
-                                        chatList.add(0, new DataChat(chatText, 3, chatTime, writerNickname, isReadChat));
+
+                                        if(networkStatus==3){
+                                            chatList.add(0,new DataChat(chatText,3,chatTime,writerNickname,isReadChat,3,"image",chatArrayList.get(i).getIdentifyNum(),chatArrayList.get(i).getChatRoomNum()));
+                                        }
+                                        else{
+                                            chatList.add(0, new DataChat(chatText, 3, chatTime, writerNickname, isReadChat));
+                                        }
+
                                     }
                                 }
                             }
@@ -906,8 +1412,6 @@ public class Activity_trade_chat extends AppCompatActivity {
 
                 }
             });
-
-
         }
     }
 
@@ -937,15 +1441,10 @@ public class Activity_trade_chat extends AppCompatActivity {
         //채팅방 화면 나갈 때, 채팅방 나간 것을 자바 채팅서버에 데이터 전송해서 알려야함.
 
     }
-
     @Override
     protected void onStop() {
         super.onStop();
-
-
     }
-
-
     public String getMessageTime() {
 
         String formatedNow;
@@ -960,37 +1459,5 @@ public class Activity_trade_chat extends AppCompatActivity {
             formatedNow = formatter.format(date);
         }
         return formatedNow;
-    }
-
-    public void displayHeight() {
-
-        //화면 관련 내용 정리
-
-        //        scrollHeight=findViewById(R.id.trade_chat_scroll_height_text);
-//
-//        Display display= getWindowManager().getDefaultDisplay();
-//        DisplayMetrics outMetrics =new DisplayMetrics();
-//        display.getMetrics(outMetrics);
-//
-//        float density=getResources().getDisplayMetrics().density;
-//        float dpHeight= outMetrics.heightPixels/density;
-//        DisplayMetrics displayMetrics = new DisplayMetrics();
-//        getWindowManager().getDefaultDisplay().getRealMetrics(displayMetrics);
-//
-//        ConstraintLayout.LayoutParams mLayoutParams =(ConstraintLayout.LayoutParams) scrollHeight.getLayoutParams();
-//
-//        int realDeviceWidth = displayMetrics.widthPixels;
-//        int realDeviceHeight = displayMetrics.heightPixels;
-//
-//        Point size = new Point();
-//        display.getSize(size); // or getSize(size)
-//
-//        Log.e("123","x : "+size.x);
-//        Log.e("123","y : "+size.y);
-//        mLayoutParams.bottomMargin=size.y-(int)(40*density);
-//        Log.e("123","size : "+(size.y-(int)(20*density)));
-//        scrollHeight.setLayoutParams(mLayoutParams);
-        //2220
-        //2160
     }
 }

@@ -53,5 +53,33 @@
         app:layout_constraintBottom_toTopOf="@+id/chat_right_time"
         app:layout_constraintEnd_toStartOf="@+id/chat_right_text" />
 
+    <LinearLayout
+        android:visibility="gone"
+        android:layout_margin="10dp"
+        android:id="@+id/chat_right_refresh"
+        android:orientation="horizontal"
+        android:layout_width="50dp"
+        android:layout_height="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/chat_right_text"
+        app:layout_constraintTop_toTopOf="@+id/chat_right_text">
+
+
+        <ImageView
+            android:layout_margin="3dp"
+            android:id="@+id/chat_right_delete"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/ic_baseline_close_24" />
+
+        <ImageView
+            android:layout_margin="3dp"
+            android:id="@+id/chat_right_resend"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/ic_baseline_refresh_24" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

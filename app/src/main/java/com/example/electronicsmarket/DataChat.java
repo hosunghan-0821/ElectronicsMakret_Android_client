@@ -9,10 +9,28 @@ public class DataChat {
     private String isReadChat;
     private String chatNum;
     private String chatType;
+    private int networkStatus;
+    private int identifyNum;
+    private String chatRoomNum;
 
+    public int getIdentifyNum() {
+        return identifyNum;
+    }
 
+    public void setIdentifyNum(int identifyNum) {
+        this.identifyNum = identifyNum;
+    }
 
-    public DataChat(int viewType, String chat, String chatTime, String nickname,String profileImageRoute) {
+    public String getChatRoomNum() {
+        return chatRoomNum;
+    }
+
+    public void setChatRoomNum(String chatRoomNum) {
+        this.chatRoomNum = chatRoomNum;
+    }
+
+    public DataChat(){}
+    public DataChat(int viewType, String chat, String chatTime, String nickname, String profileImageRoute) {
         this.viewType = viewType;
         this.chat = chat;
         this.chatTime = chatTime;
@@ -29,6 +47,27 @@ public class DataChat {
         this.nickname = nickname;
         this.isReadChat=isReadChat;
         this.chatNum=chatNum;
+    }
+    public DataChat( String chat,int viewType, String chatTime, String nickname , String isReadChat,int networkStatus,String chatType,int identifyNum,String chatRoomNum) {
+        this.viewType = viewType;
+        this.chat = chat;
+        this.chatTime = chatTime;
+        this.nickname = nickname;
+        this.isReadChat=isReadChat;
+        this.networkStatus=networkStatus;
+        this.chatType=chatType;
+        this.identifyNum=identifyNum;
+        this.chatRoomNum=chatRoomNum;
+    }
+
+
+
+    public int getNetworkStatus() {
+        return networkStatus;
+    }
+
+    public void setNetworkStatus(int networkStatus) {
+        this.networkStatus = networkStatus;
     }
 
     public String getChatType() {

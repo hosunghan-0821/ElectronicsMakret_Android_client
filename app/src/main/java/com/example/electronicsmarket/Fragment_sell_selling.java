@@ -250,7 +250,7 @@ public class Fragment_sell_selling extends Fragment {
         sellingList=new ArrayList<>();
         linearLayoutManager = new LinearLayoutManager(getActivity()); //or getContext();
         adapter=new Adapter_post_all_info(sellingList,getActivity()); //or getContext();
-
+        adapter.setStatus("selling");
         sellingRecyclerView.setAdapter(adapter);
         sellingRecyclerView.setLayoutManager(linearLayoutManager);
 

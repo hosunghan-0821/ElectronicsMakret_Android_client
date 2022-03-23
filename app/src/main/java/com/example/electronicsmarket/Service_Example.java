@@ -44,6 +44,7 @@ import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -69,6 +70,7 @@ public class Service_Example extends Service {
     public static Service_Example tcpService;
     private Thread connectThread;
     private Handler handler;
+    private Thread checkAlive;
 
     private BroadcastReceiver dataReceiver = new BroadcastReceiver() {
         @Override
@@ -114,8 +116,7 @@ public class Service_Example extends Service {
                     Log.e("123", "quit : ");
                     writeThread writeThread = new writeThread("", "quit");
                     writeThread.start();
-                }
-                else if(purpose.equals("close")){
+                } else if (purpose.equals("close")) {
                     Log.e("123", "close : 소켓종료 ");
                     writeThread writeThread = new writeThread("close", "closeSocket");
                     writeThread.start();
@@ -126,7 +127,7 @@ public class Service_Example extends Service {
             }
             //purpose가 없을 떄.. 좀 있다 바꿀꺼야
             else {
-                Log.e("123","purpose null 일 경우");
+                Log.e("123", "purpose null 일 경우");
                 writeThread writeThread = new writeThread(readValue);
                 writeThread.start();
             }
@@ -166,7 +167,7 @@ public class Service_Example extends Service {
         LocalBroadcastManager.getInstance(this).registerReceiver(dataReceiver, new IntentFilter("chatDataToServer"));
         // shared 값 가져오기
         sharedPreferences = getSharedPreferences("noAlarmArrayList", MODE_PRIVATE);
-        handler=new Handler(Looper.getMainLooper()){
+        handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
@@ -238,6 +239,7 @@ public class Service_Example extends Service {
         String nickName = sharedPreferences.getString("nickName", "");
 
         if (tcpService != null) {
+            Log.e("123", "socket 연결 잘 진행중 ");
             return START_NOT_STICKY;
         }
         connectThread = new Thread(new Runnable() {
@@ -248,14 +250,19 @@ public class Service_Example extends Service {
                     //192.168.163.1
                     //먼저 port 와 host(ip) 값을 통해서 서버와 연결을한다.
 
-//                    socket = new Socket("219.248.76.133", 12345);
-                    socket = new Socket();
-                    SocketAddress address = new InetSocketAddress("219.248.76.133", 12345);
-                    socket.connect(address,5000);
+                    socket = new Socket("219.248.76.133", 12345);
+                    socket.setKeepAlive(true);
+                    socket.setSoTimeout(0);
+
+                    //connection_time 제한을 둬서, polling 방식으로 계속해서 요청하는 방식.. 맞지 않는거 같다 솔직히. client 부담이..
+//                    socket = new Socket();
+//                    SocketAddress address = new InetSocketAddress("219.248.76.133", 12345);
+//                    socket.connect(address,5000);
                     //연결성공하면, 서비스가 연결되었다는것을 인지
                     //toastMessage 생성
                     handleMessage("서버소켓 연결성공");
                     tcpService = Service_Example.this;
+
                     //192.168.35.119  이모네 wifi ip / port 80
                     //219.248.76.133  집 본체 동적ip /port 12345
                     //219.248.76.133  집 동적 ip /port 1234
@@ -267,21 +274,36 @@ public class Service_Example extends Service {
                     listenThread = new ListenThread();
                     listenThread.setDaemon(true);
                     listenThread.start();
+                    //checkAlive.start();
                     //OutputStream
                     out = new PrintWriter(socket.getOutputStream(), true);
                     // shared 값 가져오기 JSON으로 넘기기
                     JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("purpose", "connect");
                     jsonObject.put("nickname", nickName);
                     out.println(jsonObject.toString());
 
-                    if(Activity_trade_chat.activity_trade_chat!=null){
-
+                    if (Activity_trade_chat.activity_trade_chat != null) {
+                        jsonObject.put("purpose", "roomNumCheck");
                         jsonObject.put("roomNum", Activity_trade_chat.roomNumGlobal);
-                        jsonObject.put("otherUserNickname",Activity_trade_chat.otherUserNicknameGlobal);
+                        jsonObject.put("otherUserNickname", Activity_trade_chat.otherUserNicknameGlobal);
                         out.println(jsonObject.toString());
-                    }
 
-                }catch (SocketTimeoutException e){
+                        Intent reloadIntent = new Intent("chatData");
+                        reloadIntent.putExtra("purpose", "reload");
+                        LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(reloadIntent);
+
+                    }
+                    try {
+                        Thread.sleep(500);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    Intent intent = new Intent("reloadRoomList");
+                    intent.putExtra("message", "reloadRoomList");
+                    LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
+
+                } catch (SocketTimeoutException e) {
                     stopSelf();
                     if (tcpService == null) {
                         Intent intent = new Intent(getApplicationContext(), Service_Example.class);
@@ -289,16 +311,10 @@ public class Service_Example extends Service {
                     } else {
                         Log.e("123", "이미연결되어있음");
                     }
+                } catch (SocketException socketException) {
+                    socketException.printStackTrace();
                 }
-                catch (ConnectException ea) {
-                    if (tcpService == null) {
-                        Intent intent = new Intent(getApplicationContext(), Service_Example.class);
-                        startService(intent);
-
-                    } else {
-                        Log.e("123", "이미연결되어있음");
-                    }
-                } catch (Exception e) {
+                catch (Exception e) {
                     System.out.println(e);
                     e.printStackTrace();
                 }
@@ -307,6 +323,21 @@ public class Service_Example extends Service {
         });
         connectThread.setDaemon(true);
         connectThread.start();
+        checkAlive=new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    while(socket.getKeepAlive()){
+                        Log.e("123","socketKeepAlive : " + socket.getKeepAlive());
+                        Thread.sleep(10000);
+                    }
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        });
 
         //** return START_STICKY;
         return START_NOT_STICKY;
@@ -381,6 +412,7 @@ public class Service_Example extends Service {
                     //채팅방 입장하기기
                     if (purpose.equals("changeRoomNum")) {
                         JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("purpose", "roomNumCheck");
                         jsonObject.put("roomNum", roomNum);
                         jsonObject.put("otherUserNickname", otherUserNickname);
                         out.println(jsonObject.toString());
@@ -416,6 +448,13 @@ public class Service_Example extends Service {
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("message", "close");
                         jsonObject.put("purpose", "close");
+                        out.println(jsonObject.toString());
+                    }
+                    //상태체크
+                    else if (purpose.equals("상태체크")){
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("message", "alive");
+                        jsonObject.put("purpose", "상태체크");
                         out.println(jsonObject.toString());
                     }
 
@@ -472,6 +511,7 @@ public class Service_Example extends Service {
                         Intent intent = new Intent("chatData");
                         intent.putExtra("purpose", "인원추가");
                         intent.putExtra("peopleNum", jsonObject.getInt("peopleNum"));
+                        intent.putExtra("nickname",jsonObject.getString("nickname"));
                         LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
                         continue;
                     }
@@ -480,9 +520,17 @@ public class Service_Example extends Service {
                         Intent intent = new Intent("chatData");
                         intent.putExtra("purpose", "인원감소");
                         intent.putExtra("peopleNum", jsonObject.getInt("peopleNum"));
+                        intent.putExtra("nickname",jsonObject.getString("nickname"));
                         LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
                         continue;
                     }
+                    else if (jsonObject.getString("notice").equals("상태체크")){
+                        writeThread writeThread = new writeThread("alive", "상태체크");
+                        writeThread.start();
+                        continue;
+                    }
+                    //개별 알림이 올경우
+
                     //채팅이 아니라 debugging 필요한 정보들 왔을 때 코드 여기까지 작동
                     if (writer == null || message == null) {
                         Log.e("123", "notice만 존재");
@@ -495,7 +543,6 @@ public class Service_Example extends Service {
                         try {
                             String notifyRoom = jsonObject.getString("notifyRoom");
 
-
                             //채팅방 밖에 있고, 채팅목록화면에 있다면, 데이터 reload 해야함. 전달될 때마다.
                             Intent intent = new Intent("reloadRoomList");
                             message = message.replace(CHANGE_LINE_CHAR, "\n");
@@ -503,16 +550,16 @@ public class Service_Example extends Service {
                             LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
 
                             //알림끄기 기능 확인해서 해당 채팅방에 대해서는 알림 보내지 않기
-                            boolean alarmCheck=false;
-                            for(int i=0; i<getNoAlarmRoomArrayList().size();i++){
-                                if(getNoAlarmRoomArrayList().get(i)!=null){
-                                    if(getNoAlarmRoomArrayList().get(i).equals(notifyRoom)){
-                                        alarmCheck=true;
+                            boolean alarmCheck = false;
+                            for (int i = 0; i < getNoAlarmRoomArrayList().size(); i++) {
+                                if (getNoAlarmRoomArrayList().get(i) != null) {
+                                    if (getNoAlarmRoomArrayList().get(i).equals(notifyRoom)) {
+                                        alarmCheck = true;
                                         break;
                                     }
                                 }
                             }
-                            if(alarmCheck){
+                            if (alarmCheck) {
                                 continue;
                             }
 
@@ -605,6 +652,8 @@ public class Service_Example extends Service {
                 handleMessage("서버소켓 연결끊김/ 재연결 시도");
                 //setNotificationService();
                 stopSelf();
+
+
                 Intent intent = new Intent(getApplicationContext(), Service_Example.class);
                 startService(intent);
             }
@@ -632,13 +681,14 @@ public class Service_Example extends Service {
         }
     }
 
-    public void handleMessage(String message){
+    public void handleMessage(String message) {
         Message msg = new Message();
         Bundle bundle = new Bundle();
         bundle.putString("message", message);
         msg.setData(bundle);
         handler.sendMessage(msg);
     }
+
     public ArrayList<String> getNoAlarmRoomArrayList() {
 
         //gson 을 활용하여서 shared에 저장된 string을 object로 변환
