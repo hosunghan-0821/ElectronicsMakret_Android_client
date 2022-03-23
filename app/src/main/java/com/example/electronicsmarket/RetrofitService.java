@@ -192,6 +192,16 @@ public interface RetrofitService {
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/chatApi/userRoomOut.php")
     Call<DataChatRoom> userRoomOut (@Field("roomNum") String roomNum,@Field("nickname")String nickname,@Field("otherUserNickname") String otherUserNickname);
 
+    @FormUrlEncoded
+    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/tradeApi/getInquirerInfo.php")
+    Call<DataInquirerAllInfo> getInquirerInfo (@Field("nickname")String nickname, @Field("postNum") String postNum);
+
+    @FormUrlEncoded
+    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/tradeApi/tradeSuccess.php")
+    Call<Void> tradeSuccess (@Field("nickname")String nickname, @Field("postNum") String postNum,@Field("buyer") String buyerNickname);
+
+
+
 
     //여기서부터 다른 restapi 사용하기 위한 것들
     @GET("https://dapi.kakao.com/v2/local/search/keyword.json")

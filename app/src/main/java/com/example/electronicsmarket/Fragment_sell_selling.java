@@ -1,6 +1,7 @@
 package com.example.electronicsmarket;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -183,6 +184,16 @@ public class Fragment_sell_selling extends Fragment {
                 });
             }
         });
+
+        adapter.setConfirmListener(new Adapter_post_all_info.Interface_buy_confirm_click() {
+            @Override
+            public void onConfirmClick(int position) {
+                Intent intent =new Intent(getActivity(),Activity_buyer_choice.class);
+                intent.putExtra("postNum",sellingList.get(position).getPostNum());
+                startActivity(intent);
+            }
+        });
+
         return view;
     }
 

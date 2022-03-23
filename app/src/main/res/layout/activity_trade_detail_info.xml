@@ -336,7 +336,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout"
+                android:id="@+id/constraintLayout_delivery_info"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_margin="5dp"
@@ -542,7 +542,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="2dp"
                 android:background="#808080"
-                app:layout_constraintBottom_toBottomOf="@+id/constraintLayout"
+                app:layout_constraintBottom_toBottomOf="@+id/constraintLayout_delivery_info"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent" />

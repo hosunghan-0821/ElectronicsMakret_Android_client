@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class PostInfo {
 
 
+    private String sellerNickname;
     private String refundRegTime;
     private String buyRegTime;
     private String tradeConfirmTime;
@@ -22,6 +23,24 @@ public class PostInfo {
     private int viewType;
     private boolean clientIsLike;
     private String clientNickname,clientPhoneNumber;
+    private String postTradeType;
+
+
+    public String getSellerNickname() {
+        return sellerNickname;
+    }
+
+    public void setSellerNickname(String sellerNickname) {
+        this.sellerNickname = sellerNickname;
+    }
+
+    public String getPostTradeType() {
+        return postTradeType;
+    }
+
+    public void setPostTradeType(String postTradeType) {
+        this.postTradeType = postTradeType;
+    }
 
     public boolean isReview;
 

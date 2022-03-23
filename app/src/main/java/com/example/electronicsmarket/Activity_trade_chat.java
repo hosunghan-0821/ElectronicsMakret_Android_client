@@ -833,12 +833,12 @@ public class Activity_trade_chat extends AppCompatActivity {
                     DataChat datachat=new DataChat();
                     if(noSendDataArrayList.size()==0){
                          datachat =new DataChat(message,1,getMessageTime(),nickName,Integer.toString(peopleNum),3,"text",0,roomNum);
-                        Log.e("123","지나감1 size=0");
+//                        Log.e("123","지나감1 size=0");
                     }
                     else{
                         int identifyNum=noSendDataArrayList.get(noSendDataArrayList.size()-1).getIdentifyNum();
                         datachat =new DataChat(message,1,getMessageTime(),nickName,Integer.toString(peopleNum),3,"text",identifyNum+1,roomNum);
-                        Log.e("123","지나감1 size!=0");
+//                        Log.e("123","지나감1 size!=0");
                     }
                     chatList.add(datachat);
                     setStackFromEnd();

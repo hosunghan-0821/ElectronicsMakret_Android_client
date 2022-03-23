@@ -71,6 +71,7 @@ public class Service_Example extends Service {
     private Thread connectThread;
     private Handler handler;
     private Thread checkAlive;
+    private String nickname,email;
 
     private BroadcastReceiver dataReceiver = new BroadcastReceiver() {
         @Override
@@ -109,6 +110,14 @@ public class Service_Example extends Service {
                     String message = intent.getStringExtra("message");
                     writeThread writeThread = new writeThread(message, "sendImage");
                     writeThread.start();
+                } else if (purpose.equals("sendNotification")) {
+                    int type = intent.getIntExtra("type", -1);
+                    String message = intent.getStringExtra("message");
+                    String postNum = intent.getStringExtra("postNum");
+                    String sendToNickname = intent.getStringExtra("sendToNickname");
+                    writeThread writeThread = new writeThread(type, message, "sendNotification", sendToNickname, postNum);
+                    writeThread.start();
+
                 }
 
                 //서버로 보내는 목적이 채팅방 나가는 경우;
@@ -116,11 +125,13 @@ public class Service_Example extends Service {
                     Log.e("123", "quit : ");
                     writeThread writeThread = new writeThread("", "quit");
                     writeThread.start();
-                } else if (purpose.equals("close")) {
+
+                }
+                //서버로 보내는 목적이 소켓 종료 알림;
+                else if (purpose.equals("close")) {
                     Log.e("123", "close : 소켓종료 ");
                     writeThread writeThread = new writeThread("close", "closeSocket");
                     writeThread.start();
-
                     stopSelf();
                 }
 
@@ -176,6 +187,13 @@ public class Service_Example extends Service {
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             }
         };
+
+        // shared 값 가져오기
+        SharedPreferences sharedPreferences=getSharedPreferences("autoLogin",MODE_PRIVATE);
+        email=sharedPreferences.getString("userId","");
+        nickname=sharedPreferences.getString("nickName","");
+
+
         //sharedPreferences= getApplicationContext().getSharedPreferences("noAlarmArrayList",Context.MODE_PRIVATE);
 
 
@@ -313,8 +331,7 @@ public class Service_Example extends Service {
                     }
                 } catch (SocketException socketException) {
                     socketException.printStackTrace();
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     System.out.println(e);
                     e.printStackTrace();
                 }
@@ -323,16 +340,16 @@ public class Service_Example extends Service {
         });
         connectThread.setDaemon(true);
         connectThread.start();
-        checkAlive=new Thread(new Runnable() {
+        checkAlive = new Thread(new Runnable() {
             @Override
             public void run() {
-                try{
-                    while(socket.getKeepAlive()){
-                        Log.e("123","socketKeepAlive : " + socket.getKeepAlive());
+                try {
+                    while (socket.getKeepAlive()) {
+                        Log.e("123", "socketKeepAlive : " + socket.getKeepAlive());
                         Thread.sleep(10000);
                     }
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -384,6 +401,8 @@ public class Service_Example extends Service {
     public class writeThread extends Thread {
 
         private String readValue, roomNum, otherUserNickname, message, purpose;
+        private String sendToNickname, postNum;
+        private int type;
 
         public writeThread(String roomNum, String otherUserNickname, String message, String purpose) {
             this.roomNum = roomNum;
@@ -401,6 +420,14 @@ public class Service_Example extends Service {
             this.purpose = purpose;
         }
 
+        public writeThread(int type, String message, String purpose, String sendToNickname, String postNum) {
+            this.type = type;
+            this.message = message;
+            this.purpose = purpose;
+            this.sendToNickname = sendToNickname;
+            this.postNum = postNum;
+        }
+
         public void run() {
 
             try {
@@ -408,7 +435,6 @@ public class Service_Example extends Service {
 
                 //데이터 보내는 목적이 입장한 채팅방 번호알림일 때,
                 if (purpose != null) {
-
                     //채팅방 입장하기기
                     if (purpose.equals("changeRoomNum")) {
                         JSONObject jsonObject = new JSONObject();
@@ -435,6 +461,15 @@ public class Service_Example extends Service {
                         out.println(jsonObject.toString());
                         Log.e("123", "위치확인4");
 
+                    } else if (purpose.equals("sendNotification")) {
+                        Log.e("123", "writeThread message :" + message);
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("type",(int)type);
+                        jsonObject.put("sendToNickname", sendToNickname);
+                        jsonObject.put("postNum", postNum);
+                        jsonObject.put("message", message);
+                        jsonObject.put("purpose", "sendNotification");
+                        out.println(jsonObject.toString());
                     }
                     //채팅방 나가기
                     else if (purpose.equals("quit")) {
@@ -451,12 +486,12 @@ public class Service_Example extends Service {
                         out.println(jsonObject.toString());
                     }
                     //상태체크
-                    else if (purpose.equals("상태체크")){
-                        JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("message", "alive");
-                        jsonObject.put("purpose", "상태체크");
-                        out.println(jsonObject.toString());
-                    }
+//                    else if (purpose.equals("상태체크")){
+//                        JSONObject jsonObject = new JSONObject();
+//                        jsonObject.put("message", "alive");
+//                        jsonObject.put("purpose", "상태체크");
+//                        out.println(jsonObject.toString());
+//                    }
 
                 } else {
                     readValue = readValue.replace("\n", CHANGE_LINE_CHAR);
@@ -511,7 +546,7 @@ public class Service_Example extends Service {
                         Intent intent = new Intent("chatData");
                         intent.putExtra("purpose", "인원추가");
                         intent.putExtra("peopleNum", jsonObject.getInt("peopleNum"));
-                        intent.putExtra("nickname",jsonObject.getString("nickname"));
+                        intent.putExtra("nickname", jsonObject.getString("nickname"));
                         LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
                         continue;
                     }
@@ -520,16 +555,21 @@ public class Service_Example extends Service {
                         Intent intent = new Intent("chatData");
                         intent.putExtra("purpose", "인원감소");
                         intent.putExtra("peopleNum", jsonObject.getInt("peopleNum"));
-                        intent.putExtra("nickname",jsonObject.getString("nickname"));
+                        intent.putExtra("nickname", jsonObject.getString("nickname"));
                         LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
                         continue;
                     }
-                    else if (jsonObject.getString("notice").equals("상태체크")){
-                        writeThread writeThread = new writeThread("alive", "상태체크");
-                        writeThread.start();
+//                    else if (jsonObject.getString("notice").equals("상태체크")){
+//                        writeThread writeThread = new writeThread("alive", "상태체크");
+//                        writeThread.start();
+//                        continue;
+//                    }
+                    //개별 알림이 올경우
+                    else if (jsonObject.getString("notice").equals("개별알람")) {
+                        //개별 알람 만들기
+                        makeIndividualNotification(readValue);
                         continue;
                     }
-                    //개별 알림이 올경우
 
                     //채팅이 아니라 debugging 필요한 정보들 왔을 때 코드 여기까지 작동
                     if (writer == null || message == null) {
@@ -658,6 +698,74 @@ public class Service_Example extends Service {
                 startService(intent);
             }
 
+        }
+
+    }
+
+    public void makeIndividualNotification(String readValue) {
+
+        try {
+            Log.e("123","개별알람 만들기");
+            JSONObject jsonObject = new JSONObject(readValue);
+
+            String postNum = jsonObject.getString("postNum");
+            int type = jsonObject.getInt("type");
+
+            Log.e("123","type"+type);
+            String message = jsonObject.getString("message");
+            String title="";
+
+            Intent notifyIntent = new Intent();
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(Service_Example.this);
+            //알림 type 별로 다르게 만들어야함
+            if(type==0){
+                title="거래완료 알림";
+                notifyIntent = new Intent(Service_Example.this,Activity_review_write.class);
+                notifyIntent.putExtra("postNum", postNum);
+                notifyIntent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+                stackBuilder.addNextIntentWithParentStack(notifyIntent);
+
+                Intent firstBackStackIntent = stackBuilder.editIntentAt(1);
+                firstBackStackIntent.putExtra("boughtList", "boughtList");
+                Intent backStackIntent = stackBuilder.editIntentAt(0);
+                backStackIntent.putExtra("mypageFragment", "mypageFragment");
+            }
+            if(type==1){
+                notifyIntent = new Intent(Service_Example.this,Activity_writer_review_collect.class);
+                title="거래후기 알림";
+                notifyIntent.putExtra("email",email);
+                notifyIntent.putExtra("nickname",nickname);
+                notifyIntent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+                stackBuilder.addNextIntentWithParentStack(notifyIntent);
+                Intent backStackIntent = stackBuilder.editIntentAt(0);
+                backStackIntent.putExtra("mypageFragment", "mypageFragment");
+            }
+
+            //Notification 만들기
+
+            //Intent backStackIntent = stackBuilder.editIntentAt(0);
+            //backStackIntent.putExtra("chatFragment", "chatFragment");
+//                            Intent backStack2Intent=stackBuilder.editIntentAt(1);
+//                            backStack2Intent.putExtra("check","123");
+
+            //notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            //notifyIntent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+
+            PendingIntent notifyStackPendingIntent = stackBuilder.getPendingIntent(1000, PendingIntent.FLAG_CANCEL_CURRENT);
+            builder = new NotificationCompat.Builder(Service_Example.this, CHANNEL_ID)
+                    .setPriority(NotificationCompat.PRIORITY_MAX)
+                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                    .setContentTitle(title)
+                    .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
+                    .setContentIntent(notifyStackPendingIntent)
+                    .setContentText(message)
+                    .setSmallIcon(R.drawable.ic_baseline_favorite_24)
+                    .setAutoCancel(true)
+                    .setGroup(notiGroup);
+            notificationManager.notify(1000, builder.build());
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }

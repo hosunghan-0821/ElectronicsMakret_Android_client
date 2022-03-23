@@ -129,6 +129,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
+        android:visibility="invisible"
         android:id="@+id/post_all_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

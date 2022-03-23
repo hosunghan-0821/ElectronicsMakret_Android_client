@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,7 +31,13 @@ public class Activity_buy_list extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buy_list);
         variableInit();
+        Intent intent = getIntent();
+        if (intent.getStringExtra("boughtList") != null) {
+            if (intent.getStringExtra("boughtList").equals("boughtList")) {
+                viewPager.setCurrentItem(1);
 
+            }
+        }
 
         backImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,6 +59,7 @@ public class Activity_buy_list extends AppCompatActivity {
         //viewpager 관련 정의
         viewPager = (ViewPager2) findViewById(R.id.buy_list_viewpager);
 
+
         adapter = new Adapter_sell_viewpager(getSupportFragmentManager(),getLifecycle());
         adapter.addFragment(buyingFrag);
         adapter.addFragment(boughtFrag);
@@ -61,11 +69,9 @@ public class Activity_buy_list extends AppCompatActivity {
         //화면 스와이프로 넘기게하는 옵션
         viewPager.setUserInputEnabled(true);
 
-
         tabLayout=(TabLayout) findViewById(R.id.buy_list_tab_control);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
-
 
             @Override
             public void onTabSelected(TabLayout.Tab tab) {

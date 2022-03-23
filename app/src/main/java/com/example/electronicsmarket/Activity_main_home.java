@@ -121,6 +121,12 @@ public class Activity_main_home extends AppCompatActivity {
                 changeFragment(new Fragment_chat());
             }
         }
+        else if(intent.getStringExtra("mypageFragment")!=null){
+            if (intent.getStringExtra("mypageFragment").equals("mypageFragment")) {
+                bottomNavigationView.setSelectedItemId(R.id.mypage_fragment);
+                changeFragment(new Fragment_mypage());
+            }
+        }
         //network상태처리 서비스 시작
         Intent networkIntent = new Intent(Activity_main_home.this,Service_network_check.class);
         startService(networkIntent);

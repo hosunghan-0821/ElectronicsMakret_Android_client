@@ -158,7 +158,11 @@ public class Fragment_sell_sold extends Fragment {
         adapter.setItemClickListener(new Adapter_post_all_info.Interface_info_item_click() {
             @Override
             public void onItemClick(int position) {
+
                 Intent intent = new Intent(getActivity(),Activity_trade_detail_info.class);
+                Log.e("123","tradeNum : "+soldList.get(position).getTradeNum());
+                Log.e("123","tradeType :"+soldList.get(position).getPostTradeType());
+                intent.putExtra("tradeType",soldList.get(position).getPostTradeType());
                 intent.putExtra("tradeNum",soldList.get(position).getTradeNum());
                 intent.putExtra("readType","seller");
                 startActivity(intent);

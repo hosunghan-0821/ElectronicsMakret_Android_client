@@ -2,6 +2,7 @@ package com.example.electronicsmarket;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -32,7 +33,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Activity_review_write extends AppCompatActivity {
 
-    private String id;
+    private String id,nickname;
 
     private ImageView backImage, productImage;
     private TextView reviewWriteProductName, reviewWriteProductPrice, reviewWriteConfirm;
@@ -44,6 +45,7 @@ public class Activity_review_write extends AppCompatActivity {
     private boolean isReview = false, deleteReview = false;
     private String beforeUpdateRating;
     private TextView reviewWriteTitle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,7 +195,16 @@ public class Activity_review_write extends AppCompatActivity {
 
                                 if (response.body().isSuccess()) {
 
+                                    String sendToNickname=response.body().getSellerNickname();
                                     Toast.makeText(getApplicationContext(), "리뷰작성 성공", Toast.LENGTH_SHORT).show();
+                                    Log.e("123","review작성");
+                                    Intent intent = new Intent("chatDataToServer");
+                                    intent.putExtra("type",1);
+                                    intent.putExtra("purpose", "sendNotification");
+                                    intent.putExtra("postNum",postNum);
+                                    intent.putExtra("sendToNickname",sendToNickname);
+                                    intent.putExtra("message", nickname+"님이 거래후기를 남겼어요!");
+                                    LocalBroadcastManager.getInstance(Activity_review_write.this).sendBroadcast(intent);
                                     finish();
                                 }
                             }
@@ -253,7 +264,7 @@ public class Activity_review_write extends AppCompatActivity {
         // shared 값 가져오기
         SharedPreferences sharedPreferences = getSharedPreferences("autoLogin", MODE_PRIVATE);
         id = sharedPreferences.getString("userId", "");
-
+        nickname=sharedPreferences.getString("nickName","");
 
         //request hash map
         map = new HashMap<>();

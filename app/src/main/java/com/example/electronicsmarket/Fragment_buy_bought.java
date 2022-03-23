@@ -285,6 +285,12 @@ public class Fragment_buy_bought extends Fragment {
             @Override
             public void onItemClick(int position) {
                 Intent intent = new Intent(getActivity(), Activity_trade_detail_info.class);
+
+                Log.e("123","tradeNum : "+boughtList.get(position).getTradeNum());
+                Log.e("123","tradeType :"+boughtList.get(position).getPostTradeType());
+                intent.putExtra("tradeType",boughtList.get(position).getPostTradeType());
+
+
                 intent.putExtra("tradeNum", boughtList.get(position).getTradeNum());
                 intent.putExtra("readType", "buyer");
 

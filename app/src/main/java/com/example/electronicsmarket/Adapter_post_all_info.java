@@ -176,7 +176,16 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
             else if(postList.get(position).getPostStatus().equals("S")){
                 ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.GONE);
                 ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.GONE);
-                ((AllInfoViewHolder) holder).postSellStatus.setText("판매완료 (구매확정)");
+                
+                if(postList.get(position).getPostTradeType()!=null){
+                    if(postList.get(position).getPostTradeType().equals("택배거래")){
+                        ((AllInfoViewHolder) holder).postSellStatus.setText("판매완료 (구매확정)");
+                    }
+                    else{
+                        ((AllInfoViewHolder) holder).postSellStatus.setText("판매완료 (직거래)");
+                    }
+                }
+
                 ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.VISIBLE);
 
                 if(status!=null){
@@ -200,6 +209,7 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
                     ((AllInfoViewHolder) holder).postReviewDelete.setVisibility(View.GONE);
                     ((AllInfoViewHolder) holder).postBuyConfirm.setVisibility(View.GONE);
                 }
+
             }
             else if(postList.get(position).getPostStatus().equals("RF") ){
                 ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.GONE);
@@ -210,13 +220,14 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
             else if(postList.get(position).getPostStatus().equals("Y")&&status!=null){
 
                 if(status.equals("selling")){
+
                     ((AllInfoViewHolder) holder).postBuyConfirm.setText("판매완료");
                     ((AllInfoViewHolder) holder).postBuyConfirm.setVisibility(View.VISIBLE);
                     ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.GONE);
                 }
-
             }
             else{
+                ((AllInfoViewHolder) holder).postTime.setVisibility(View.VISIBLE);
                 ((AllInfoViewHolder) holder).postBuyConfirm.setVisibility(View.GONE);
                 if(postList.get(position).getPostSellType().equals("직거래")){
                     ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.VISIBLE);
