@@ -241,16 +241,16 @@ public class Fragment_mypage extends Fragment  {
         String id=sharedPreferences.getString("userId","");
 
         RetrofitService service = retrofit.create(RetrofitService.class);
-        Call<MemberSignup> call = service.getProfile("getProfile.php",id);
-        call.enqueue(new Callback<MemberSignup>() {
+        Call<DataMemberSignup> call = service.getProfile("getProfile.php",id);
+        call.enqueue(new Callback<DataMemberSignup>() {
             @Override
-            public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+            public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
 
 
                 if(response.isSuccessful()&&response.body()!=null){
 
                     Log.e("123","응답옴");
-                  MemberSignup memberInfo=response.body();
+                  DataMemberSignup memberInfo=response.body();
                   nickname.setText(memberInfo.getNickname());
 
 
@@ -272,7 +272,7 @@ public class Fragment_mypage extends Fragment  {
                 }
             }
             @Override
-            public void onFailure(Call<MemberSignup> call, Throwable t) {
+            public void onFailure(Call<DataMemberSignup> call, Throwable t) {
                 Toast.makeText(getContext(), "응답 실패", Toast.LENGTH_SHORT).show();
             }
         });

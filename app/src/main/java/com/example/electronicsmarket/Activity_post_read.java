@@ -1,9 +1,5 @@
 package com.example.electronicsmarket;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -393,10 +389,10 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
                                 public void onClick(DialogInterface dialog, int which) {
                                     Log.e("123", "확인버튼");
                                     RetrofitService service = retrofit.create(RetrofitService.class);
-                                    Call<MemberSignup> call = service.sendDeletePostInfo(postNum);
-                                    call.enqueue(new Callback<MemberSignup>() {
+                                    Call<DataMemberSignup> call = service.sendDeletePostInfo(postNum);
+                                    call.enqueue(new Callback<DataMemberSignup>() {
                                         @Override
-                                        public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+                                        public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
                                             Log.e("123", "통신성공");
                                             if (response.isSuccessful() && response.body() != null) {
                                                 if (response.body().isSuccess()) {
@@ -412,7 +408,7 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
                                         }
 
                                         @Override
-                                        public void onFailure(Call<MemberSignup> call, Throwable t) {
+                                        public void onFailure(Call<DataMemberSignup> call, Throwable t) {
 
                                         }
                                     });
@@ -585,10 +581,10 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
 
         RetrofitService service = retrofit.create(RetrofitService.class);
 
-        Call<MemberSignup> call = service.setLikeList(id, postNum, state);
-        call.enqueue(new Callback<MemberSignup>() {
+        Call<DataMemberSignup> call = service.setLikeList(id, postNum, state);
+        call.enqueue(new Callback<DataMemberSignup>() {
             @Override
-            public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+            public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Log.e("456", "통신 응답옴");
                     //찜목록  추가
@@ -633,7 +629,7 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
             }
 
             @Override
-            public void onFailure(Call<MemberSignup> call, Throwable t) {
+            public void onFailure(Call<DataMemberSignup> call, Throwable t) {
                 Toast.makeText(Activity_post_read.this, "통신 실패", Toast.LENGTH_SHORT).show();
             }
         });

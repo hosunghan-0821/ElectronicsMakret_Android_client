@@ -231,10 +231,10 @@ public class Activity_signup extends AppCompatActivity {
 
                 String verifyPassword = loginPasswordCheck.getText().toString();
 
-                Call<MemberSignup> call = service.sendMemberInfo(verifyEmail,getHash(verifyPassword),verifyNickname);
-                call.enqueue(new Callback<MemberSignup>() {
+                Call<DataMemberSignup> call = service.sendMemberInfo(verifyEmail,getHash(verifyPassword),verifyNickname);
+                call.enqueue(new Callback<DataMemberSignup>() {
                     @Override
-                    public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+                    public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
 
                         if(response.isSuccessful()&&response.body()!=null){
 
@@ -251,7 +251,7 @@ public class Activity_signup extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<MemberSignup> call, Throwable t) {
+                    public void onFailure(Call<DataMemberSignup> call, Throwable t) {
 
                     }
                 });
@@ -282,10 +282,10 @@ public class Activity_signup extends AppCompatActivity {
             }
             Log.e("123","123");
             RetrofitService service = retrofit.create(RetrofitService.class);
-            Call<MemberSignup> call = service.sendNickname("nicknameCheck.php", loginNickname.getText().toString());
-            call.enqueue(new Callback<MemberSignup>() {
+            Call<DataMemberSignup> call = service.sendNickname("nicknameCheck.php", loginNickname.getText().toString());
+            call.enqueue(new Callback<DataMemberSignup>() {
                 @Override
-                public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+                public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
 
                     if(response.isSuccessful()&&response.body()!=null){
 
@@ -303,7 +303,7 @@ public class Activity_signup extends AppCompatActivity {
                     }
                 }
                 @Override
-                public void onFailure(Call<MemberSignup> call, Throwable t) {
+                public void onFailure(Call<DataMemberSignup> call, Throwable t) {
 
 
                 }

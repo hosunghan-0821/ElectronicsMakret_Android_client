@@ -128,10 +128,10 @@ public class Activity_member_out extends AppCompatActivity {
                     String id=sharedPreferences.getString("userId","");
                     Log.e("123",id);
                     RetrofitService service = retrofit.create(RetrofitService.class);
-                    Call<MemberSignup> call = service.memberOut(id,reason);
-                    call.enqueue(new Callback<MemberSignup>() {
+                    Call<DataMemberSignup> call = service.memberOut(id,reason);
+                    call.enqueue(new Callback<DataMemberSignup>() {
                         @Override
-                        public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+                        public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
                             if(response.isSuccessful()&&response.body()!=null){
                                 if(response.body().getMessage().equals("회원탈퇴")){
 
@@ -153,7 +153,7 @@ public class Activity_member_out extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<MemberSignup> call, Throwable t) {
+                        public void onFailure(Call<DataMemberSignup> call, Throwable t) {
                             Log.e("123","통신 실패");
                             dialog.dismiss();
                         }

@@ -12,19 +12,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ClipData;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
-import android.media.Image;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.Selection;
@@ -32,18 +26,14 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -58,11 +48,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -455,10 +442,10 @@ public class Activity_post_write extends AppCompatActivity {
                 if (update) {
                     RequestBody postNumBody = RequestBody.create(MediaType.parse("text/plain"), postNum);
                     requestMap.put("postNum", postNumBody);
-                    Call<MemberSignup> updateCall = service.sendUpdate(files, requestMap);
-                    updateCall.enqueue(new Callback<MemberSignup>() {
+                    Call<DataMemberSignup> updateCall = service.sendUpdate(files, requestMap);
+                    updateCall.enqueue(new Callback<DataMemberSignup>() {
                         @Override
-                        public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+                        public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
 
                             Log.e("123", "통신성공");
                             if (response.isSuccessful() && response.body() != null) {
@@ -483,7 +470,7 @@ public class Activity_post_write extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<MemberSignup> call, Throwable t) {
+                        public void onFailure(Call<DataMemberSignup> call, Throwable t) {
                             Log.e("123", "통신오류");
                         }
                     });
@@ -491,10 +478,10 @@ public class Activity_post_write extends AppCompatActivity {
                 }
 
                 //수정이 아닌 기본 작성시
-                Call<MemberSignup> call = service.sendMultiImage(files, requestMap);
-                call.enqueue(new Callback<MemberSignup>() {
+                Call<DataMemberSignup> call = service.sendMultiImage(files, requestMap);
+                call.enqueue(new Callback<DataMemberSignup>() {
                     @Override
-                    public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+                    public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
                         Log.e("123", "통신성공");
                         if (response.isSuccessful() && response.body() != null) {
                             //이미지 업로드 전송 성공하면 임시파일들 삭제.
@@ -514,7 +501,7 @@ public class Activity_post_write extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<MemberSignup> call, Throwable t) {
+                    public void onFailure(Call<DataMemberSignup> call, Throwable t) {
                         Log.e("123", "통신오류");
                     }
                 });

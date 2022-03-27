@@ -78,11 +78,11 @@ public class Activity_change_password extends AppCompatActivity {
                 String standardPasswordHash = Activity_signup.getHash(standardPassword.getText().toString());
                 String newPasswordHash= Activity_signup.getHash(newPassword.getText().toString());
 
-                Call<MemberSignup> call = service.sendNewPassword(id,standardPasswordHash,newPasswordHash);
+                Call<DataMemberSignup> call = service.sendNewPassword(id,standardPasswordHash,newPasswordHash);
 
-                call.enqueue(new Callback<MemberSignup>() {
+                call.enqueue(new Callback<DataMemberSignup>() {
                     @Override
-                    public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+                    public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
                         if(response.isSuccessful()&&response.body()!=null){
                             if(response.body().isSuccess()){
                                 AlertDialog.Builder builder = new AlertDialog.Builder(Activity_change_password.this);
@@ -130,7 +130,7 @@ public class Activity_change_password extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<MemberSignup> call, Throwable t) {
+                    public void onFailure(Call<DataMemberSignup> call, Throwable t) {
                         Toast.makeText(Activity_change_password.this, "통신 오류", Toast.LENGTH_SHORT).show();
                     }
                 });

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class DataInquirerAllInfo {
 
+    private String inquireNum;
     private ArrayList<DataInquirerInfo> inquirerList;
     private String postNum,postTitle,postPrice,productImageRoute;
 
@@ -13,6 +14,14 @@ public class DataInquirerAllInfo {
 
     public void setInquirerList(ArrayList<DataInquirerInfo> inquirerList) {
         this.inquirerList = inquirerList;
+    }
+
+    public String getInquireNum() {
+        return inquireNum;
+    }
+
+    public void setInquireNum(String inquireNum) {
+        this.inquireNum = inquireNum;
     }
 
     public String getPostNum() {

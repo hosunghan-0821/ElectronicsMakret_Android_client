@@ -1,6 +1,6 @@
 package com.example.electronicsmarket;
 
-public class MemberSignup {
+public class DataMemberSignup {
     private String nickname;
     private String message;
     public String imageRoute;

@@ -224,12 +224,32 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
                     ((AllInfoViewHolder) holder).postBuyConfirm.setText("판매완료");
                     ((AllInfoViewHolder) holder).postBuyConfirm.setVisibility(View.VISIBLE);
                     ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.GONE);
+
+                    if(postList.get(position).getPostSellType().equals("직거래")){
+
+                        ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.VISIBLE);
+                        ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.GONE);
+                        ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.GONE);
+                    }
+                    else if(postList.get(position).getPostSellType().equals("택배거래")){
+                        ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.VISIBLE);
+                        ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.GONE);
+                        ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.GONE);
+                        ((AllInfoViewHolder) holder).postBuyConfirm.setVisibility(View.GONE);
+                    }
+                    else{
+                        ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.VISIBLE);
+                        ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.VISIBLE);
+                        ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.GONE);
+                    }
+
                 }
             }
             else{
                 ((AllInfoViewHolder) holder).postTime.setVisibility(View.VISIBLE);
                 ((AllInfoViewHolder) holder).postBuyConfirm.setVisibility(View.GONE);
                 if(postList.get(position).getPostSellType().equals("직거래")){
+
                     ((AllInfoViewHolder) holder).postSellType1.setVisibility(View.VISIBLE);
                     ((AllInfoViewHolder) holder).postSellType2.setVisibility(View.GONE);
                     ((AllInfoViewHolder) holder).postSellStatus.setVisibility(View.GONE);

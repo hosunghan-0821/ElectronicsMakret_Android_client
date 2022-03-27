@@ -1,5 +1,9 @@
 package com.example.electronicsmarket;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -9,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -38,8 +43,23 @@ public class Activity_buyer_choice extends AppCompatActivity {
     private Adapter_buyer_choice adapter;
     private ArrayList<DataInquirerInfo> inquireList;
     private TextView buyerChoiceNoListText;
+    private String cursorChatTime, phasingNum;
+    private boolean isFinalPhase = false, scrollCheck = true;
 
 
+    private ActivityResultLauncher<Intent> chatListLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+
+                    if(result.getResultCode()==RESULT_OK){
+                        finish();
+                    }
+
+                }
+            }
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,26 +69,27 @@ public class Activity_buyer_choice extends AppCompatActivity {
         postNum = getIntent().getStringExtra("postNum");
 
         RetrofitService service = retrofit.create(RetrofitService.class);
-        Call<DataInquirerAllInfo> call = service.getInquirerInfo(nickname, postNum);
+        Call<DataInquirerAllInfo> call = service.getInquirerInfo(cursorChatTime, phasingNum, nickname, postNum,"inquireList");
 
         call.enqueue(new Callback<DataInquirerAllInfo>() {
             @Override
             public void onResponse(Call<DataInquirerAllInfo> call, Response<DataInquirerAllInfo> response) {
 
-                if ( response.isSuccessful() && response.body() != null ) {
+                if (response.isSuccessful() && response.body() != null) {
 
                     //Log.e("123", "inquirerList size"+response.body().getInquirerList().size());
                     //Log.e("123",response.body().getProductImageRoute());
 
-                    //해당 채팅 리스트 보여주기.
-                    ArrayList<DataInquirerInfo> inquireUserList = response.body().getInquirerList();
+                    //해당 상품정보 보여주기.
                     Glide.with(Activity_buyer_choice.this).load(response.body().getProductImageRoute()).into(buyerChoiceProductImage);
 
                     buyerChoiceProductTitle.setText(response.body().getPostTitle());
                     buyerChoiceProductPrice.setText(response.body().getPostPrice() + "원");
 
-                    for (int i = 0; i < inquireUserList.size(); i++) {
+                    //문의 리스트 보여주기
+                    ArrayList<DataInquirerInfo> inquireUserList = response.body().getInquirerList();
 
+                    for (int i = 0; i < inquireUserList.size(); i++) {
                         inquireList.add(inquireUserList.get(i));
                         Log.e("123", "finalChatTime" + inquireUserList.get(i).getFinalChatTime());
 
@@ -77,7 +98,14 @@ public class Activity_buyer_choice extends AppCompatActivity {
                     if (inquireUserList.size() == 0) {
                         buyerChoiceNoListText.setVisibility(View.VISIBLE);
                     } else {
+                        //커서 설정
+                        cursorChatTime = inquireUserList.get(inquireUserList.size() - 1).getFinalChatTime();
+                        Log.e("123", "on create finalChatTime" + cursorChatTime);
+                        Log.e("123", "getInquireNum" + response.body().getInquireNum());
                         buyerChoiceNoListText.setVisibility(View.GONE);
+                    }
+                    if (!response.body().getInquireNum().equals(phasingNum)) {
+                        isFinalPhase = true;
                     }
 
                 }
@@ -89,6 +117,53 @@ public class Activity_buyer_choice extends AppCompatActivity {
             }
         });
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            buyerChoiceRecyclerview.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+                @Override
+                public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                    if (!v.canScrollVertically(1) && scrollCheck) {
+                        scrollCheck = false;
+                        if (!isFinalPhase) {
+                            Call<DataInquirerAllInfo> call = service.getInquirerInfo(cursorChatTime, phasingNum, nickname, postNum,"inquireList");
+                            call.enqueue(new Callback<DataInquirerAllInfo>() {
+                                @Override
+                                public void onResponse(Call<DataInquirerAllInfo> call, Response<DataInquirerAllInfo> response) {
+
+
+                                    if (response.isSuccessful() && response.body() != null) {
+                                        ArrayList<DataInquirerInfo> inquireUserList = response.body().getInquirerList();
+
+                                        for (int i = 0; i < inquireUserList.size(); i++) {
+                                            inquireList.add(inquireUserList.get(i));
+
+
+                                        }
+                                        adapter.notifyDataSetChanged();
+
+                                        if (inquireUserList.size() != 0) {
+                                            cursorChatTime = inquireUserList.get(inquireUserList.size() - 1).getFinalChatTime();
+                                            Log.e("123", "finalChatTime" + cursorChatTime);
+                                        }
+
+                                        if (!response.body().getInquireNum().equals(phasingNum)) {
+                                            isFinalPhase = true;
+                                        }
+                                        scrollCheck = true;
+                                    }
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<DataInquirerAllInfo> call, Throwable t) {
+                                    Log.e("123", t.getMessage());
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
 
         adapter.setBuyerChoiceListener(new Adapter_buyer_choice.Interface_buyer_choice() {
             @Override
@@ -96,31 +171,33 @@ public class Activity_buyer_choice extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(Activity_buyer_choice.this);
 
                 builder.setTitle("구매자 선택");
-                builder.setMessage("\""+inquireList.get(position).getNickname()+"\""+" 회원과 거래하셨나요?");
+                builder.setMessage("\"" + inquireList.get(position).getNickname() + "\"" + " 회원과 거래하셨나요?");
                 builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        Call<Void> call = service.tradeSuccess(nickname, postNum,inquireList.get(position).getNickname());
+                        Call<Void> call = service.tradeSuccess(nickname, postNum, inquireList.get(position).getNickname());
                         call.enqueue(new Callback<Void>() {
                             @Override
                             public void onResponse(Call<Void> call, Response<Void> response) {
-                                if(response.isSuccessful()){
-                                    Log.e("123","성공");
+                                if (response.isSuccessful()) {
+
+                                    Log.e("123", "성공");
                                     //PHP 작업 제대로 하고 난 후, TCP를 통해 상대방 회원에게 거래완료 알림.
                                     Intent intent = new Intent("chatDataToServer");
-                                    intent.putExtra("type",0);
+                                    intent.putExtra("type", 0);
                                     intent.putExtra("purpose", "sendNotification");
-                                    intent.putExtra("postNum",postNum);
-                                    intent.putExtra("sendToNickname",inquireList.get(position).getNickname());
-                                    intent.putExtra("message", nickname+"님과 거래완료 되었습니다. 후기를 남겨주세요");
+                                    intent.putExtra("postNum", postNum);
+                                    intent.putExtra("sendToNickname", inquireList.get(position).getNickname());
+                                    intent.putExtra("message", nickname + "님과 거래완료 되었습니다. 후기를 남겨주세요");
                                     LocalBroadcastManager.getInstance(Activity_buyer_choice.this).sendBroadcast(intent);
+                                    finish();
                                 }
                             }
 
                             @Override
                             public void onFailure(Call<Void> call, Throwable t) {
-                                Log.e("123",t.getMessage());
+                                Log.e("123", t.getMessage());
                             }
                         });
 
@@ -139,9 +216,21 @@ public class Activity_buyer_choice extends AppCompatActivity {
             }
         });
 
+        buyerChoiceMoreUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Activity_buyer_choice.this, Activity_buyer_choice_chatlist.class);
+                chatListLauncher.launch(intent);
+            }
+        });
+
     }
 
     public void variableInit() {
+
+        //Phasing 관련
+        cursorChatTime = "0";
+        phasingNum = "5";
 
         //retrofit2
 

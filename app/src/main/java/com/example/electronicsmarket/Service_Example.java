@@ -33,6 +33,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -48,6 +49,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class Service_Example extends Service {
 
@@ -302,6 +304,8 @@ public class Service_Example extends Service {
                     out.println(jsonObject.toString());
 
                     if (Activity_trade_chat.activity_trade_chat != null) {
+
+
                         jsonObject.put("purpose", "roomNumCheck");
                         jsonObject.put("roomNum", Activity_trade_chat.roomNumGlobal);
                         jsonObject.put("otherUserNickname", Activity_trade_chat.otherUserNicknameGlobal);
@@ -310,7 +314,6 @@ public class Service_Example extends Service {
                         Intent reloadIntent = new Intent("chatData");
                         reloadIntent.putExtra("purpose", "reload");
                         LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(reloadIntent);
-
                     }
                     try {
                         Thread.sleep(500);
@@ -534,10 +537,27 @@ public class Service_Example extends Service {
                     }
                     //채팅방 명수 정보 받기. 방 맨처음 들어왔을 경우
                     if (jsonObject.getString("notice").equals("인원체크")) {
+                        JSONArray jsonArray=jsonObject.getJSONArray("nickname");
+
+
+                        Log.e("123","jsonArray : "+jsonArray);
+                        ArrayList<String> roomUsers=new ArrayList<>();
+                        for(int i=0;i<jsonArray.length();i++){
+                            roomUsers.add(jsonArray.getString(i));
+                        }
+                        Log.e("123","jsonArray length : "+ jsonArray.length());
                         Intent intent = new Intent("chatData");
+                        intent.putStringArrayListExtra("roomUsers",  roomUsers);
                         intent.putExtra("purpose", "인원체크");
                         intent.putExtra("peopleNum", jsonObject.getInt("peopleNum"));
                         LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
+
+//                        try{
+//                            Thread.sleep(500);
+//                        }catch (Exception e){
+//
+//                        }
+
                         continue;
                     }
                     //채팅방 다른 유저이 들어왔을 경우
@@ -548,6 +568,7 @@ public class Service_Example extends Service {
                         intent.putExtra("peopleNum", jsonObject.getInt("peopleNum"));
                         intent.putExtra("nickname", jsonObject.getString("nickname"));
                         LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
+
                         continue;
                     }
                     //채팅방 다른 유저 나갔을 경우

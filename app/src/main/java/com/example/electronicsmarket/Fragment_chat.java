@@ -86,7 +86,7 @@ public class Fragment_chat extends Fragment {
         //Log.e("123","인터넷 상태 : "+NetworkStatus.getConnectivityStatus(getActivity()));
         //서버로부터 데이터 가져오기..
         RetrofitService service = retrofit.create(RetrofitService.class);
-        Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, phasingNum, cursorChatRoomNum);
+        Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, phasingNum, cursorChatRoomNum,"chatList");
         call.enqueue(new Callback<DataChatRoomAll>() {
             @Override
             public void onResponse(Call<DataChatRoomAll> call, Response<DataChatRoomAll> response) {
@@ -129,7 +129,7 @@ public class Fragment_chat extends Fragment {
                     if (!v.canScrollVertically(1) && scrollCheck) {
                         scrollCheck = false;
                         if (!isFinalPhase) {
-                            Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, phasingNum, cursorChatRoomNum);
+                            Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, phasingNum, cursorChatRoomNum,"chatList");
                             call.enqueue(new Callback<DataChatRoomAll>() {
                                 @Override
                                 public void onResponse(Call<DataChatRoomAll> call, Response<DataChatRoomAll> response) {
@@ -182,7 +182,7 @@ public class Fragment_chat extends Fragment {
                 //그러 cursor가 햇갈리게 될텐데
                 //이 부분 수정해야함
                 RetrofitService service = retrofit.create(RetrofitService.class);
-                Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, "update", cursorChatRoomNum);
+                Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, "update", cursorChatRoomNum,"chatList");
                 call.enqueue(new retrofit2.Callback<DataChatRoomAll>() {
                     @Override
                     public void onResponse(Call<DataChatRoomAll> call, Response<DataChatRoomAll> response) {
@@ -237,7 +237,7 @@ public class Fragment_chat extends Fragment {
 
         if (onCreateViewIsSet) {
             RetrofitService service = retrofit.create(RetrofitService.class);
-            Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, "update", cursorChatRoomNum);
+            Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, "update", cursorChatRoomNum,"chatList");
             call.enqueue(new Callback<DataChatRoomAll>() {
                 @Override
                 public void onResponse(Call<DataChatRoomAll> call, Response<DataChatRoomAll> response) {

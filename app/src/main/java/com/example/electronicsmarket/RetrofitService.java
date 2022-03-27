@@ -24,23 +24,23 @@ public interface RetrofitService {
     Call<PostEmail> send( @Field("email") String email);
 
     @GET("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/signup/memberOut.php")
-    Call<MemberSignup> memberOut(@Query("email") String email,@Query("message") String message);
+    Call<DataMemberSignup> memberOut(@Query("email") String email, @Query("message") String message);
 
     @GET("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/setLikeList.php")
-    Call<MemberSignup> setLikeList(@Query("email") String nickname,@Query("postNum") String postNum,@Query("state") String insDel);
+    Call<DataMemberSignup> setLikeList(@Query("email") String nickname, @Query("postNum") String postNum, @Query("state") String insDel);
 
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/signup/{path}")
-    Call<MemberSignup> getProfile(@Path("path") String path, @Field("email") String email);
+    Call<DataMemberSignup> getProfile(@Path("path") String path, @Field("email") String email);
 
 
     @Multipart
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/signup/setProfile.php")
-    Call<MemberSignup> setProfile(@Part MultipartBody.Part image,@Query("email") String email );
+    Call<DataMemberSignup> setProfile(@Part MultipartBody.Part image, @Query("email") String email );
 
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/signup/setProfileNickname.php")
-    Call<MemberSignup> setNickname(@Field("email") String email,@Field("nickname") String nickname);
+    Call<DataMemberSignup> setNickname(@Field("email") String email, @Field("nickname") String nickname);
 
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/emailVerify/findPassword.php")
@@ -61,11 +61,11 @@ public interface RetrofitService {
 
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/signup/deleteProfile.php")
-    Call<MemberSignup> deleteProfile(@Field("email") String email);
+    Call<DataMemberSignup> deleteProfile(@Field("email") String email);
 
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/signup/{path}")
-    Call<MemberSignup> sendNickname(@Path("path") String path,@Field("nickname") String nickname);
+    Call<DataMemberSignup> sendNickname(@Path("path") String path, @Field("nickname") String nickname);
 
 
     @FormUrlEncoded
@@ -75,7 +75,7 @@ public interface RetrofitService {
 
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/signup/signup.php")
-    Call<MemberSignup> sendMemberInfo(
+    Call<DataMemberSignup> sendMemberInfo(
             @Field("id") String id,
             @Field("password") String password,
             @Field("nickname") String nickname
@@ -83,7 +83,7 @@ public interface RetrofitService {
 
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/signup/changePassword.php")
-    Call<MemberSignup> sendNewPassword(
+    Call<DataMemberSignup> sendNewPassword(
             @Field("email") String id,
             @Field("password") String password,
             @Field("newPassword") String newPassword
@@ -91,14 +91,14 @@ public interface RetrofitService {
 
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/signup/login.php")
-    Call<MemberSignup> sendLoginInfo(
+    Call<DataMemberSignup> sendLoginInfo(
             @Field("id") String id,
             @Field("password") String password
     );
 
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/postDelete.php")
-    Call<MemberSignup> sendDeletePostInfo(
+    Call<DataMemberSignup> sendDeletePostInfo(
             @Field("postNum") String postNum
     );
 
@@ -116,13 +116,13 @@ public interface RetrofitService {
 
     @Multipart
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/postWrite.php")
-    Call<MemberSignup> sendMultiImage(
+    Call<DataMemberSignup> sendMultiImage(
             @Part ArrayList<MultipartBody.Part> files, @PartMap HashMap<String, RequestBody> params
             );
 
     @Multipart
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/postUpdate.php")
-    Call<MemberSignup> sendUpdate(
+    Call<DataMemberSignup> sendUpdate(
             @Part ArrayList<MultipartBody.Part> files, @PartMap HashMap<String, RequestBody> params
     );
 
@@ -178,7 +178,7 @@ public interface RetrofitService {
 
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/chatApi/getRoomAllInfo.php")
-    Call<DataChatRoomAll> getRoomAllInfo (@Field("nickname") String nickname,@Field("phasingNum") String phasingNum,@Field("cursorChatRoom") String cursorChatRoomNum);
+    Call<DataChatRoomAll> getRoomAllInfo (@Field("nickname") String nickname,@Field("phasingNum") String phasingNum,@Field("cursorChatRoom") String cursorChatRoomNum,@Field("purpose") String purpose);
 
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/chatApi/getRoomChatInfo.php")
@@ -194,7 +194,7 @@ public interface RetrofitService {
 
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/tradeApi/getInquirerInfo.php")
-    Call<DataInquirerAllInfo> getInquirerInfo (@Field("nickname")String nickname, @Field("postNum") String postNum);
+    Call<DataInquirerAllInfo> getInquirerInfo (@Field("finalChatRegTime")String finalPostNum,@Field("phasingNum")String phasingNum,@Field("nickname")String nickname, @Field("postNum") String postNum,@Field("purpose") String purpose);
 
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/tradeApi/tradeSuccess.php")

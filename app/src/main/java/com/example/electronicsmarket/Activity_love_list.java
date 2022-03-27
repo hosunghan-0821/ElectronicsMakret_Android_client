@@ -17,7 +17,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -119,10 +118,10 @@ public class Activity_love_list extends AppCompatActivity {
             @Override
             public void onItemCancel(int position) {
                 RetrofitService service = retrofit.create(RetrofitService.class);
-                Call<MemberSignup> call = service.setLikeList(id,loveList.get(position).getPostNum(),"delete");
-                call.enqueue(new Callback<MemberSignup>() {
+                Call<DataMemberSignup> call = service.setLikeList(id,loveList.get(position).getPostNum(),"delete");
+                call.enqueue(new Callback<DataMemberSignup>() {
                     @Override
-                    public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+                    public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
 
                         if(response.isSuccessful()&&response.body().isSuccess()){
 
@@ -139,7 +138,7 @@ public class Activity_love_list extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<MemberSignup> call, Throwable t) {
+                    public void onFailure(Call<DataMemberSignup> call, Throwable t) {
                         Log.e("123","통신 onFailure ()");
                     }
                 });

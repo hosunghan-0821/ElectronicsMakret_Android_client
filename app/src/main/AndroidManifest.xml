@@ -25,15 +25,16 @@
         android:theme="@style/Theme.ElectronicsMarket"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Activity_buyer_choice_chatlist"
+            android:exported="false" />
+        <activity
             android:name=".Activity_buyer_choice"
             android:exported="false" />
 
         <service
             android:name=".Service_network_check"
             android:enabled="true"
-            android:exported="true">
-
-        </service> <!-- android:requestLegacyExternalStorage="true" -->
+            android:exported="true"></service> <!-- android:requestLegacyExternalStorage="true" -->
         <activity
             android:name=".Activity_image_download"
             android:exported="false" />
@@ -51,14 +52,11 @@
         <service
             android:name=".Service_Restart"
             android:enabled="true"
-            android:exported="true">
-
-        </service>
+            android:exported="true"></service>
         <service
             android:name=".Service_Example"
             android:enabled="true"
-            android:exported="true">
-        </service> <!-- android:stopWithTask="false" -->
+            android:exported="true"></service> <!-- android:stopWithTask="false" -->
         <activity
             android:name=".Activity_trade_chat"
             android:exported="false"
@@ -72,13 +70,11 @@
         <activity
             android:name=".Activity_writer_review_collect"
             android:exported="false"
-            android:parentActivityName=".Activity_main_home"
-            />
+            android:parentActivityName=".Activity_main_home" />
         <activity
             android:name=".Activity_review_write"
             android:exported="false"
-            android:parentActivityName=".Activity_buy_list"
-            />
+            android:parentActivityName=".Activity_buy_list" />
         <activity
             android:name=".Activity_delivery_info"
             android:exported="false" />
@@ -88,8 +84,7 @@
         <activity
             android:name=".Activity_buy_list"
             android:exported="false"
-            android:parentActivityName=".Activity_main_home"
-            />
+            android:parentActivityName=".Activity_main_home" />
         <activity
             android:name=".Activity_address_change"
             android:exported="false" />

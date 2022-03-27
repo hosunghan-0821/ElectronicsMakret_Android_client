@@ -155,10 +155,10 @@ public class Activity_profile_update extends AppCompatActivity {
             }
             AlertDialog.Builder builder =new AlertDialog.Builder(Activity_profile_update.this);
             RetrofitService service = retrofit.create(RetrofitService.class);
-            Call<MemberSignup> call = service.sendNickname("nicknameCheck.php",nickname.getText().toString());
-            call.enqueue(new Callback<MemberSignup>() {
+            Call<DataMemberSignup> call = service.sendNickname("nicknameCheck.php",nickname.getText().toString());
+            call.enqueue(new Callback<DataMemberSignup>() {
                 @Override
-                public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+                public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
                     if(response.isSuccessful()){
                         if(response.body().isSuccess()){
                             Log.e("123","123456");
@@ -192,7 +192,7 @@ public class Activity_profile_update extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<MemberSignup> call, Throwable t) {
+                public void onFailure(Call<DataMemberSignup> call, Throwable t) {
 
                 }
             });
@@ -228,10 +228,10 @@ public class Activity_profile_update extends AppCompatActivity {
             if(!nickname.getText().toString().equals(originNickname)){
                 Log.e("123","닉네임변경");
                 RetrofitService service = retrofit.create(RetrofitService.class);
-                Call<MemberSignup> call = service.setNickname(id,nickname.getText().toString());
-                call.enqueue(new Callback<MemberSignup>() {
+                Call<DataMemberSignup> call = service.setNickname(id,nickname.getText().toString());
+                call.enqueue(new Callback<DataMemberSignup>() {
                     @Override
-                    public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+                    public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
 
                         if(response.isSuccessful()&&response.body()!=null){
                             if(response.body().isSuccess()){
@@ -241,11 +241,11 @@ public class Activity_profile_update extends AppCompatActivity {
                                     MultipartBody.Part body= MultipartBody.Part.createFormData("upload",imageFile.getName(),reqFile);
                                     Log.e("123","이미지 변경");
                                     RetrofitService service = retrofit.create(RetrofitService.class);
-                                    Call<MemberSignup> call2 = service.setProfile(body,id);
+                                    Call<DataMemberSignup> call2 = service.setProfile(body,id);
 
-                                    call2.enqueue(new Callback<MemberSignup>() {
+                                    call2.enqueue(new Callback<DataMemberSignup>() {
                                         @Override
-                                        public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+                                        public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
 
                                             if(response.isSuccessful()&& response.body()!=null ){
                                                 if(response.body().getMessage().equals("업로드 성공")){
@@ -265,7 +265,7 @@ public class Activity_profile_update extends AppCompatActivity {
                                             }
                                         }
                                         @Override
-                                        public void onFailure(Call<MemberSignup> call, Throwable t) {
+                                        public void onFailure(Call<DataMemberSignup> call, Throwable t) {
                                             Toast.makeText(Activity_profile_update.this, "통신오류", Toast.LENGTH_SHORT).show();
                                         }
                                     });
@@ -275,10 +275,10 @@ public class Activity_profile_update extends AppCompatActivity {
                                 else if(standardImage){
                                     Log.e("123","666");
                                     RetrofitService service = retrofit.create(RetrofitService.class);
-                                    Call<MemberSignup> call2 = service.deleteProfile(id);
-                                    call2.enqueue(new Callback<MemberSignup>() {
+                                    Call<DataMemberSignup> call2 = service.deleteProfile(id);
+                                    call2.enqueue(new Callback<DataMemberSignup>() {
                                         @Override
-                                        public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+                                        public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
                                             AlertDialog.Builder builder = new AlertDialog.Builder(Activity_profile_update.this);
                                             builder.setTitle("프로필이 변경되었습니다.");
                                             builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
@@ -293,7 +293,7 @@ public class Activity_profile_update extends AppCompatActivity {
                                         }
 
                                         @Override
-                                        public void onFailure(Call<MemberSignup> call, Throwable t) {
+                                        public void onFailure(Call<DataMemberSignup> call, Throwable t) {
                                             Toast.makeText(Activity_profile_update.this, "통신오류", Toast.LENGTH_SHORT).show();
                                         }
                                     });
@@ -320,7 +320,7 @@ public class Activity_profile_update extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<MemberSignup> call, Throwable t) {
+                    public void onFailure(Call<DataMemberSignup> call, Throwable t) {
                         Toast.makeText(getApplicationContext(), "통신오류", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -333,10 +333,10 @@ public class Activity_profile_update extends AppCompatActivity {
                     MultipartBody.Part body= MultipartBody.Part.createFormData("upload",imageFile.getName(),reqFile);
                     Log.e("123","이미지 변경");
                     RetrofitService service = retrofit.create(RetrofitService.class);
-                    Call<MemberSignup> call2 = service.setProfile(body,id);
-                    call2.enqueue(new Callback<MemberSignup>() {
+                    Call<DataMemberSignup> call2 = service.setProfile(body,id);
+                    call2.enqueue(new Callback<DataMemberSignup>() {
                         @Override
-                        public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+                        public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
 
                             if(response.isSuccessful()&& response.body()!=null ){
                                 if(response.body().getMessage().equals("업로드 성공")){
@@ -357,7 +357,7 @@ public class Activity_profile_update extends AppCompatActivity {
                             }
                         }
                         @Override
-                        public void onFailure(Call<MemberSignup> call, Throwable t) {
+                        public void onFailure(Call<DataMemberSignup> call, Throwable t) {
                             Toast.makeText(Activity_profile_update.this, "통신오류", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -367,10 +367,10 @@ public class Activity_profile_update extends AppCompatActivity {
                 else if(standardImage){
                     Log.e("123","666");
                     RetrofitService service = retrofit.create(RetrofitService.class);
-                    Call<MemberSignup> call2 = service.deleteProfile(id);
-                    call2.enqueue(new Callback<MemberSignup>() {
+                    Call<DataMemberSignup> call2 = service.deleteProfile(id);
+                    call2.enqueue(new Callback<DataMemberSignup>() {
                         @Override
-                        public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+                        public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(Activity_profile_update.this);
                             builder.setTitle("프로필이 변경되었습니다.");
                             builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
@@ -383,7 +383,7 @@ public class Activity_profile_update extends AppCompatActivity {
                             builder.show();
                         }
                         @Override
-                        public void onFailure(Call<MemberSignup> call, Throwable t) {
+                        public void onFailure(Call<DataMemberSignup> call, Throwable t) {
                             Toast.makeText(Activity_profile_update.this, "통신오류", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -496,15 +496,15 @@ public class Activity_profile_update extends AppCompatActivity {
 
         Log.e("123",uriFile.getPath());
         RetrofitService service = retrofit.create(RetrofitService.class);
-        Call<MemberSignup> call2 = service.setProfile(body,"winsomed96@naver.com");
-        call2.enqueue(new Callback<MemberSignup>() {
+        Call<DataMemberSignup> call2 = service.setProfile(body,"winsomed96@naver.com");
+        call2.enqueue(new Callback<DataMemberSignup>() {
             @Override
-            public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+            public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
 
             }
 
             @Override
-            public void onFailure(Call<MemberSignup> call, Throwable t) {
+            public void onFailure(Call<DataMemberSignup> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "통신오류", Toast.LENGTH_SHORT).show();
             }
         });
@@ -558,11 +558,11 @@ public class Activity_profile_update extends AppCompatActivity {
         String id=sharedPreferences.getString("userId","");
 
         RetrofitService service = retrofit.create(RetrofitService.class);
-        Call<MemberSignup> call = service.getProfile("getProfile.php",id);
-        call.enqueue(new Callback<MemberSignup>() {
+        Call<DataMemberSignup> call = service.getProfile("getProfile.php",id);
+        call.enqueue(new Callback<DataMemberSignup>() {
             @Override
-            public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
-                MemberSignup memberInfo=response.body();
+            public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
+                DataMemberSignup memberInfo=response.body();
                 nickname.setText(memberInfo.getNickname());
                 originNickname=memberInfo.getNickname();
 
@@ -576,7 +576,7 @@ public class Activity_profile_update extends AppCompatActivity {
 
             }
             @Override
-            public void onFailure(Call<MemberSignup> call, Throwable t) {
+            public void onFailure(Call<DataMemberSignup> call, Throwable t) {
 
             }
         });

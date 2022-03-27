@@ -112,6 +112,8 @@
         app:layout_constraintTop_toTopOf="@+id/horizontal_guideline2" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:scrollbars="vertical"
+        android:scrollbarFadeDuration="0"
         android:background="@drawable/textview_border"
         android:id="@+id/buyer_choice_recyclerview"
         android:layout_width="0dp"

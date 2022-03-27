@@ -58,7 +58,7 @@ public class NetworkConnectionCheck extends ConnectivityManager.NetworkCallback 
 
             if(NetworkStatus.getConnectivityStatus(context)==2){
                 try{
-                    Thread.sleep(1000);
+                    Thread.sleep(2000);
                 }catch (Exception e){
                     e.printStackTrace();
                 }

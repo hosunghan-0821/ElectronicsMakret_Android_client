@@ -55,10 +55,10 @@ public class Activity_main extends AppCompatActivity {
                 // 로그인, 비밀번호 not 공백인것만 check
                 if(!loginId.getText().toString().equals("")&&!loginPassword.getText().toString().equals("")){
 
-                    Call<MemberSignup> call =service.sendLoginInfo(loginId.getText().toString(), Activity_signup.getHash(loginPassword.getText().toString()));
-                    call.enqueue(new Callback<MemberSignup>() {
+                    Call<DataMemberSignup> call =service.sendLoginInfo(loginId.getText().toString(), Activity_signup.getHash(loginPassword.getText().toString()));
+                    call.enqueue(new Callback<DataMemberSignup>() {
                         @Override
-                        public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+                        public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
                             if(response.isSuccessful()&&response.body()!=null){
 
                                 sharedPreferences= getSharedPreferences("autoLogin",MODE_PRIVATE);
@@ -97,7 +97,7 @@ public class Activity_main extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<MemberSignup> call, Throwable t) {
+                        public void onFailure(Call<DataMemberSignup> call, Throwable t) {
 
                         }
                     });
@@ -150,10 +150,10 @@ public class Activity_main extends AppCompatActivity {
             autoLogin.setChecked(true);
 
             RetrofitService service = retrofit.create(RetrofitService.class);
-            Call<MemberSignup> call =service.sendLoginInfo(id, Activity_signup.getHash(password));
-            call.enqueue(new Callback<MemberSignup>() {
+            Call<DataMemberSignup> call =service.sendLoginInfo(id, Activity_signup.getHash(password));
+            call.enqueue(new Callback<DataMemberSignup>() {
                 @Override
-                public void onResponse(Call<MemberSignup> call, Response<MemberSignup> response) {
+                public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
                     if(response.isSuccessful()&&response.body()!=null){
                         if(response.body().getMessage().equals("로그인 성공")){
 
@@ -170,7 +170,7 @@ public class Activity_main extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<MemberSignup> call, Throwable t) {
+                public void onFailure(Call<DataMemberSignup> call, Throwable t) {
 
                 }
             });

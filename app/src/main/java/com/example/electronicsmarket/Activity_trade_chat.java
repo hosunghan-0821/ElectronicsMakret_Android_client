@@ -48,6 +48,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -106,6 +108,7 @@ public class Activity_trade_chat extends AppCompatActivity {
     private ArrayList<String> roomMemberNickname;
 
 
+
     private BroadcastReceiver dataReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -116,18 +119,28 @@ public class Activity_trade_chat extends AppCompatActivity {
                 if (purpose.equals("인원체크")) {
 
                     int chatRoomPeople = intent.getIntExtra("peopleNum", -1);
+                    Log.e("123","방 인원수"+chatRoomPeople);
+                    ArrayList<String> roomUsers =intent.getStringArrayListExtra("roomUsers");
+
+                    for(int i=0;i<roomUsers.size();i++){
+                       roomMemberNickname.add(roomUsers.get(i));
+                    }
                     peopleNum = chatRoomPeople;
+
                 } else if (purpose.equals("인원추가")) {
-                    String nickname = intent.getStringExtra("nickname");
+                    String userNickname = intent.getStringExtra("nickname");
                     boolean nameDuplicateCheck=false;
                     for(int i=0;i<roomMemberNickname.size();i++){
-                        if(nickname.equals(roomMemberNickname.get(i))){
+
+                        if(userNickname.equals(roomMemberNickname.get(i))){
+                            Log.e("123","중복된 닉네임 : "+userNickname);
                             nameDuplicateCheck=true;
                             break;
                         }
                     }
                     if(!nameDuplicateCheck){
-                        roomMemberNickname.add(nickname);
+                        Log.e("123","방 인원추가 중복안된 닉네임 "+userNickname);
+                        roomMemberNickname.add(userNickname);
                         //데이터 reload 해야함
                         Message msg = new Message();
                         Bundle bundle = new Bundle();
@@ -158,7 +171,10 @@ public class Activity_trade_chat extends AppCompatActivity {
                     bundle.putString("purpose", "reloadActivity");
                     msg.setData(bundle);
                     handler.sendMessage(msg);
+                }
 
+                for(int i=0;i<roomMemberNickname.size();i++){
+                    Log.e("123","roomMemberNickname : "+roomMemberNickname.get(i));
                 }
                 Log.e("123", "나를 제외한 채팅방 인원수 : " + peopleNum);
                 return;
@@ -587,6 +603,7 @@ public class Activity_trade_chat extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                 } else if(purpose.equals("reloadActivity")){
                     Log.e("123","reloadActivity");
+                    roomMemberNickname.clear();
                     //화면 reload할게 아니라 onResume 처럼 데이터를 다시 가져오는 방식을 사용하자
 
                     RetrofitService service = retrofit.create(RetrofitService.class);
