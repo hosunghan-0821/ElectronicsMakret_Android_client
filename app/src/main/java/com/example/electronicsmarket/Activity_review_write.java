@@ -183,7 +183,7 @@ public class Activity_review_write extends AppCompatActivity {
                 map.put("postNum", RequestBody.create(MediaType.parse("text/plain"), postNum));
                 map.put("email", RequestBody.create(MediaType.parse("text/plain"), id));
 
-                //수정이 아닐 경우 최초등록
+                //최초등록 일 경우
                 if (!isReview) {
                     Call<PostInfo> call = service.sendReviewInfo(map);
                     call.enqueue(new Callback<PostInfo>() {

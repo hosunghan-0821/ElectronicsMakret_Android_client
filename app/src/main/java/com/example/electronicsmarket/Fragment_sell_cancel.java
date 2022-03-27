@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -41,6 +42,7 @@ public class Fragment_sell_cancel extends Fragment {
     private boolean isFinalPhase=false,scrollCheck=true,onCreateViewIsSet=false;
     private String id;
     private SwipeRefreshLayout refreshLayout;
+    private TextView noResultText;
 
 
     @Override
@@ -76,6 +78,7 @@ public class Fragment_sell_cancel extends Fragment {
                         isFinalPhase=true;
                     }
                     onCreateViewIsSet=true;
+                    setNoResultText();
                 }
 
             }
@@ -132,6 +135,7 @@ public class Fragment_sell_cancel extends Fragment {
                                         isFinalPhase=true;
                                     }
                                     scrollCheck=true;
+                                    setNoResultText();
                                 }
                                 @Override
                                 public void onFailure(Call<PostAllInfo> call, Throwable t) {
@@ -174,6 +178,7 @@ public class Fragment_sell_cancel extends Fragment {
                         adapter.notifyDataSetChanged();
                         //새로고침 완료 돌아가는거 멈추는거
                         refreshLayout.setRefreshing(false);
+                        setNoResultText();
                     }
 
                     @Override
@@ -212,6 +217,7 @@ public class Fragment_sell_cancel extends Fragment {
                     }
                     adapter.setPostList(cancelList);
                     adapter.notifyDataSetChanged();
+                    setNoResultText();
                 }
 
                 @Override
@@ -223,7 +229,19 @@ public class Fragment_sell_cancel extends Fragment {
         }
     }
 
+    public void setNoResultText(){
+        if(cancelList.size()==0){
+            noResultText.setVisibility(View.VISIBLE);
+        }
+        else{
+            noResultText.setVisibility(View.GONE);
+        }
+    }
+
     public void variableInit(View view){
+
+        //xml기본
+        noResultText=view.findViewById(R.id.sell_cancel_no_result_text);
 
         refreshLayout=view.findViewById(R.id.sell_cancel_refresh_layout);
 

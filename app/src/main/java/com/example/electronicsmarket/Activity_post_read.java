@@ -70,7 +70,12 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
 
     @Override
     public void onButtonClicked(String text) {
-        postReadStatusText.setText(text);
+        if(text.equals("판매완료")){
+          Intent intent =new Intent(Activity_post_read.this,Activity_buyer_choice.class);
+          intent.putExtra("postNum",postNum);
+          startActivity(intent);
+        }
+        //postReadStatusText.setText(text);
     }
 
     @Override
@@ -482,9 +487,11 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
                 if(info.getPostStatus()!=null){
                     if(!info.getPostStatus().equals("Y")){
                         //배송대기,배송중,배송완료 -> 모두 판매완료로 표시
+                        postReadLinearStatus.setVisibility(View.GONE);
                         postReadBuyProductDelivery.setVisibility(View.GONE);
                         adapter.setStatus(1);
                         postReadStatus.setVisibility(View.VISIBLE);
+
                         postReadStatusText.setText("판매완료");
                     }
 

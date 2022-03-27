@@ -220,6 +220,14 @@ public class Fragment_chat extends Fragment {
                 });
             }
         };
+
+        chatNotificationImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(getActivity(),Activity_alarm_collect.class);
+                startActivity(intent);
+            }
+        });
         return view;
     }
 

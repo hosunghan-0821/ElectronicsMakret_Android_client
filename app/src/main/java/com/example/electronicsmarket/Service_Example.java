@@ -49,7 +49,16 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Service_Example extends Service {
 
@@ -73,7 +82,7 @@ public class Service_Example extends Service {
     private Thread connectThread;
     private Handler handler;
     private Thread checkAlive;
-    private String nickname,email;
+    private String nickname, email;
 
     private BroadcastReceiver dataReceiver = new BroadcastReceiver() {
         @Override
@@ -191,9 +200,9 @@ public class Service_Example extends Service {
         };
 
         // shared 값 가져오기
-        SharedPreferences sharedPreferences=getSharedPreferences("autoLogin",MODE_PRIVATE);
-        email=sharedPreferences.getString("userId","");
-        nickname=sharedPreferences.getString("nickName","");
+        SharedPreferences sharedPreferences = getSharedPreferences("autoLogin", MODE_PRIVATE);
+        email = sharedPreferences.getString("userId", "");
+        nickname = sharedPreferences.getString("nickName", "");
 
 
         //sharedPreferences= getApplicationContext().getSharedPreferences("noAlarmArrayList",Context.MODE_PRIVATE);
@@ -406,6 +415,8 @@ public class Service_Example extends Service {
         private String readValue, roomNum, otherUserNickname, message, purpose;
         private String sendToNickname, postNum;
         private int type;
+        private Retrofit retrofit;
+
 
         public writeThread(String roomNum, String otherUserNickname, String message, String purpose) {
             this.roomNum = roomNum;
@@ -429,6 +440,69 @@ public class Service_Example extends Service {
             this.purpose = purpose;
             this.sendToNickname = sendToNickname;
             this.postNum = postNum;
+        }
+
+        public void saveNotification() {
+
+
+            Log.e("123","saveNotification () :");
+            Gson gson = new GsonBuilder()
+                    .setLenient()
+                    .create();
+            retrofit = new Retrofit.Builder()
+                    .baseUrl("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/")
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build();
+            HashMap<String, RequestBody> notificationHashMap = new HashMap<>();
+            RequestBody typeRequest, memberRequest, messageRequest, postRequest;
+
+            RetrofitService service = retrofit.create(RetrofitService.class);
+
+            switch (type) {
+                case 0:
+                    typeRequest = RequestBody.create(MediaType.parse("text/plain"), "0");
+                    memberRequest = RequestBody.create(MediaType.parse("text/plain"), sendToNickname);
+                    messageRequest = RequestBody.create(MediaType.parse("text/plain"), message);
+                    postRequest = RequestBody.create(MediaType.parse("text/plain"), postNum);
+
+                    notificationHashMap.put("type",typeRequest);
+                    notificationHashMap.put("sendToNickname",memberRequest);
+                    notificationHashMap.put("message",messageRequest);
+                    notificationHashMap.put("postNum",postRequest);
+                    break;
+                case 1:
+
+                    typeRequest = RequestBody.create(MediaType.parse("text/plain"), "1");
+                    memberRequest = RequestBody.create(MediaType.parse("text/plain"), sendToNickname);
+                    messageRequest = RequestBody.create(MediaType.parse("text/plain"), message);
+
+                    notificationHashMap.put("type",typeRequest);
+                    notificationHashMap.put("sendToNickname",memberRequest);
+                    notificationHashMap.put("message",messageRequest);
+
+                    break;
+
+                default:
+                    break;
+            }
+            Log.e("123","saveNotification () 2 :");
+            Call<Void> call = service.saveNotification(notificationHashMap);
+            call.enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(getApplicationContext(), "http notification 저장성공", Toast.LENGTH_SHORT).show();
+                        Log.e("123","saveNotification () 3 :");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    Log.e("123", t.getMessage());
+                    Log.e("123","saveNotification () 4 :");
+                }
+            });
+
         }
 
         public void run() {
@@ -466,8 +540,9 @@ public class Service_Example extends Service {
 
                     } else if (purpose.equals("sendNotification")) {
                         Log.e("123", "writeThread message :" + message);
+                        saveNotification();
                         JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("type",(int)type);
+                        jsonObject.put("type", (int) type);
                         jsonObject.put("sendToNickname", sendToNickname);
                         jsonObject.put("postNum", postNum);
                         jsonObject.put("message", message);
@@ -537,17 +612,17 @@ public class Service_Example extends Service {
                     }
                     //채팅방 명수 정보 받기. 방 맨처음 들어왔을 경우
                     if (jsonObject.getString("notice").equals("인원체크")) {
-                        JSONArray jsonArray=jsonObject.getJSONArray("nickname");
+                        JSONArray jsonArray = jsonObject.getJSONArray("nickname");
 
 
-                        Log.e("123","jsonArray : "+jsonArray);
-                        ArrayList<String> roomUsers=new ArrayList<>();
-                        for(int i=0;i<jsonArray.length();i++){
+                        Log.e("123", "jsonArray : " + jsonArray);
+                        ArrayList<String> roomUsers = new ArrayList<>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
                             roomUsers.add(jsonArray.getString(i));
                         }
-                        Log.e("123","jsonArray length : "+ jsonArray.length());
+                        Log.e("123", "jsonArray length : " + jsonArray.length());
                         Intent intent = new Intent("chatData");
-                        intent.putStringArrayListExtra("roomUsers",  roomUsers);
+                        intent.putStringArrayListExtra("roomUsers", roomUsers);
                         intent.putExtra("purpose", "인원체크");
                         intent.putExtra("peopleNum", jsonObject.getInt("peopleNum"));
                         LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
@@ -726,22 +801,22 @@ public class Service_Example extends Service {
     public void makeIndividualNotification(String readValue) {
 
         try {
-            Log.e("123","개별알람 만들기");
+            Log.e("123", "개별알람 만들기");
             JSONObject jsonObject = new JSONObject(readValue);
 
             String postNum = jsonObject.getString("postNum");
             int type = jsonObject.getInt("type");
 
-            Log.e("123","type"+type);
+            Log.e("123", "type" + type);
             String message = jsonObject.getString("message");
-            String title="";
+            String title = "";
 
             Intent notifyIntent = new Intent();
             TaskStackBuilder stackBuilder = TaskStackBuilder.create(Service_Example.this);
             //알림 type 별로 다르게 만들어야함
-            if(type==0){
-                title="거래완료 알림";
-                notifyIntent = new Intent(Service_Example.this,Activity_review_write.class);
+            if (type == 0) {
+                title = "거래완료 알림";
+                notifyIntent = new Intent(Service_Example.this, Activity_review_write.class);
                 notifyIntent.putExtra("postNum", postNum);
                 notifyIntent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                 stackBuilder.addNextIntentWithParentStack(notifyIntent);
@@ -751,11 +826,11 @@ public class Service_Example extends Service {
                 Intent backStackIntent = stackBuilder.editIntentAt(0);
                 backStackIntent.putExtra("mypageFragment", "mypageFragment");
             }
-            if(type==1){
-                notifyIntent = new Intent(Service_Example.this,Activity_writer_review_collect.class);
-                title="거래후기 알림";
-                notifyIntent.putExtra("email",email);
-                notifyIntent.putExtra("nickname",nickname);
+            if (type == 1) {
+                notifyIntent = new Intent(Service_Example.this, Activity_writer_review_collect.class);
+                title = "거래후기 알림";
+                notifyIntent.putExtra("email", email);
+                notifyIntent.putExtra("nickname", nickname);
                 notifyIntent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                 stackBuilder.addNextIntentWithParentStack(notifyIntent);
                 Intent backStackIntent = stackBuilder.editIntentAt(0);

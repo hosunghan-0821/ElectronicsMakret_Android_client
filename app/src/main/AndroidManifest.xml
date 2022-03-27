@@ -25,6 +25,9 @@
         android:theme="@style/Theme.ElectronicsMarket"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Activity_alarm_collect"
+            android:exported="false" />
+        <activity
             android:name=".Activity_buyer_choice_chatlist"
             android:exported="false" />
         <activity
@@ -34,7 +37,7 @@
         <service
             android:name=".Service_network_check"
             android:enabled="true"
-            android:exported="true"></service> <!-- android:requestLegacyExternalStorage="true" -->
+            android:exported="true" /> <!-- android:requestLegacyExternalStorage="true" -->
         <activity
             android:name=".Activity_image_download"
             android:exported="false" />
@@ -52,11 +55,11 @@
         <service
             android:name=".Service_Restart"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
         <service
             android:name=".Service_Example"
             android:enabled="true"
-            android:exported="true"></service> <!-- android:stopWithTask="false" -->
+            android:exported="true" /> <!-- android:stopWithTask="false" -->
         <activity
             android:name=".Activity_trade_chat"
             android:exported="false"

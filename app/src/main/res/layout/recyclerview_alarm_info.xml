@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/textview_border"
+    android:layout_margin="5dp"
+    >
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:background="@android:color/transparent"
+        android:foregroundGravity="center"
+
+        android:id="@+id/recyclerview_alarm_info_image"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </de.hdodenhof.circleimageview.CircleImageView>
+
+    <TextView
+        android:id="@+id/recyclerview_alarm_info_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="알림메시지"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/recyclerview_alarm_info_image"
+        app:layout_constraintTop_toTopOf="@+id/recyclerview_alarm_info_image" />
+
+    <TextView
+        android:id="@+id/recyclerview_alarm_suggest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="행동제안"
+        android:textColor="#808080"
+        android:textSize="15dp"
+        app:layout_constraintStart_toEndOf="@+id/recyclerview_alarm_info_image"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerview_alarm_info_message" />
+
+    <TextView
+        android:id="@+id/recyclerview_alarm_difference"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="1일 전"
+        android:textColor="#808080"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/recyclerview_alarm_info_image"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerview_alarm_suggest" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

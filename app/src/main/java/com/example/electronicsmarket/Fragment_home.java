@@ -41,6 +41,7 @@ public class Fragment_home extends Fragment  {
     private SwipeRefreshLayout mainFrameRefresh;
     private String cursorPostNum,phasingNum;
     private boolean isFinalPhase=false,onCreateViewIsSet=false,scrollCheck=true;
+    private ImageView alarmImage;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -214,10 +215,20 @@ public class Fragment_home extends Fragment  {
             }
         });
 
+        //검색이미지.
         postSearchImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(),Activity_search_all_post.class);
+                startActivity(intent);
+            }
+        });
+
+        //알림이미지
+        alarmImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(getActivity(),Activity_alarm_collect.class);
                 startActivity(intent);
             }
         });
@@ -235,6 +246,8 @@ public class Fragment_home extends Fragment  {
     };
 
     public void variableInit(View view){
+
+        alarmImage=view.findViewById(R.id.home_alarm_image);
 
         cursorPostNum="0";
         phasingNum="5";

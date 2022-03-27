@@ -45,6 +45,7 @@ public class Activity_buyer_choice extends AppCompatActivity {
     private TextView buyerChoiceNoListText;
     private String cursorChatTime, phasingNum;
     private boolean isFinalPhase = false, scrollCheck = true;
+    public static Activity_buyer_choice activity_buyer_choice;
 
 
     private ActivityResultLauncher<Intent> chatListLauncher = registerForActivityResult(
@@ -53,8 +54,31 @@ public class Activity_buyer_choice extends AppCompatActivity {
                 @Override
                 public void onActivityResult(ActivityResult result) {
 
-                    if(result.getResultCode()==RESULT_OK){
-                        finish();
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent intent = result.getData();
+                        String sendToNickname = intent.getStringExtra("buyer");
+
+                        Log.e("123", "buyer : " + intent.getStringExtra("buyer"));
+                        RetrofitService service = retrofit.create(RetrofitService.class);
+                        Call<Void> call = service.tradeSuccess(nickname, postNum, sendToNickname);
+                        call.enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                if (response.isSuccessful()) {
+
+                                    Log.e("123", "성공");
+                                    //PHP 작업 제대로 하고 난 후, TCP를 통해 상대방 회원에게 거래완료 알림.
+                                    sendTransactionNotification(sendToNickname);
+                                }
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+                                 Log.e("123", t.getMessage());
+                            }
+                        });
+
                     }
 
                 }
@@ -68,8 +92,9 @@ public class Activity_buyer_choice extends AppCompatActivity {
         variableInit();
         postNum = getIntent().getStringExtra("postNum");
 
+        activity_buyer_choice=Activity_buyer_choice.this;
         RetrofitService service = retrofit.create(RetrofitService.class);
-        Call<DataInquirerAllInfo> call = service.getInquirerInfo(cursorChatTime, phasingNum, nickname, postNum,"inquireList");
+        Call<DataInquirerAllInfo> call = service.getInquirerInfo(cursorChatTime, phasingNum, nickname, postNum, "inquireList");
 
         call.enqueue(new Callback<DataInquirerAllInfo>() {
             @Override
@@ -124,7 +149,7 @@ public class Activity_buyer_choice extends AppCompatActivity {
                     if (!v.canScrollVertically(1) && scrollCheck) {
                         scrollCheck = false;
                         if (!isFinalPhase) {
-                            Call<DataInquirerAllInfo> call = service.getInquirerInfo(cursorChatTime, phasingNum, nickname, postNum,"inquireList");
+                            Call<DataInquirerAllInfo> call = service.getInquirerInfo(cursorChatTime, phasingNum, nickname, postNum, "inquireList");
                             call.enqueue(new Callback<DataInquirerAllInfo>() {
                                 @Override
                                 public void onResponse(Call<DataInquirerAllInfo> call, Response<DataInquirerAllInfo> response) {
@@ -180,19 +205,14 @@ public class Activity_buyer_choice extends AppCompatActivity {
                         call.enqueue(new Callback<Void>() {
                             @Override
                             public void onResponse(Call<Void> call, Response<Void> response) {
+
                                 if (response.isSuccessful()) {
 
                                     Log.e("123", "성공");
                                     //PHP 작업 제대로 하고 난 후, TCP를 통해 상대방 회원에게 거래완료 알림.
-                                    Intent intent = new Intent("chatDataToServer");
-                                    intent.putExtra("type", 0);
-                                    intent.putExtra("purpose", "sendNotification");
-                                    intent.putExtra("postNum", postNum);
-                                    intent.putExtra("sendToNickname", inquireList.get(position).getNickname());
-                                    intent.putExtra("message", nickname + "님과 거래완료 되었습니다. 후기를 남겨주세요");
-                                    LocalBroadcastManager.getInstance(Activity_buyer_choice.this).sendBroadcast(intent);
-                                    finish();
+                                    sendTransactionNotification(inquireList.get(position).getNickname());
                                 }
+
                             }
 
                             @Override
@@ -220,9 +240,24 @@ public class Activity_buyer_choice extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Activity_buyer_choice.this, Activity_buyer_choice_chatlist.class);
-                chatListLauncher.launch(intent);
+                intent.putExtra("postNum",postNum);
+                startActivity(intent);
+//              chatListLauncher.launch(intent);
             }
         });
+
+    }
+
+    public void sendTransactionNotification(String sendToNickname) {
+
+        Intent intent = new Intent("chatDataToServer");
+        intent.putExtra("type", 0);
+        intent.putExtra("purpose", "sendNotification");
+        intent.putExtra("postNum", postNum);
+        intent.putExtra("sendToNickname", sendToNickname);
+        intent.putExtra("message", nickname + "님과 거래완료 되었습니다. 후기를 남겨주세요");
+        LocalBroadcastManager.getInstance(Activity_buyer_choice.this).sendBroadcast(intent);
+        finish();
 
     }
 
@@ -265,9 +300,14 @@ public class Activity_buyer_choice extends AppCompatActivity {
         buyerChoiceRecyclerview.setLayoutManager(linearLayoutManager);
         buyerChoiceRecyclerview.setAdapter(adapter);
 
-
         //nickname
         SharedPreferences sharedPreferences = getSharedPreferences("autoLogin", MODE_PRIVATE);
         nickname = sharedPreferences.getString("nickName", "");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        activity_buyer_choice=null;
     }
 }

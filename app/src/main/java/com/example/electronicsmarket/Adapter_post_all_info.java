@@ -182,7 +182,7 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
                         ((AllInfoViewHolder) holder).postSellStatus.setText("판매완료 (구매확정)");
                     }
                     else{
-                        ((AllInfoViewHolder) holder).postSellStatus.setText("판매완료 (직거래)");
+                        ((AllInfoViewHolder) holder).postSellStatus.setText("판매완료 (직거래 완료)");
                     }
                 }
 

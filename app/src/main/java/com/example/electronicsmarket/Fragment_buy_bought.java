@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -32,6 +33,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Fragment_buy_bought extends Fragment {
 
 
+    private TextView noResultText;
     private ArrayList<PostInfo> boughtList;
     private LinearLayoutManager linearLayoutManager;
     private Adapter_post_all_info adapter;
@@ -77,6 +79,7 @@ public class Fragment_buy_bought extends Fragment {
                         isFinalPhase = true;
                     }
                     onCreateViewIsSet = true;
+                    setNoResultText();
                 }
 
             }
@@ -132,6 +135,7 @@ public class Fragment_buy_bought extends Fragment {
                                         isFinalPhase = true;
                                     }
                                     scrollCheck = true;
+                                    setNoResultText();
                                 }
 
                                 @Override
@@ -174,6 +178,7 @@ public class Fragment_buy_bought extends Fragment {
                         adapter.notifyDataSetChanged();
                         //새로고침 완료 돌아가는거 멈추는거
                         refreshLayout.setRefreshing(false);
+                        setNoResultText();
                     }
 
                     @Override
@@ -215,6 +220,10 @@ public class Fragment_buy_bought extends Fragment {
                     }
                     adapter.setPostList(boughtList);
                     adapter.notifyDataSetChanged();
+                    setNoResultText();
+
+
+
                 }
 
                 @Override
@@ -227,8 +236,19 @@ public class Fragment_buy_bought extends Fragment {
         }
     }
 
+    public void setNoResultText(){
+        if(boughtList.size()==0){
+            noResultText.setVisibility(View.VISIBLE);
+        }
+        else{
+            noResultText.setVisibility(View.GONE);
+        }
+    }
+
     public void variableInit(View view) {
 
+        //기본 xml
+        noResultText=view.findViewById(R.id.buy_bought_no_result_text);
         //refreshlayout
         refreshLayout=view.findViewById(R.id.buy_bought_refresh_layout);
         // shared 값 가져오기
@@ -284,17 +304,29 @@ public class Fragment_buy_bought extends Fragment {
         adapter.setItemClickListener(new Adapter_post_all_info.Interface_info_item_click() {
             @Override
             public void onItemClick(int position) {
-                Intent intent = new Intent(getActivity(), Activity_trade_detail_info.class);
+                if(boughtList.get(position).getPostTradeType()!=null){
+                    if(boughtList.get(position).getPostTradeType().equals("택배거래")){
+                        Intent intent = new Intent(getActivity(), Activity_trade_detail_info.class);
 
-                Log.e("123","tradeNum : "+boughtList.get(position).getTradeNum());
-                Log.e("123","tradeType :"+boughtList.get(position).getPostTradeType());
-                intent.putExtra("tradeType",boughtList.get(position).getPostTradeType());
+                        Log.e("123","tradeNum : "+boughtList.get(position).getTradeNum());
+                        Log.e("123","tradeType :"+boughtList.get(position).getPostTradeType());
+                        intent.putExtra("tradeType",boughtList.get(position).getPostTradeType());
 
 
-                intent.putExtra("tradeNum", boughtList.get(position).getTradeNum());
-                intent.putExtra("readType", "buyer");
+                        intent.putExtra("tradeNum", boughtList.get(position).getTradeNum());
+                        intent.putExtra("readType", "buyer");
 
-                startActivity(intent);
+                        startActivity(intent);
+                    }
+
+                    else{
+                        Intent intent =new Intent(getActivity(),Activity_post_read.class);
+                        intent.putExtra("postNum",boughtList.get(position).getPostNum());
+                        startActivity(intent);
+
+                    }
+                }
+
             }
         });
 

@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class Dialog_bottom_sheet  extends BottomSheetDialogFragment {
+
     private View view;
 
     private BottomSheetListener mListener;
@@ -26,7 +27,7 @@ public class Dialog_bottom_sheet  extends BottomSheetDialogFragment {
         mListener=(BottomSheetListener) getContext();
 
         selling=view.findViewById(R.id.selling);
-        reservation=view.findViewById(R.id.reservation);
+        //reservation=view.findViewById(R.id.reservation);
         soldOut=view.findViewById(R.id.sold_out);
 
         selling.setOnClickListener(new View.OnClickListener() {
@@ -36,13 +37,13 @@ public class Dialog_bottom_sheet  extends BottomSheetDialogFragment {
                 dismiss();
             }
         });
-        reservation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onButtonClicked("예약중");
-                dismiss();
-            }
-        });
+//        reservation.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mListener.onButtonClicked("예약중");
+//                dismiss();
+//            }
+//        });
         soldOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,5 +58,6 @@ public class Dialog_bottom_sheet  extends BottomSheetDialogFragment {
 
     public interface BottomSheetListener{
         void onButtonClicked(String text);
+
     }
 }

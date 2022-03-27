@@ -24,34 +24,34 @@
         android:layout_width="wrap_content"
         android:layout_height="2dp"
         android:background="#808080"
-        app:layout_constraintBottom_toTopOf="@+id/reservation"
+        app:layout_constraintBottom_toTopOf="@+id/sold_out"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
 
-    <TextView
+<!--    <TextView-->
 
-        android:gravity="center"
-        android:id="@+id/reservation"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:text="예약중"
-        android:layout_marginTop="5dp"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
+<!--        android:gravity="center"-->
+<!--        android:id="@+id/reservation"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:text="예약중"-->
+<!--        android:layout_marginTop="5dp"-->
+<!--        android:textSize="18sp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
 
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/selling" />
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/selling" />-->
 
-    <View
-        android:id="@+id/view_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="2dp"
-        android:background="#808080"
+<!--    <View-->
+<!--        android:id="@+id/view_bottom"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="2dp"-->
+<!--        android:background="#808080"-->
 
-        app:layout_constraintBottom_toBottomOf="@+id/reservation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+<!--        app:layout_constraintBottom_toBottomOf="@+id/reservation"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent" />-->
 
     <TextView
         android:layout_height="50dp"
@@ -65,7 +65,7 @@
         app:layout_constraintEnd_toEndOf="parent"
 
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/reservation" />
+        app:layout_constraintTop_toBottomOf="@+id/selling" />
 
     <Button
         android:visibility="gone"

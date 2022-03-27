@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -31,6 +32,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Fragment_sell_selling extends Fragment {
 
+    private TextView noResultText;
     private RecyclerView sellingRecyclerView;
     private Adapter_post_all_info adapter;
     private LinearLayoutManager linearLayoutManager;
@@ -76,6 +78,7 @@ public class Fragment_sell_selling extends Fragment {
                         isFinalPhase=true;
                     }
                     onCreateViewIsSet=true;
+                    setNoResultText();
                 }
 
             }
@@ -132,6 +135,7 @@ public class Fragment_sell_selling extends Fragment {
                                         isFinalPhase=true;
                                     }
                                     scrollCheck=true;
+                                    setNoResultText();
                                 }
                                 @Override
                                 public void onFailure(Call<PostAllInfo> call, Throwable t) {
@@ -174,6 +178,7 @@ public class Fragment_sell_selling extends Fragment {
                         adapter.notifyDataSetChanged();
                         //새로고침 완료 돌아가는거 멈추는거
                         refreshLayout.setRefreshing(false);
+                        setNoResultText();
                     }
 
                     @Override
@@ -189,6 +194,15 @@ public class Fragment_sell_selling extends Fragment {
             @Override
             public void onConfirmClick(int position) {
                 Intent intent =new Intent(getActivity(),Activity_buyer_choice.class);
+                intent.putExtra("postNum",sellingList.get(position).getPostNum());
+                startActivity(intent);
+            }
+        });
+
+        adapter.setItemClickListener(new Adapter_post_all_info.Interface_info_item_click() {
+            @Override
+            public void onItemClick(int position) {
+                Intent intent = new Intent(getActivity(),Activity_post_read.class);
                 intent.putExtra("postNum",sellingList.get(position).getPostNum());
                 startActivity(intent);
             }
@@ -221,6 +235,7 @@ public class Fragment_sell_selling extends Fragment {
                     }
                     adapter.setPostList(sellingList);
                     adapter.notifyDataSetChanged();
+                    setNoResultText();
                 }
 
                 @Override
@@ -232,9 +247,19 @@ public class Fragment_sell_selling extends Fragment {
         }
     }
 
+    public void setNoResultText(){
+        if(sellingList.size()==0){
+            noResultText.setVisibility(View.VISIBLE);
+        }
+        else{
+            noResultText.setVisibility(View.GONE);
+        }
+    }
+
     public void variableInit(View view){
 
-        //
+        //xml
+        noResultText=view.findViewById(R.id.sell_selling_no_result_text);
         refreshLayout=view.findViewById(R.id.sell_selling_refresh_layout);
 
         // shared 값 가져오기

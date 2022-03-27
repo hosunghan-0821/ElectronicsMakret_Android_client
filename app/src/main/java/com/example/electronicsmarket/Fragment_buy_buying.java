@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -34,6 +35,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Fragment_buy_buying extends Fragment {
 
 
+    private TextView noResultText;
     private RecyclerView buyingRecyclerView;
     private Adapter_post_all_info adapter;
     private LinearLayoutManager linearLayoutManager;
@@ -78,6 +80,7 @@ public class Fragment_buy_buying extends Fragment {
                         isFinalPhase = true;
                     }
                     onCreateViewIsSet = true;
+                    setNoResultText();
                 }
             }
 
@@ -132,6 +135,7 @@ public class Fragment_buy_buying extends Fragment {
                                         isFinalPhase = true;
                                     }
                                     scrollCheck = true;
+                                    setNoResultText();
                                 }
 
                                 @Override
@@ -236,6 +240,7 @@ public class Fragment_buy_buying extends Fragment {
                         adapter.notifyDataSetChanged();
                         //새로고침 완료 돌아가는거 멈추는거
                         refreshLayout.setRefreshing(false);
+                        setNoResultText();
                     }
 
                     @Override
@@ -276,6 +281,7 @@ public class Fragment_buy_buying extends Fragment {
                     }
                     adapter.setPostList(buyingList);
                     adapter.notifyDataSetChanged();
+                    setNoResultText();
                 }
 
                 @Override
@@ -289,8 +295,19 @@ public class Fragment_buy_buying extends Fragment {
 
     }
 
+    public void setNoResultText(){
+        if(buyingList.size()==0){
+            noResultText.setVisibility(View.VISIBLE);
+        }
+        else{
+            noResultText.setVisibility(View.GONE);
+        }
+    }
+
     public void variableInit(View view) {
 
+        //xml 기본
+        noResultText=view.findViewById(R.id.buy_buying_no_result_text);
         refreshLayout=view.findViewById(R.id.buy_buying_refresh_layout);
         // shared 값 가져오기
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences("autoLogin", Context.MODE_PRIVATE);

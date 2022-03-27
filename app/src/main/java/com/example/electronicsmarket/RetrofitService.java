@@ -200,6 +200,13 @@ public interface RetrofitService {
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/tradeApi/tradeSuccess.php")
     Call<Void> tradeSuccess (@Field("nickname")String nickname, @Field("postNum") String postNum,@Field("buyer") String buyerNickname);
 
+    @Multipart
+    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/notificationApi/saveNotification.php")
+    Call<Void> saveNotification (@PartMap HashMap<String, RequestBody> params);
+
+    @FormUrlEncoded
+    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/notificationApi/getNotification.php")
+    Call<DataNotificationAllInfo> getNotification (@Field("finalNotificationNum") String cursor,@Field("phasingNum") String phasingNum,@Field("nickname")String nickname,@Field("purpose")String purpose);
 
 
 

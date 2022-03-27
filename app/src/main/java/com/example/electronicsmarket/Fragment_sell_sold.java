@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -41,7 +42,7 @@ public class Fragment_sell_sold extends Fragment {
     private Retrofit retrofit;
     private boolean isFinalPhase=false,scrollCheck=true,onCreateViewIsSet=false;
     private SwipeRefreshLayout refreshLayout;
-
+    private TextView noResultText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,6 +79,7 @@ public class Fragment_sell_sold extends Fragment {
                         isFinalPhase=true;
                     }
                     onCreateViewIsSet=true;
+                    setNoResultText();
 
                 }
 
@@ -135,6 +137,7 @@ public class Fragment_sell_sold extends Fragment {
                                         isFinalPhase=true;
                                     }
                                     scrollCheck=true;
+                                    setNoResultText();
                                 }
                                 @Override
                                 public void onFailure(Call<PostAllInfo> call, Throwable t) {
@@ -159,13 +162,26 @@ public class Fragment_sell_sold extends Fragment {
             @Override
             public void onItemClick(int position) {
 
-                Intent intent = new Intent(getActivity(),Activity_trade_detail_info.class);
-                Log.e("123","tradeNum : "+soldList.get(position).getTradeNum());
-                Log.e("123","tradeType :"+soldList.get(position).getPostTradeType());
-                intent.putExtra("tradeType",soldList.get(position).getPostTradeType());
-                intent.putExtra("tradeNum",soldList.get(position).getTradeNum());
-                intent.putExtra("readType","seller");
-                startActivity(intent);
+                if(soldList.get(position).getPostTradeType()!=null){
+                    //택배거래일 경우 상세조회 화면으로 이동
+                    if(soldList.get(position).getPostTradeType().equals("택배거래")){
+                        Intent intent = new Intent(getActivity(),Activity_trade_detail_info.class);
+                        Log.e("123","tradeNum : "+soldList.get(position).getTradeNum());
+                        Log.e("123","tradeType :"+soldList.get(position).getPostTradeType());
+                        intent.putExtra("tradeType",soldList.get(position).getPostTradeType());
+                        intent.putExtra("tradeNum",soldList.get(position).getTradeNum());
+                        intent.putExtra("readType","seller");
+                        startActivity(intent);
+                    }
+                    //직거래일 경우, 거래게시글로 이동.
+                    else{
+                        Intent intent =new Intent(getActivity(),Activity_post_read.class);
+                        intent.putExtra("postNum",soldList.get(position).getPostNum());
+                        startActivity(intent);
+                    }
+                }
+
+
 
             }
         });
@@ -196,6 +212,7 @@ public class Fragment_sell_sold extends Fragment {
                         adapter.notifyDataSetChanged();
                         //새로고침 완료 돌아가는거 멈추는거
                         refreshLayout.setRefreshing(false);
+                        setNoResultText();
                     }
 
                     @Override
@@ -209,9 +226,18 @@ public class Fragment_sell_sold extends Fragment {
 
         return view;
     }
+    public void setNoResultText(){
+        if(soldList.size()==0){
+            noResultText.setVisibility(View.VISIBLE);
+        }
+        else{
+            noResultText.setVisibility(View.GONE);
+        }
 
+    }
     public void variableInit(View view) {
 
+        noResultText=view.findViewById(R.id.sell_sold_no_result_text);
         refreshLayout=view.findViewById(R.id.sell_sold_refresh_layout);
 
         cursorPostNum="0";
