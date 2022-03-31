@@ -1,15 +1,24 @@
 package com.example.electronicsmarket;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +51,23 @@ public class Fragment_home extends Fragment  {
     private String cursorPostNum,phasingNum;
     private boolean isFinalPhase=false,onCreateViewIsSet=false,scrollCheck=true;
     private ImageView alarmImage;
+    private String nickname;
+    private Handler handler;
+
+    private BroadcastReceiver dataReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String purpose = intent.getStringExtra("purpose");
+            Message msg = new Message();
+            Bundle bundle = new Bundle();
+            if (purpose.equals("reloadAlarmImage")) {
+                bundle.putString("purpose","reloadAlarmImage");
+                msg.setData(bundle);
+                handler.sendMessage(msg);
+            }
+
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -82,6 +108,27 @@ public class Fragment_home extends Fragment  {
             @Override
             public void onFailure(Call<PostAllInfo> call, Throwable t) {
                 Log.e("123", t.getMessage());
+
+            }
+        });
+
+        Call<DataNotificationInfo> alarmCall= service.notificationCheck(nickname);
+        alarmCall.enqueue(new Callback<DataNotificationInfo>() {
+            @Override
+            public void onResponse(Call<DataNotificationInfo> call, Response<DataNotificationInfo> response) {
+                if(response.isSuccessful() && response.body()!=null){
+                    if(response.body().isNotification()){
+                        alarmImage.setImageResource(R.drawable.ic_baseline_notifications_active_24);
+                    }
+                    else{
+                        alarmImage.setImageResource(R.drawable.ic_baseline_notifications_24);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DataNotificationInfo> call, Throwable t) {
 
             }
         });
@@ -155,6 +202,19 @@ public class Fragment_home extends Fragment  {
             Toast.makeText(getActivity(), "버전이 낮아서 스크롤링 페이징 안됨;", Toast.LENGTH_SHORT).show();
         }
 
+        //handler
+        handler= new Handler(Looper.getMainLooper()){
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                super.handleMessage(msg);
+                Bundle bundle = msg.getData();
+                String purpose=bundle.getString("purpose");
+                if(purpose.equals("reloadAlarmImage")){
+                    alarmImage.setImageResource(R.drawable.ic_baseline_notifications_active_24);
+                    return;
+                }
+            }
+        };
 
         //카테고리 선택시 카테고리 선택화면으로 이동
         postCategoryImage.setOnClickListener(new View.OnClickListener() {
@@ -247,6 +307,12 @@ public class Fragment_home extends Fragment  {
 
     public void variableInit(View view){
 
+        ;
+        // shared 값 가져오기
+        SharedPreferences sharedPreferences= getContext().getSharedPreferences("autoLogin", Context.MODE_PRIVATE);
+        nickname=sharedPreferences.getString("nickName","");
+
+
         alarmImage=view.findViewById(R.id.home_alarm_image);
 
         cursorPostNum="0";
@@ -282,11 +348,36 @@ public class Fragment_home extends Fragment  {
     @Override
     public void onResume() {
         super.onResume();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(dataReceiver, new IntentFilter("homeReloadAlarm"));
         //Log.e("123","onresume : ");
         //onResume 에는 기존에 존재하는 recyclerview 새로 고침하는 코드가 필요할듯.
 
         if(onCreateViewIsSet){
             RetrofitService service = retrofit.create(RetrofitService.class);
+            Call<DataNotificationInfo> alarmCall= service.notificationCheck(nickname);
+            alarmCall.enqueue(new Callback<DataNotificationInfo>() {
+                @Override
+                public void onResponse(Call<DataNotificationInfo> call, Response<DataNotificationInfo> response) {
+                    if(response.isSuccessful() && response.body()!=null){
+                        if(response.body().isNotification()){
+                            alarmImage.setImageResource(R.drawable.ic_baseline_notifications_active_24);
+
+                        }
+                        else{
+                            alarmImage.setImageResource(R.drawable.ic_baseline_notifications_24);
+
+                        }
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<DataNotificationInfo> call, Throwable t) {
+
+                }
+            });
+
+
             //Log.e("123","onResume CursorPostNum"+cursorPostNum);
             Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,"update","allInfo","");
             call.enqueue(new Callback<PostAllInfo>() {
@@ -314,6 +405,8 @@ public class Fragment_home extends Fragment  {
 
                 }
             });
+
+
         }
 
     }
@@ -333,6 +426,7 @@ public class Fragment_home extends Fragment  {
     @Override
     public void onPause() {
         super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(dataReceiver);
         //Log.e("123","onPause : ");
     }
 }

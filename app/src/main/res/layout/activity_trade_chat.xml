@@ -48,11 +48,11 @@
 
     <ImageView
         android:id="@+id/imageView11"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
 
         android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_baseline_setting" />
@@ -293,5 +293,15 @@
             android:layout_weight="1"
             android:src="@drawable/ic_baseline_send_24" />
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/trade_chat_video_camera"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline5"
+        app:layout_constraintEnd_toStartOf="@+id/imageView11"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/category_video" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

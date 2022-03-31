@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.electronicsmarket">
+
+
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -12,8 +17,25 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="Android.webkit.PermissionRequest" />
+    <uses-permission android:name="android.permission.MICROPHONE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-permission android:name="android.permission.CAPTURE_VIDEO_OUTPUT"
+        tools:ignore="ProtectedPermissions" />
+
+    <uses-feature android:name="android.hardware.camera" android:required="true"/>
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
+
+<!--    <uses-feature android:name="android.hardware.camera.autofocus" android:required="true" />-->
+<!--    <uses-feature android:name="android.hardware.camera.front" android:required="true" />-->
+<!--    <uses-feature android:name="android.hardware.camera" android:required="true" />-->
+<!--    <uses-feature android:name="android.hardware.camera.level.full" android:required="true" />-->
+<!--    <uses-feature android:name="android.hardware.camera.capability.raw" android:required="true" />-->
 
     <application
         android:allowBackup="true"
@@ -24,6 +46,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ElectronicsMarket"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".Activity_video_call"
+            android:exported="false" />
         <activity
             android:name=".Activity_alarm_collect"
             android:exported="false" />
@@ -117,7 +142,9 @@
             android:exported="false" />
         <activity
             android:name=".Activity_love_list"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".Activity_main_home"
+            />
         <activity
             android:name=".Activity_seller_info"
             android:exported="false" />
@@ -132,7 +159,9 @@
             android:exported="false" />
         <activity
             android:name=".Activity_post_read"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".Activity_main_home"
+            />
         <activity
             android:name=".Activity_category_2"
             android:exported="false" />

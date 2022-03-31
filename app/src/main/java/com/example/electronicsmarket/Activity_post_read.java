@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.DialogInterface;
@@ -588,7 +589,7 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
 
         RetrofitService service = retrofit.create(RetrofitService.class);
 
-        Call<DataMemberSignup> call = service.setLikeList(id, postNum, state);
+        Call<DataMemberSignup> call = service.setLikeList(id, postNum, state,postReadNickname.getText().toString());
         call.enqueue(new Callback<DataMemberSignup>() {
             @Override
             public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
@@ -622,8 +623,22 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
                             });
                             thread.start();
                         }
-
                         like = false;
+                        //좋아요 처리 후에 상품 판매자에게 알림 보내기..
+                        if(response.body().isLikeNotification()){
+                            Log.e("123","noti 보냄? "+response.body().isLikeNotification());
+                            Intent intent = new Intent("chatDataToServer");
+                            intent.putExtra("type", 2);
+                            intent.putExtra("purpose", "sendNotification");
+                            intent.putExtra("postNum", postNum);
+                            intent.putExtra("sendToNickname", postReadNickname.getText().toString());
+                            intent.putExtra("message", nickName + "님이 회원님의 상품\" "+postReadTitle.getText().toString()+"\" 을 좋아요 눌렀습니다.");
+                            LocalBroadcastManager.getInstance(Activity_post_read.this).sendBroadcast(intent);
+                        }
+                        else{
+                            Log.e("123","noti 보냄? "+response.body().isLikeNotification());
+                        }
+
                     }
                     //찜목록 삭제
                     else if (response.body().isSuccess() && state.equals("delete")) {

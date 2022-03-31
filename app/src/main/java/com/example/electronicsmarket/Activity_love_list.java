@@ -118,7 +118,7 @@ public class Activity_love_list extends AppCompatActivity {
             @Override
             public void onItemCancel(int position) {
                 RetrofitService service = retrofit.create(RetrofitService.class);
-                Call<DataMemberSignup> call = service.setLikeList(id,loveList.get(position).getPostNum(),"delete");
+                Call<DataMemberSignup> call = service.setLikeList(id,loveList.get(position).getPostNum(),"delete","");
                 call.enqueue(new Callback<DataMemberSignup>() {
                     @Override
                     public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {

@@ -1,6 +1,7 @@
 package com.example.electronicsmarket;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,8 +9,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.bumptech.glide.Glide;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,6 +49,11 @@ public class Adapter_alarm_info extends RecyclerView.Adapter<RecyclerView.ViewHo
             //알림내용
             ((alarmViewHolder)holder).messageText.setText(notificationList.get(position).getMessage());
 
+            //읽지 않은 알람 내용표시
+            if(notificationList.get(position).getNotificationIsRead().equals("0")){
+                ((alarmViewHolder) holder).itemView.setBackgroundColor(Color.parseColor("#ece6cc"));
+            }
+
             //알림 type 에 따라 다른 text 띄어주기
             if(notificationList.get(position).getType().equals("0")){
                 ((alarmViewHolder) holder).imageView.setImageResource(R.drawable.ic_baseline_create_24);
@@ -59,6 +63,11 @@ public class Adapter_alarm_info extends RecyclerView.Adapter<RecyclerView.ViewHo
                 ((alarmViewHolder) holder).imageView.setImageResource(R.drawable.ic_baseline_write_24);
                 ((alarmViewHolder) holder).suggestText.setText("여기를 눌러 후기를 확인해 보세요");
             }
+            else if(notificationList.get(position).getType().equals("2")){
+                ((alarmViewHolder) holder).imageView.setImageResource(R.drawable.ic_baseline_favorite_24);
+                ((alarmViewHolder) holder).suggestText.setText("여기를 눌러 해당 상품을 확인하세요");
+            }
+
 
             //
             String timeDifference= timeDifferentCheck(notificationList.get(position).getNotificationRegTime());

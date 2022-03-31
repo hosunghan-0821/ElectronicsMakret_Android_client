@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class DataChatRoomAll {
 
+    private boolean notification;
     private String roomCount;
     private ArrayList<DataChatRoom> roomList;
 
@@ -13,6 +14,14 @@ public class DataChatRoomAll {
 
     public String getRoomCount() {
         return roomCount;
+    }
+
+    public boolean isNotification() {
+        return notification;
+    }
+
+    public void setNotification(boolean notification) {
+        this.notification = notification;
     }
 
     public void setRoomCount(String roomCount) {

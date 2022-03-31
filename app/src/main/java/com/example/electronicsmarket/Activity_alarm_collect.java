@@ -95,9 +95,11 @@ public class Activity_alarm_collect extends AppCompatActivity {
                                             notificationList.add(notificationDataList.get(i));
                                         }
                                         adapter.notifyDataSetChanged();
+
                                         if(notificationDataList.size()!=0){
                                             cursorNum=notificationDataList.get(notificationDataList.size()-1).getNotificationNum();
                                         }
+
                                         if(!response.body().getNotificationNum().equals(phasingNum)){
                                             isFinalPhase=true;
                                         }
@@ -197,7 +199,11 @@ public class Activity_alarm_collect extends AppCompatActivity {
                         intent.putExtra("nickname",nickname);
                         intent.putExtra("email",userId);
                         startActivity(intent);
-
+                    }
+                    else if(type.equals("2")){
+                        Intent intent = new Intent(Activity_alarm_collect.this,Activity_post_read.class);
+                        intent.putExtra("postNum",notificationList.get(position).getPostNum());
+                        startActivity(intent);
                     }
                 }
             }
@@ -213,7 +219,7 @@ public class Activity_alarm_collect extends AppCompatActivity {
         refreshLayout=findViewById(R.id.alarm_collect_refresh_layout);
         //Phasing 관련
         cursorNum = "0";
-        phasingNum = "6";
+        phasingNum = "5";
 
         //기본 xml
         alarmCollectBackImage=findViewById(R.id.alarm_collect_back_arrow);

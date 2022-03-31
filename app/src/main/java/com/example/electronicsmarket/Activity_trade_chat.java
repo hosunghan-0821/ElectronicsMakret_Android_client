@@ -67,14 +67,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Activity_trade_chat extends AppCompatActivity {
 
-
     private HashMap<String, RequestBody> requestMap;
     public static Activity_trade_chat activity_trade_chat;
     public static String roomNumGlobal;
     public static String otherUserNicknameGlobal;
     private boolean isFinalPhase = false, onCreateViewIsSet = false, scrollCheck = true;
     private int heightSum;
-    private ImageView tradeChatImage;
+    private ImageView tradeChatImage,tradeChatVideoCamera;
     private TextView tradeChatProductTitle, tradeChatProductPrice, tradeChatLocation, tradeChatOtherUserNickname;
     private Retrofit retrofit;
     private TextView scrollHeight;
@@ -97,7 +96,7 @@ public class Activity_trade_chat extends AppCompatActivity {
     private ImageView backImage, tradeChatLocationImage;
     private int peopleNum;
     private TextView tradeChatSellType;
-    private PermissionListener permissionlistener;
+    private PermissionListener permissionlistener,videoCallPermissionListener;
     private boolean permissionCheck = false;
     private ArrayList<File> imageFileCollect;
     private ArrayList<MultipartBody.Part> files;
@@ -106,6 +105,7 @@ public class Activity_trade_chat extends AppCompatActivity {
     private Thread sendThread;
     private ArrayList<String> imageRoute;
     private ArrayList<String> roomMemberNickname;
+
 
 
 
@@ -201,6 +201,7 @@ public class Activity_trade_chat extends AppCompatActivity {
         setContentView(R.layout.activity_trade_chat);
         variableInit();
 
+
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         Intent intent = getIntent();
 
@@ -217,7 +218,29 @@ public class Activity_trade_chat extends AppCompatActivity {
                 Toast.makeText(Activity_trade_chat.this, "이미지 전송하기 위해선 권한필요", Toast.LENGTH_SHORT).show();
             }
         };
+        videoCallPermissionListener = new PermissionListener(){
+            @Override
+            public void onPermissionGranted() {
+                Intent intent =new Intent(Activity_trade_chat.this,Activity_video_call.class);
+                intent.putExtra("sendToNickname",otherUserNickname);
+                intent.putExtra("roomNum",roomNum);
+                startActivity(intent);
+            }
 
+            @Override
+            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                Toast.makeText(Activity_trade_chat.this, "영상통화 하기위해서 권한 재확인 부탁 ", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        };
+
+        //영상통화 클릭 리스너
+        tradeChatVideoCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                videoRequestPermission();
+            }
+        });
 
 
         //이 채팅방으로 들어오는 경우를 두가지로 나누어서, 생각하고 있다
@@ -941,6 +964,17 @@ public class Activity_trade_chat extends AppCompatActivity {
             }
         }
     }
+    private void  videoRequestPermission(){
+
+        TedPermission.with(Activity_trade_chat.this)
+                .setPermissionListener(videoCallPermissionListener)
+                .setRationaleMessage("영상통화를 하기 위해서는 권한 설정이 필요합니다.")
+                .setDeniedMessage("[설정] > [권한] 에서 권한을 허용할 수 있습니다..")
+                .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA
+                        , Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO,Manifest.permission.MODIFY_AUDIO_SETTINGS)
+                .check();
+
+    }
 
     private void requestPermission() {
 
@@ -951,6 +985,7 @@ public class Activity_trade_chat extends AppCompatActivity {
                 .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA
                         , Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .check();
+        //Manifest.permission.MODIFY_AUDIO_SETTINGS
 
     }
 
@@ -1260,6 +1295,9 @@ public class Activity_trade_chat extends AppCompatActivity {
 
     public void variableInit() {
 
+        //
+        tradeChatVideoCamera=findViewById(R.id.trade_chat_video_camera);
+        //
         imageFileCollect = new ArrayList<>();
         files = new ArrayList<>();
         requestMap = new HashMap<>();

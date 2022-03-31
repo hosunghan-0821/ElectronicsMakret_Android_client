@@ -61,16 +61,22 @@ public class Fragment_chat extends Fragment {
     private BroadcastReceiver dataReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String readValue = intent.getStringExtra("message");
-            //만약 알림이 왔을 떄, 데이터 reload 할 경우라 하나하나 데이터 가져올 때랑 비교좀 해보자.
-            Log.e("123","fragment reload1");
+            String purpose = intent.getStringExtra("purpose");
             Message msg = new Message();
             Bundle bundle = new Bundle();
-            bundle.putString("message", readValue);
-            msg.setData(bundle);
-            Log.e("123", "hadnler");
-            //__alarm__:1:한포성:asdasd
-            handler.sendMessage(msg);
+            if (purpose.equals("reloadRoomList")) {
+                String readValue = intent.getStringExtra("message");
+                //만약 알림이 왔을 떄, 데이터 reload 할 경우라 하나하나 데이터 가져올 때랑 비교좀 해보자.
+                bundle.putString("purpose","reloadRoomList");
+                bundle.putString("message", readValue);
+                msg.setData(bundle);
+                handler.sendMessage(msg);
+            } else if (purpose.equals("reloadAlarmImage")) {
+                bundle.putString("purpose","reloadAlarmImage");
+                msg.setData(bundle);
+                handler.sendMessage(msg);
+            }
+
         }
     };
 
@@ -86,7 +92,7 @@ public class Fragment_chat extends Fragment {
         //Log.e("123","인터넷 상태 : "+NetworkStatus.getConnectivityStatus(getActivity()));
         //서버로부터 데이터 가져오기..
         RetrofitService service = retrofit.create(RetrofitService.class);
-        Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, phasingNum, cursorChatRoomNum,"chatList");
+        Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, phasingNum, cursorChatRoomNum, "chatList");
         call.enqueue(new Callback<DataChatRoomAll>() {
             @Override
             public void onResponse(Call<DataChatRoomAll> call, Response<DataChatRoomAll> response) {
@@ -112,6 +118,11 @@ public class Fragment_chat extends Fragment {
                         isFinalPhase = true;
                     }
                     onCreateViewIsSet = true;
+                    if (response.body().isNotification()) {
+                        chatNotificationImage.setImageResource(R.drawable.ic_baseline_notifications_active_24);
+                    } else {
+                        chatNotificationImage.setImageResource(R.drawable.ic_baseline_notifications_24);
+                    }
                 }
             }
 
@@ -129,7 +140,7 @@ public class Fragment_chat extends Fragment {
                     if (!v.canScrollVertically(1) && scrollCheck) {
                         scrollCheck = false;
                         if (!isFinalPhase) {
-                            Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, phasingNum, cursorChatRoomNum,"chatList");
+                            Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, phasingNum, cursorChatRoomNum, "chatList");
                             call.enqueue(new Callback<DataChatRoomAll>() {
                                 @Override
                                 public void onResponse(Call<DataChatRoomAll> call, Response<DataChatRoomAll> response) {
@@ -177,19 +188,24 @@ public class Fragment_chat extends Fragment {
                 super.handleMessage(msg);
                 Log.e("123", "fragment확인");
                 Bundle bundle = msg.getData();
+                String purpose=bundle.getString("purpose");
+                if(purpose.equals("reloadAlarmImage")){
+                    chatNotificationImage.setImageResource(R.drawable.ic_baseline_notifications_active_24);
+                    return;
+                }
                 String data = bundle.getString("message");
                 //데이터를 서버에서 가져올게 아니라 그냥 바로 업뎃해줄까?
                 //그러 cursor가 햇갈리게 될텐데
                 //이 부분 수정해야함
                 RetrofitService service = retrofit.create(RetrofitService.class);
-                Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, "update", cursorChatRoomNum,"chatList");
+                Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, "update", cursorChatRoomNum, "chatList");
                 call.enqueue(new retrofit2.Callback<DataChatRoomAll>() {
                     @Override
                     public void onResponse(Call<DataChatRoomAll> call, Response<DataChatRoomAll> response) {
 
                         //통신 성공할 경우
                         if (response.isSuccessful() && response.body() != null) {
-                            Log.e("123","fragment reload2");
+                            Log.e("123", "fragment reload2");
                             roomList.clear();
                             Log.e("123", response.body().getRoomList().toString());
                             DataChatRoomAll dataChatRoomALL = response.body();
@@ -224,7 +240,7 @@ public class Fragment_chat extends Fragment {
         chatNotificationImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent =new Intent(getActivity(),Activity_alarm_collect.class);
+                Intent intent = new Intent(getActivity(), Activity_alarm_collect.class);
                 startActivity(intent);
             }
         });
@@ -245,7 +261,7 @@ public class Fragment_chat extends Fragment {
 
         if (onCreateViewIsSet) {
             RetrofitService service = retrofit.create(RetrofitService.class);
-            Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, "update", cursorChatRoomNum,"chatList");
+            Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, "update", cursorChatRoomNum, "chatList");
             call.enqueue(new Callback<DataChatRoomAll>() {
                 @Override
                 public void onResponse(Call<DataChatRoomAll> call, Response<DataChatRoomAll> response) {
@@ -261,10 +277,13 @@ public class Fragment_chat extends Fragment {
 
                             }
                         }
+                        if (response.body().isNotification()) {
+                            chatNotificationImage.setImageResource(R.drawable.ic_baseline_notifications_active_24);
+                        } else {
+                            chatNotificationImage.setImageResource(R.drawable.ic_baseline_notifications_24);
+                        }
                     }
                     adapter.notifyDataSetChanged();
-
-
                 }
 
                 @Override
@@ -353,18 +372,18 @@ public class Fragment_chat extends Fragment {
                                             Log.e("123", "채팅방 나가기 성공");
 
                                             //채팅방 알림껏던 기록들 제거해야함
-                                            Log.e("123","채팅방 알림 켜기1");
+                                            Log.e("123", "채팅방 알림 켜기1");
                                             ArrayList<String> noAlarmArrayList = getNoAlarmRoomArrayList();
                                             for (int i = 0; i < noAlarmArrayList.size(); i++) {
                                                 if (noAlarmArrayList.get(i) != null) {
                                                     if (noAlarmArrayList.get(i).equals(roomList.get(position).getRoomNum())) {
-                                                        Log.e("123","채팅방 알림 켜기2");
+                                                        Log.e("123", "채팅방 알림 켜기2");
                                                         noAlarmArrayList.remove(i);
                                                         break;
                                                     }
                                                 }
                                             }
-                                            Log.e("123","채팅방 알림 켜기3");
+                                            Log.e("123", "채팅방 알림 켜기3");
                                             setNoAlarmRoomArrayList(noAlarmArrayList);
                                             roomList.remove(position);
                                             adapter.notifyItemRemoved(position);

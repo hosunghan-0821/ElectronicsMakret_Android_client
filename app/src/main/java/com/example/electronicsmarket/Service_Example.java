@@ -454,7 +454,7 @@ public class Service_Example extends Service {
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
             HashMap<String, RequestBody> notificationHashMap = new HashMap<>();
-            RequestBody typeRequest, memberRequest, messageRequest, postRequest;
+            RequestBody typeRequest, memberRequest, messageRequest, postRequest,senderRequest;
 
             RetrofitService service = retrofit.create(RetrofitService.class);
 
@@ -464,42 +464,59 @@ public class Service_Example extends Service {
                     memberRequest = RequestBody.create(MediaType.parse("text/plain"), sendToNickname);
                     messageRequest = RequestBody.create(MediaType.parse("text/plain"), message);
                     postRequest = RequestBody.create(MediaType.parse("text/plain"), postNum);
+                    senderRequest = RequestBody.create(MediaType.parse("text/plain"), nickname);
 
                     notificationHashMap.put("type",typeRequest);
                     notificationHashMap.put("sendToNickname",memberRequest);
                     notificationHashMap.put("message",messageRequest);
                     notificationHashMap.put("postNum",postRequest);
+                    notificationHashMap.put("sender",  senderRequest);
                     break;
                 case 1:
 
                     typeRequest = RequestBody.create(MediaType.parse("text/plain"), "1");
                     memberRequest = RequestBody.create(MediaType.parse("text/plain"), sendToNickname);
                     messageRequest = RequestBody.create(MediaType.parse("text/plain"), message);
+                    senderRequest = RequestBody.create(MediaType.parse("text/plain"), nickname);
 
                     notificationHashMap.put("type",typeRequest);
                     notificationHashMap.put("sendToNickname",memberRequest);
                     notificationHashMap.put("message",messageRequest);
+                    notificationHashMap.put("sender",  senderRequest);
 
                     break;
+                case 2 :
+                    typeRequest = RequestBody.create(MediaType.parse("text/plain"), "2");
+                    memberRequest = RequestBody.create(MediaType.parse("text/plain"), sendToNickname);
+                    messageRequest = RequestBody.create(MediaType.parse("text/plain"), message);
+                    postRequest = RequestBody.create(MediaType.parse("text/plain"), postNum);
+                    senderRequest = RequestBody.create(MediaType.parse("text/plain"), nickname);
+
+                    notificationHashMap.put("type",typeRequest);
+                    notificationHashMap.put("sendToNickname",memberRequest);
+                    notificationHashMap.put("message",messageRequest);
+                    notificationHashMap.put("postNum",postRequest);
+                    notificationHashMap.put("sender",  senderRequest);
+                    break;
+
 
                 default:
                     break;
             }
-            Log.e("123","saveNotification () 2 :");
             Call<Void> call = service.saveNotification(notificationHashMap);
             call.enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
                         Toast.makeText(getApplicationContext(), "http notification 저장성공", Toast.LENGTH_SHORT).show();
-                        Log.e("123","saveNotification () 3 :");
+
                     }
                 }
 
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
                     Log.e("123", t.getMessage());
-                    Log.e("123","saveNotification () 4 :");
+
                 }
             });
 
@@ -682,6 +699,7 @@ public class Service_Example extends Service {
                             //채팅방 밖에 있고, 채팅목록화면에 있다면, 데이터 reload 해야함. 전달될 때마다.
                             Intent intent = new Intent("reloadRoomList");
                             message = message.replace(CHANGE_LINE_CHAR, "\n");
+                            intent.putExtra("purpose", "reloadRoomList");
                             intent.putExtra("message", message);
                             LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
 
@@ -826,7 +844,7 @@ public class Service_Example extends Service {
                 Intent backStackIntent = stackBuilder.editIntentAt(0);
                 backStackIntent.putExtra("mypageFragment", "mypageFragment");
             }
-            if (type == 1) {
+            else if (type == 1) {
                 notifyIntent = new Intent(Service_Example.this, Activity_writer_review_collect.class);
                 title = "거래후기 알림";
                 notifyIntent.putExtra("email", email);
@@ -836,7 +854,21 @@ public class Service_Example extends Service {
                 Intent backStackIntent = stackBuilder.editIntentAt(0);
                 backStackIntent.putExtra("mypageFragment", "mypageFragment");
             }
-
+            else if(type==2){
+                notifyIntent = new Intent(Service_Example.this,Activity_post_read.class );
+                title = "좋아요 알림";
+                notifyIntent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+                notifyIntent.putExtra("postNum",postNum);
+                stackBuilder.addNextIntentWithParentStack(notifyIntent);
+//                Intent backStackIntent = stackBuilder.editIntentAt(0);
+//                backStackIntent.putExtra("mypageFragment", "mypageFragment");
+            }
+            Intent intent = new Intent("reloadRoomList");
+            intent.putExtra("purpose", "reloadAlarmImage");
+            LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
+            Intent mainHomeIntent = new Intent ("homeReloadAlarm");
+            mainHomeIntent.putExtra("purpose", "reloadAlarmImage");
+            LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(mainHomeIntent);
             //Notification 만들기
 
             //Intent backStackIntent = stackBuilder.editIntentAt(0);

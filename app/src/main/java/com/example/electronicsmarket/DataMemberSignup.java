@@ -5,7 +5,16 @@ public class DataMemberSignup {
     private String message;
     public String imageRoute;
     private boolean isSuccess;
+    private boolean likeNotification;
 
+
+    public boolean isLikeNotification() {
+        return likeNotification;
+    }
+
+    public void setLikeNotification(boolean likeNotification) {
+        this.likeNotification = likeNotification;
+    }
 
     public boolean isSuccess() {
         return isSuccess;

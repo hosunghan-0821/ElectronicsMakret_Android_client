@@ -1,13 +1,30 @@
 package com.example.electronicsmarket;
 
-import java.util.ArrayList;
-
 public class DataNotificationInfo {
-    String type,message,postNum,notificationNum,notificationRegTime;
+    private String type,message,postNum,notificationNum,notificationRegTime;
+    private String notificationIsRead;
+
+    private boolean isNotification;
     boolean isReview;
+
+    public boolean isNotification() {
+        return isNotification;
+    }
+
+    public void setNotification(boolean notification) {
+        isNotification = notification;
+    }
 
     public boolean isReview() {
         return isReview;
+    }
+
+    public String getNotificationIsRead() {
+        return notificationIsRead;
+    }
+
+    public void setNotificationIsRead(String notificationIsRead) {
+        this.notificationIsRead = notificationIsRead;
     }
 
     public void setReview(boolean review) {

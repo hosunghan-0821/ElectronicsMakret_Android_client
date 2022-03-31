@@ -27,7 +27,7 @@ public interface RetrofitService {
     Call<DataMemberSignup> memberOut(@Query("email") String email, @Query("message") String message);
 
     @GET("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/postApi/setLikeList.php")
-    Call<DataMemberSignup> setLikeList(@Query("email") String nickname, @Query("postNum") String postNum, @Query("state") String insDel);
+    Call<DataMemberSignup> setLikeList(@Query("email") String nickname, @Query("postNum") String postNum, @Query("state") String insDel,@Query("writer") String writer);
 
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/signup/{path}")
@@ -207,6 +207,11 @@ public interface RetrofitService {
     @FormUrlEncoded
     @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/notificationApi/getNotification.php")
     Call<DataNotificationAllInfo> getNotification (@Field("finalNotificationNum") String cursor,@Field("phasingNum") String phasingNum,@Field("nickname")String nickname,@Field("purpose")String purpose);
+
+    @FormUrlEncoded
+    @POST("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/notificationApi/notificationReadCheck.php")
+    Call<DataNotificationInfo> notificationCheck (@Field("nickname")String nickname);
+
 
 
 
