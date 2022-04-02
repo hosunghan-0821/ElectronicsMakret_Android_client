@@ -53,6 +53,9 @@ public class Adapter_alarm_info extends RecyclerView.Adapter<RecyclerView.ViewHo
             if(notificationList.get(position).getNotificationIsRead().equals("0")){
                 ((alarmViewHolder) holder).itemView.setBackgroundColor(Color.parseColor("#ece6cc"));
             }
+            else{
+                ((alarmViewHolder) holder).itemView.setBackgroundColor(Color.parseColor("#ffffff"));
+            }
 
             //알림 type 에 따라 다른 text 띄어주기
             if(notificationList.get(position).getType().equals("0")){
@@ -152,7 +155,7 @@ public class Adapter_alarm_info extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                     int position=getAdapterPosition();
                     if(itemClickListener!=null){
-                        itemClickListener.itemClick(position);
+                        itemClickListener.itemClick(position,alarmViewHolder.this);
                     }
 
                 }
@@ -162,6 +165,6 @@ public class Adapter_alarm_info extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     public interface Interface_notification_itemClick{
-        public void itemClick(int position);
+        public void itemClick(int position,Adapter_alarm_info.alarmViewHolder viewHolder);
     }
 }

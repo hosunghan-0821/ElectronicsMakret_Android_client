@@ -9,6 +9,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -151,7 +152,7 @@ public class Activity_alarm_collect extends AppCompatActivity {
         //item onClickListener달기
         adapter.setItemClickListener(new Adapter_alarm_info.Interface_notification_itemClick() {
             @Override
-            public void itemClick(int position) {
+            public void itemClick(int position, Adapter_alarm_info.alarmViewHolder viewHolder) {
                 String type = notificationList.get(position).getType();
 
                 if(type!=null){
@@ -170,8 +171,11 @@ public class Activity_alarm_collect extends AppCompatActivity {
                                     Intent intent =new Intent(Activity_alarm_collect.this,Activity_review_write.class);
                                     intent.putExtra("postNum",notificationList.get(position).getPostNum());
                                     intent.putExtra("isReview",notificationList.get(position).isReview());
+                                    viewHolder.itemView.setBackgroundColor(Color.parseColor("#ffffff"));
+                                    notificationList.get(position).setNotificationIsRead("1");
                                     startActivity(intent);
                                     dialog.dismiss();
+
                                 }
                             });
                             builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -189,7 +193,10 @@ public class Activity_alarm_collect extends AppCompatActivity {
                             Intent intent =new Intent(Activity_alarm_collect.this,Activity_review_write.class);
                             intent.putExtra("postNum",notificationList.get(position).getPostNum());
                             intent.putExtra("isReview",notificationList.get(position).isReview());
+                            viewHolder.itemView.setBackgroundColor(Color.parseColor("#ffffff"));
+                            notificationList.get(position).setNotificationIsRead("1");
                             startActivity(intent);
+
                         }
 
                     }
@@ -198,16 +205,80 @@ public class Activity_alarm_collect extends AppCompatActivity {
                         Intent intent = new Intent(Activity_alarm_collect.this,Activity_writer_review_collect.class);
                         intent.putExtra("nickname",nickname);
                         intent.putExtra("email",userId);
+                        viewHolder.itemView.setBackgroundColor(Color.parseColor("#ffffff"));
+                        notificationList.get(position).setNotificationIsRead("1");
                         startActivity(intent);
                     }
                     else if(type.equals("2")){
                         Intent intent = new Intent(Activity_alarm_collect.this,Activity_post_read.class);
                         intent.putExtra("postNum",notificationList.get(position).getPostNum());
+                        notificationList.get(position).setNotificationIsRead("1");
+                        viewHolder.itemView.setBackgroundColor(Color.parseColor("#ffffff"));
                         startActivity(intent);
+
                     }
                 }
             }
         });
+//        adapter.setItemClickListener(new Adapter_alarm_info.Interface_notification_itemClick() {
+//            @Override
+//            public void itemClick(int position) {
+//                String type = notificationList.get(position).getType();
+//
+//                if(type!=null){
+//                    //거래완료 알림
+//                    if(type.equals("0")){
+//
+//                        //기존 리뷰가 존재하는지 확인
+//                        if(notificationList.get(position).isReview){
+//                            AlertDialog.Builder builder = new AlertDialog.Builder(Activity_alarm_collect.this);
+//
+//                            builder.setTitle("리뷰 작성 알림");
+//                            builder.setMessage("기존 리뷰가 존재합니다 수정하시겠습니까?");
+//                            builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    Intent intent =new Intent(Activity_alarm_collect.this,Activity_review_write.class);
+//                                    intent.putExtra("postNum",notificationList.get(position).getPostNum());
+//                                    intent.putExtra("isReview",notificationList.get(position).isReview());
+//                                    startActivity(intent);
+//                                    dialog.dismiss();
+//                                }
+//                            });
+//                            builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    dialog.dismiss();
+//                                }
+//                            });
+//                            builder.show();
+//
+//
+//                        }
+//                        //기존 리뷰가 없다면 바로 넘기기.
+//                        else{
+//                            Intent intent =new Intent(Activity_alarm_collect.this,Activity_review_write.class);
+//                            intent.putExtra("postNum",notificationList.get(position).getPostNum());
+//                            intent.putExtra("isReview",notificationList.get(position).isReview());
+//                            startActivity(intent);
+//                        }
+//
+//                    }
+//                    //리뷰등록 알림
+//                    else if(type.equals("1")){
+//                        Intent intent = new Intent(Activity_alarm_collect.this,Activity_writer_review_collect.class);
+//                        intent.putExtra("nickname",nickname);
+//                        intent.putExtra("email",userId);
+//                        startActivity(intent);
+//                    }
+//                    else if(type.equals("2")){
+//                        Intent intent = new Intent(Activity_alarm_collect.this,Activity_post_read.class);
+//                        intent.putExtra("postNum",notificationList.get(position).getPostNum());
+//                        startActivity(intent);
+//                    }
+//                }
+//            }
+//        });
     }
 
 

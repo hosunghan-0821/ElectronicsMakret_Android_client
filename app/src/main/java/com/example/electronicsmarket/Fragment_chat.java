@@ -88,7 +88,7 @@ public class Fragment_chat extends Fragment {
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
         variableInit(view);
-
+        chatNotificationImage.setVisibility(View.INVISIBLE);
         //Log.e("123","인터넷 상태 : "+NetworkStatus.getConnectivityStatus(getActivity()));
         //서버로부터 데이터 가져오기..
         RetrofitService service = retrofit.create(RetrofitService.class);
@@ -120,8 +120,10 @@ public class Fragment_chat extends Fragment {
                     onCreateViewIsSet = true;
                     if (response.body().isNotification()) {
                         chatNotificationImage.setImageResource(R.drawable.ic_baseline_notifications_active_24);
+                        chatNotificationImage.setVisibility(View.VISIBLE);
                     } else {
                         chatNotificationImage.setImageResource(R.drawable.ic_baseline_notifications_24);
+                        chatNotificationImage.setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -260,6 +262,7 @@ public class Fragment_chat extends Fragment {
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(dataReceiver, new IntentFilter("reloadRoomList"));
 
         if (onCreateViewIsSet) {
+            chatNotificationImage.setVisibility(View.INVISIBLE);
             RetrofitService service = retrofit.create(RetrofitService.class);
             Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, "update", cursorChatRoomNum, "chatList");
             call.enqueue(new Callback<DataChatRoomAll>() {
@@ -279,8 +282,10 @@ public class Fragment_chat extends Fragment {
                         }
                         if (response.body().isNotification()) {
                             chatNotificationImage.setImageResource(R.drawable.ic_baseline_notifications_active_24);
+                            chatNotificationImage.setVisibility(View.VISIBLE);
                         } else {
                             chatNotificationImage.setImageResource(R.drawable.ic_baseline_notifications_24);
+                            chatNotificationImage.setVisibility(View.VISIBLE);
                         }
                     }
                     adapter.notifyDataSetChanged();

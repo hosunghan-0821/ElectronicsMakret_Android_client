@@ -87,7 +87,7 @@ public class Activity_video_call extends AppCompatActivity {
         mWebSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         mWebSettings.setLoadWithOverviewMode(true); // 메타태그
         webView.clearCache(true);
-        webView.loadUrl("https://0aef-1-227-215-212.ngrok.io");
+        webView.loadUrl("https://a872-219-248-76-133.ngrok.io");
     }
 
     public class MyWebViewClient extends WebViewClient{
