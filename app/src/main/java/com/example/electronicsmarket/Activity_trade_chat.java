@@ -1,6 +1,7 @@
 package com.example.electronicsmarket;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,6 +11,7 @@ import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -73,7 +75,7 @@ public class Activity_trade_chat extends AppCompatActivity {
     public static String otherUserNicknameGlobal;
     private boolean isFinalPhase = false, onCreateViewIsSet = false, scrollCheck = true;
     private int heightSum;
-    private ImageView tradeChatImage,tradeChatVideoCamera;
+    private ImageView tradeChatImage, tradeChatVideoCamera;
     private TextView tradeChatProductTitle, tradeChatProductPrice, tradeChatLocation, tradeChatOtherUserNickname;
     private Retrofit retrofit;
     private TextView scrollHeight;
@@ -96,7 +98,7 @@ public class Activity_trade_chat extends AppCompatActivity {
     private ImageView backImage, tradeChatLocationImage;
     private int peopleNum;
     private TextView tradeChatSellType;
-    private PermissionListener permissionlistener,videoCallPermissionListener;
+    private PermissionListener permissionlistener, videoCallPermissionListener;
     private boolean permissionCheck = false;
     private ArrayList<File> imageFileCollect;
     private ArrayList<MultipartBody.Part> files;
@@ -105,8 +107,6 @@ public class Activity_trade_chat extends AppCompatActivity {
     private Thread sendThread;
     private ArrayList<String> imageRoute;
     private ArrayList<String> roomMemberNickname;
-
-
 
 
     private BroadcastReceiver dataReceiver = new BroadcastReceiver() {
@@ -119,27 +119,27 @@ public class Activity_trade_chat extends AppCompatActivity {
                 if (purpose.equals("인원체크")) {
 
                     int chatRoomPeople = intent.getIntExtra("peopleNum", -1);
-                    Log.e("123","방 인원수"+chatRoomPeople);
-                    ArrayList<String> roomUsers =intent.getStringArrayListExtra("roomUsers");
+                    Log.e("123", "방 인원수" + chatRoomPeople);
+                    ArrayList<String> roomUsers = intent.getStringArrayListExtra("roomUsers");
 
-                    for(int i=0;i<roomUsers.size();i++){
-                       roomMemberNickname.add(roomUsers.get(i));
+                    for (int i = 0; i < roomUsers.size(); i++) {
+                        roomMemberNickname.add(roomUsers.get(i));
                     }
                     peopleNum = chatRoomPeople;
 
                 } else if (purpose.equals("인원추가")) {
                     String userNickname = intent.getStringExtra("nickname");
-                    boolean nameDuplicateCheck=false;
-                    for(int i=0;i<roomMemberNickname.size();i++){
+                    boolean nameDuplicateCheck = false;
+                    for (int i = 0; i < roomMemberNickname.size(); i++) {
 
-                        if(userNickname.equals(roomMemberNickname.get(i))){
-                            Log.e("123","중복된 닉네임 : "+userNickname);
-                            nameDuplicateCheck=true;
+                        if (userNickname.equals(roomMemberNickname.get(i))) {
+                            Log.e("123", "중복된 닉네임 : " + userNickname);
+                            nameDuplicateCheck = true;
                             break;
                         }
                     }
-                    if(!nameDuplicateCheck){
-                        Log.e("123","방 인원추가 중복안된 닉네임 "+userNickname);
+                    if (!nameDuplicateCheck) {
+                        Log.e("123", "방 인원추가 중복안된 닉네임 " + userNickname);
                         roomMemberNickname.add(userNickname);
                         //데이터 reload 해야함
                         Message msg = new Message();
@@ -152,19 +152,19 @@ public class Activity_trade_chat extends AppCompatActivity {
 
                 } else if (purpose.equals("인원감소")) {
                     String nickname = intent.getStringExtra("nickname");
-                    boolean nameDuplicateCheck=false;
-                    for(int i=0;i<roomMemberNickname.size();i++){
-                        if(nickname.equals(roomMemberNickname.get(i))){
-                            nameDuplicateCheck=true;
+                    boolean nameDuplicateCheck = false;
+                    for (int i = 0; i < roomMemberNickname.size(); i++) {
+                        if (nickname.equals(roomMemberNickname.get(i))) {
+                            nameDuplicateCheck = true;
                             roomMemberNickname.remove(i);
                             break;
                         }
                     }
-                    if(nameDuplicateCheck){
+                    if (nameDuplicateCheck) {
                         peopleNum--;
                     }
 
-                } else if(purpose.equals("reload")){
+                } else if (purpose.equals("reload")) {
 
                     Message msg = new Message();
                     Bundle bundle = new Bundle();
@@ -173,8 +173,8 @@ public class Activity_trade_chat extends AppCompatActivity {
                     handler.sendMessage(msg);
                 }
 
-                for(int i=0;i<roomMemberNickname.size();i++){
-                    Log.e("123","roomMemberNickname : "+roomMemberNickname.get(i));
+                for (int i = 0; i < roomMemberNickname.size(); i++) {
+                    Log.e("123", "roomMemberNickname : " + roomMemberNickname.get(i));
                 }
                 Log.e("123", "나를 제외한 채팅방 인원수 : " + peopleNum);
                 return;
@@ -218,13 +218,41 @@ public class Activity_trade_chat extends AppCompatActivity {
                 Toast.makeText(Activity_trade_chat.this, "이미지 전송하기 위해선 권한필요", Toast.LENGTH_SHORT).show();
             }
         };
-        videoCallPermissionListener = new PermissionListener(){
+        videoCallPermissionListener = new PermissionListener() {
             @Override
             public void onPermissionGranted() {
-                Intent intent =new Intent(Activity_trade_chat.this,Activity_video_call.class);
-                intent.putExtra("sendToNickname",otherUserNickname);
-                intent.putExtra("roomNum",roomNum);
-                startActivity(intent);
+                AlertDialog.Builder builder = new AlertDialog.Builder(Activity_trade_chat.this);
+
+                builder.setTitle("영상통화 알림");
+                builder.setMessage("\" "+otherUserNickname+" \"님에게 영상통화를 거시겠습니까?");
+                builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Activity_trade_chat.this, Activity_video_call.class);
+                        intent.putExtra("sendToNickname", otherUserNickname);
+                        intent.putExtra("roomNum", roomNum);
+                        intent.putExtra("position","caller");
+                        startActivity(intent);
+
+                        Intent sendAlarmintent = new Intent("chatDataToServer");
+                        sendAlarmintent.putExtra("purpose", "sendNotification");
+                        sendAlarmintent.putExtra("message", "영상통화");
+                        sendAlarmintent.putExtra("sendToNickname", otherUserNickname);
+                        LocalBroadcastManager.getInstance(Activity_trade_chat.this).sendBroadcast(sendAlarmintent);
+
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+
+
+
             }
 
             @Override
@@ -253,9 +281,7 @@ public class Activity_trade_chat extends AppCompatActivity {
         } else {
             roomNum = intent.getStringExtra("roomNum");
         }
-        activity_trade_chat=Activity_trade_chat.this;
-
-
+        activity_trade_chat = Activity_trade_chat.this;
 
 
         Log.e("123", "Service_Example instance " + Service_Example.tcpService);
@@ -283,8 +309,8 @@ public class Activity_trade_chat extends AppCompatActivity {
                     otherUserNickname = dataChatRoom.getOtherUserNickname();
                     roomNum = dataChatRoom.getRoomNum();
 
-                    roomNumGlobal=roomNum;
-                    otherUserNicknameGlobal=otherUserNickname;
+                    roomNumGlobal = roomNum;
+                    otherUserNicknameGlobal = otherUserNickname;
 
                     tradeChatOtherUserNickname.setText(otherUserNickname);
                     otherUserImageRoute = dataChatRoom.getOtherUserImageRoute();
@@ -347,12 +373,12 @@ public class Activity_trade_chat extends AppCompatActivity {
                                 ArrayList<DataChat> chatArrayList = dataChatAllList.getDataChatAllList();
 
                                 //shared에 저장된 안보내진 데이터 입력 나타나게 하기;
-                                ArrayList<DataChat> noSendDataArrayList=getNoSendDataArrayList(roomNum);
-                                if(noSendDataArrayList.size()!=0){
-                                    for(int i=0;i<noSendDataArrayList.size();i++){
-                                        if(noSendDataArrayList.get(i).getChatRoomNum()!=null){
-                                            if(noSendDataArrayList.get(i).getChatRoomNum().equals(roomNum)){
-                                                chatArrayList.add(0,noSendDataArrayList.get(i));
+                                ArrayList<DataChat> noSendDataArrayList = getNoSendDataArrayList(roomNum);
+                                if (noSendDataArrayList.size() != 0) {
+                                    for (int i = 0; i < noSendDataArrayList.size(); i++) {
+                                        if (noSendDataArrayList.get(i).getChatRoomNum() != null) {
+                                            if (noSendDataArrayList.get(i).getChatRoomNum().equals(roomNum)) {
+                                                chatArrayList.add(0, noSendDataArrayList.get(i));
                                             }
                                         }
 
@@ -385,19 +411,17 @@ public class Activity_trade_chat extends AppCompatActivity {
                                         if (chatType != null) {
                                             if (chatType.equals("text")) {
 
-                                                if(networkStatus==3){
-                                                    chatList.add(0,new DataChat(chatText,1,chatTime,writerNickname,isReadChat,3,"text",chatArrayList.get(i).getIdentifyNum(),chatArrayList.get(i).getChatRoomNum()));
-                                                }
-                                                else{
+                                                if (networkStatus == 3) {
+                                                    chatList.add(0, new DataChat(chatText, 1, chatTime, writerNickname, isReadChat, 3, "text", chatArrayList.get(i).getIdentifyNum(), chatArrayList.get(i).getChatRoomNum()));
+                                                } else {
                                                     chatList.add(0, new DataChat(chatText, 1, chatTime, writerNickname, isReadChat));
                                                 }
 
                                             } else if (chatType.equals("image")) {
 
-                                                if(networkStatus==3){
-                                                    chatList.add(0,new DataChat(chatText,3,chatTime,writerNickname,isReadChat,3,"image",chatArrayList.get(i).getIdentifyNum(),chatArrayList.get(i).getChatRoomNum()));
-                                                }
-                                                else{
+                                                if (networkStatus == 3) {
+                                                    chatList.add(0, new DataChat(chatText, 3, chatTime, writerNickname, isReadChat, 3, "image", chatArrayList.get(i).getIdentifyNum(), chatArrayList.get(i).getChatRoomNum()));
+                                                } else {
                                                     chatList.add(0, new DataChat(chatText, 3, chatTime, writerNickname, isReadChat));
                                                 }
 
@@ -624,8 +648,8 @@ public class Activity_trade_chat extends AppCompatActivity {
                         chatList.get(i).setIsReadChat("1");
                     }
                     adapter.notifyDataSetChanged();
-                } else if(purpose.equals("reloadActivity")){
-                    Log.e("123","reloadActivity");
+                } else if (purpose.equals("reloadActivity")) {
+                    Log.e("123", "reloadActivity");
                     roomMemberNickname.clear();
                     //화면 reload할게 아니라 onResume 처럼 데이터를 다시 가져오는 방식을 사용하자
 
@@ -641,13 +665,13 @@ public class Activity_trade_chat extends AppCompatActivity {
                                 ArrayList<DataChat> chatArrayList = dataChatAllList.getDataChatAllList();
 
                                 //shared에 저장된 안보내진 데이터 입력 나타나게 하기;
-                                ArrayList<DataChat> noSendDataArrayList=getNoSendDataArrayList(roomNum);
-                                if(noSendDataArrayList.size()!=0){
-                                    for(int i=0;i<noSendDataArrayList.size();i++){
-                                        if(noSendDataArrayList.get(i).getChatRoomNum()!=null){
-                                          if(noSendDataArrayList.get(i).getChatRoomNum().equals(roomNum)){
-                                              chatArrayList.add(0,noSendDataArrayList.get(i));
-                                          }
+                                ArrayList<DataChat> noSendDataArrayList = getNoSendDataArrayList(roomNum);
+                                if (noSendDataArrayList.size() != 0) {
+                                    for (int i = 0; i < noSendDataArrayList.size(); i++) {
+                                        if (noSendDataArrayList.get(i).getChatRoomNum() != null) {
+                                            if (noSendDataArrayList.get(i).getChatRoomNum().equals(roomNum)) {
+                                                chatArrayList.add(0, noSendDataArrayList.get(i));
+                                            }
                                         }
 
                                     }
@@ -677,18 +701,16 @@ public class Activity_trade_chat extends AppCompatActivity {
 
                                             if (chatType.equals("text")) {
 
-                                                if(networkStatus==3){
-                                                    chatList.add(0,new DataChat(chatText,1,chatTime,writerNickname,isReadChat,3,"text",chatArrayList.get(i).getIdentifyNum(),chatArrayList.get(i).getChatRoomNum()));
-                                                }
-                                                else{
+                                                if (networkStatus == 3) {
+                                                    chatList.add(0, new DataChat(chatText, 1, chatTime, writerNickname, isReadChat, 3, "text", chatArrayList.get(i).getIdentifyNum(), chatArrayList.get(i).getChatRoomNum()));
+                                                } else {
                                                     chatList.add(0, new DataChat(chatText, 1, chatTime, writerNickname, isReadChat));
                                                 }
 
                                             } else if (chatType.equals("image")) {
-                                                if(networkStatus==3){
-                                                    chatList.add(0,new DataChat(chatText,3,chatTime,writerNickname,isReadChat,3,"image",chatArrayList.get(i).getIdentifyNum(),chatArrayList.get(i).getChatRoomNum()));
-                                                }
-                                                else{
+                                                if (networkStatus == 3) {
+                                                    chatList.add(0, new DataChat(chatText, 3, chatTime, writerNickname, isReadChat, 3, "image", chatArrayList.get(i).getIdentifyNum(), chatArrayList.get(i).getChatRoomNum()));
+                                                } else {
                                                     chatList.add(0, new DataChat(chatText, 3, chatTime, writerNickname, isReadChat));
                                                 }
 
@@ -757,17 +779,17 @@ public class Activity_trade_chat extends AppCompatActivity {
         adapter.setResendImageClickListener(new Adapter_trade_chat.Interface_imageResendClick() {
             @Override
             public void reSendImage(int position) {
-                ArrayList<Uri> uriList=new ArrayList<>();
+                ArrayList<Uri> uriList = new ArrayList<>();
 
-                ArrayList<DataChat> noSendDataArrayList =getNoSendDataArrayList(roomNum);
-                for(int i=0;i<noSendDataArrayList.size();i++){
+                ArrayList<DataChat> noSendDataArrayList = getNoSendDataArrayList(roomNum);
+                for (int i = 0; i < noSendDataArrayList.size(); i++) {
 
-                    if(chatList.get(position).getIdentifyNum()==noSendDataArrayList.get(i).getIdentifyNum()){
+                    if (chatList.get(position).getIdentifyNum() == noSendDataArrayList.get(i).getIdentifyNum()) {
                         String imageUri = chatList.get(position).getChat();
                         chatList.remove(position);
                         adapter.notifyItemRemoved(position);
                         noSendDataArrayList.remove(i);
-                        setNoSendDataArrayList(noSendDataArrayList,roomNum);
+                        setNoSendDataArrayList(noSendDataArrayList, roomNum);
                         uriList.add(Uri.parse(imageUri));
                         sendImage(uriList);
                         break;
@@ -775,13 +797,14 @@ public class Activity_trade_chat extends AppCompatActivity {
 
                 }
             }
+
             @Override
             public void deleteImage(int position) {
 
-                ArrayList<DataChat> noSendDataArrayList =getNoSendDataArrayList(roomNum);
+                ArrayList<DataChat> noSendDataArrayList = getNoSendDataArrayList(roomNum);
 
-                for(int i=0;i<noSendDataArrayList.size();i++){
-                    if(chatList.get(position).getIdentifyNum()==noSendDataArrayList.get(i).getIdentifyNum()){
+                for (int i = 0; i < noSendDataArrayList.size(); i++) {
+                    if (chatList.get(position).getIdentifyNum() == noSendDataArrayList.get(i).getIdentifyNum()) {
                         chatList.remove(position);
                         adapter.notifyItemRemoved(position);
                         noSendDataArrayList.remove(i);
@@ -789,7 +812,7 @@ public class Activity_trade_chat extends AppCompatActivity {
                         break;
                     }
                 }
-                setNoSendDataArrayList(noSendDataArrayList,roomNum);
+                setNoSendDataArrayList(noSendDataArrayList, roomNum);
 
             }
         });
@@ -798,28 +821,29 @@ public class Activity_trade_chat extends AppCompatActivity {
         adapter.setResendClickListener(new Adapter_trade_chat.Interface_resendClick() {
             @Override
             public void reSendText(int position) {
-                ArrayList<DataChat> noSendDataArrayList =getNoSendDataArrayList(roomNum);
+                ArrayList<DataChat> noSendDataArrayList = getNoSendDataArrayList(roomNum);
 
-                for(int i=0;i<noSendDataArrayList.size();i++){
-                    if(chatList.get(position).getIdentifyNum()==noSendDataArrayList.get(i).getIdentifyNum()){
+                for (int i = 0; i < noSendDataArrayList.size(); i++) {
+                    if (chatList.get(position).getIdentifyNum() == noSendDataArrayList.get(i).getIdentifyNum()) {
 
                         String message = chatList.get(position).getChat();
                         chatList.remove(position);
                         adapter.notifyItemRemoved(position);
                         noSendDataArrayList.remove(i);
-                        setNoSendDataArrayList(noSendDataArrayList,roomNum);
+                        setNoSendDataArrayList(noSendDataArrayList, roomNum);
                         sendMessage(message);
                         break;
                     }
                 }
 
             }
+
             @Override
             public void deleteText(int position) {
-                ArrayList<DataChat> noSendDataArrayList =getNoSendDataArrayList(roomNum);
+                ArrayList<DataChat> noSendDataArrayList = getNoSendDataArrayList(roomNum);
 
-                for(int i=0;i<noSendDataArrayList.size();i++){
-                    if(chatList.get(position).getIdentifyNum()==noSendDataArrayList.get(i).getIdentifyNum()){
+                for (int i = 0; i < noSendDataArrayList.size(); i++) {
+                    if (chatList.get(position).getIdentifyNum() == noSendDataArrayList.get(i).getIdentifyNum()) {
                         chatList.remove(position);
                         adapter.notifyItemRemoved(position);
                         noSendDataArrayList.remove(i);
@@ -827,7 +851,7 @@ public class Activity_trade_chat extends AppCompatActivity {
                         break;
                     }
                 }
-                setNoSendDataArrayList(noSendDataArrayList,roomNum);
+                setNoSendDataArrayList(noSendDataArrayList, roomNum);
             }
         });
 
@@ -861,23 +885,22 @@ public class Activity_trade_chat extends AppCompatActivity {
         });
     }
 
-    public void sendMessage(String message){
+    public void sendMessage(String message) {
 
         //통신연결 안되있을 경우
-        if(NetworkStatus.getConnectivityStatus(Activity_trade_chat.this)==3){
+        if (NetworkStatus.getConnectivityStatus(Activity_trade_chat.this) == 3) {
 
-            if(message!=null){
-                if(!message.equals("")){
-                    Log.e("123","message : "+ message);
-                    ArrayList<DataChat> noSendDataArrayList =getNoSendDataArrayList(roomNum);
-                    DataChat datachat=new DataChat();
-                    if(noSendDataArrayList.size()==0){
-                         datachat =new DataChat(message,1,getMessageTime(),nickName,Integer.toString(peopleNum),3,"text",0,roomNum);
+            if (message != null) {
+                if (!message.equals("")) {
+                    Log.e("123", "message : " + message);
+                    ArrayList<DataChat> noSendDataArrayList = getNoSendDataArrayList(roomNum);
+                    DataChat datachat = new DataChat();
+                    if (noSendDataArrayList.size() == 0) {
+                        datachat = new DataChat(message, 1, getMessageTime(), nickName, Integer.toString(peopleNum), 3, "text", 0, roomNum);
 //                        Log.e("123","지나감1 size=0");
-                    }
-                    else{
-                        int identifyNum=noSendDataArrayList.get(noSendDataArrayList.size()-1).getIdentifyNum();
-                        datachat =new DataChat(message,1,getMessageTime(),nickName,Integer.toString(peopleNum),3,"text",identifyNum+1,roomNum);
+                    } else {
+                        int identifyNum = noSendDataArrayList.get(noSendDataArrayList.size() - 1).getIdentifyNum();
+                        datachat = new DataChat(message, 1, getMessageTime(), nickName, Integer.toString(peopleNum), 3, "text", identifyNum + 1, roomNum);
 //                        Log.e("123","지나감1 size!=0");
                     }
                     chatList.add(datachat);
@@ -888,17 +911,17 @@ public class Activity_trade_chat extends AppCompatActivity {
                     tradeChatSendText.setText("");
 
                     noSendDataArrayList.add(datachat);
-                    Log.e("123","dataChat : "+datachat.getChat());
-                    Log.e("123", "noSendDataArrayList : "+noSendDataArrayList.get(noSendDataArrayList.size()-1).getChat());
-                    setNoSendDataArrayList(noSendDataArrayList,roomNum);
-                    Log.e("123","지나감2");
+                    Log.e("123", "dataChat : " + datachat.getChat());
+                    Log.e("123", "noSendDataArrayList : " + noSendDataArrayList.get(noSendDataArrayList.size() - 1).getChat());
+                    setNoSendDataArrayList(noSendDataArrayList, roomNum);
+                    Log.e("123", "지나감2");
                     return;
                 }
             }
 
         }
         //통신연결 되있을 경우 예외처리
-        if(message!=null){
+        if (message != null) {
             if (!message.equals("")) {
 
                 chatList.add(new DataChat(message, 1, getMessageTime(), nickName, Integer.toString(peopleNum)));
@@ -918,10 +941,10 @@ public class Activity_trade_chat extends AppCompatActivity {
     }
 
 
-    public void setNoSendDataArrayList(ArrayList<DataChat> noSendData,String roomNum) {
+    public void setNoSendDataArrayList(ArrayList<DataChat> noSendData, String roomNum) {
 
 
-        SharedPreferences sharedPreferences=getSharedPreferences("noSendData",MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("noSendData", MODE_PRIVATE);
         Gson gson = new GsonBuilder().create();
         Type arraylistType = new TypeToken<ArrayList<DataChat>>() {       // 내가 변환한 객체의 type을 얻어내는 코드 Type 와 TypeToken .getType() 메소드를 사용한다.
         }.getType();
@@ -935,7 +958,7 @@ public class Activity_trade_chat extends AppCompatActivity {
 
     public ArrayList<DataChat> getNoSendDataArrayList(String roomNum) {
 
-        SharedPreferences sharedPreferences=getSharedPreferences("noSendData",MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("noSendData", MODE_PRIVATE);
         //gson 을 활용하여서 shared에 저장된 string을 object로 변환
         Gson gson = new GsonBuilder().create();
 
@@ -964,14 +987,15 @@ public class Activity_trade_chat extends AppCompatActivity {
             }
         }
     }
-    private void  videoRequestPermission(){
+
+    private void videoRequestPermission() {
 
         TedPermission.with(Activity_trade_chat.this)
                 .setPermissionListener(videoCallPermissionListener)
                 .setRationaleMessage("영상통화를 하기 위해서는 권한 설정이 필요합니다.")
                 .setDeniedMessage("[설정] > [권한] 에서 권한을 허용할 수 있습니다..")
                 .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA
-                        , Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO,Manifest.permission.MODIFY_AUDIO_SETTINGS)
+                        , Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.MODIFY_AUDIO_SETTINGS)
                 .check();
 
     }
@@ -993,24 +1017,23 @@ public class Activity_trade_chat extends AppCompatActivity {
         return linearLayoutManager.findLastCompletelyVisibleItemPosition();
     }
 
-    public void sendImage(ArrayList<Uri> uriList){
+    public void sendImage(ArrayList<Uri> uriList) {
 
         //통신이 안되 있을 경우
-        if(NetworkStatus.getConnectivityStatus(Activity_trade_chat.this)==3){
+        if (NetworkStatus.getConnectivityStatus(Activity_trade_chat.this) == 3) {
 
-            ArrayList<DataChat> noSendDataArrayList =getNoSendDataArrayList(roomNum);
-            for(int i=0;i<uriList.size();i++){
+            ArrayList<DataChat> noSendDataArrayList = getNoSendDataArrayList(roomNum);
+            for (int i = 0; i < uriList.size(); i++) {
 
-                DataChat datachat=new DataChat();
+                DataChat datachat = new DataChat();
 
-                Log.e("123","uri.tostirng : "+uriList.get(i).toString());
+                Log.e("123", "uri.tostirng : " + uriList.get(i).toString());
 
-                if(noSendDataArrayList.size()==0){
-                    datachat =new DataChat(uriList.get(i).toString(),3,getMessageTime(),nickName,Integer.toString(peopleNum),3,"image",0,roomNum);
-                }
-                else{
-                    int identifyNum=noSendDataArrayList.get(noSendDataArrayList.size()-1).getIdentifyNum();
-                    datachat =new DataChat(uriList.get(i).toString(),3,getMessageTime(),nickName,Integer.toString(peopleNum),3,"image",identifyNum+1,roomNum);
+                if (noSendDataArrayList.size() == 0) {
+                    datachat = new DataChat(uriList.get(i).toString(), 3, getMessageTime(), nickName, Integer.toString(peopleNum), 3, "image", 0, roomNum);
+                } else {
+                    int identifyNum = noSendDataArrayList.get(noSendDataArrayList.size() - 1).getIdentifyNum();
+                    datachat = new DataChat(uriList.get(i).toString(), 3, getMessageTime(), nickName, Integer.toString(peopleNum), 3, "image", identifyNum + 1, roomNum);
                 }
 
                 chatList.add(datachat);
@@ -1020,7 +1043,7 @@ public class Activity_trade_chat extends AppCompatActivity {
                 noSendDataArrayList.add(datachat);
             }
             resumeAddChatCheck = chatList.size();
-            setNoSendDataArrayList(noSendDataArrayList,roomNum);
+            setNoSendDataArrayList(noSendDataArrayList, roomNum);
             return;
         }
 
@@ -1031,7 +1054,7 @@ public class Activity_trade_chat extends AppCompatActivity {
 
         //선택한 이미지 recyclerview에 처리
         for (int i = 0; i < uriList.size(); i++) {
-            Log.e("123","uriList.get(i).toString() : "+uriList.get(i).toString());
+            Log.e("123", "uriList.get(i).toString() : " + uriList.get(i).toString());
             chatList.add(new DataChat(uriList.get(i).toString(), 3, getMessageTime(), nickName, Integer.toString(peopleNum)));
             recyclerView.scrollToPosition(chatList.size() - 1);
             adapter.notifyItemInserted(chatList.size() - 1);
@@ -1070,8 +1093,8 @@ public class Activity_trade_chat extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<DataChatImageRoute> call, Response<DataChatImageRoute> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            Log.e("123","위치확인0");
-                            imageRoute=new ArrayList<>();
+                            Log.e("123", "위치확인0");
+                            imageRoute = new ArrayList<>();
                             imageRoute = response.body().getImageRoute();
                             sendThread.start();
                         }
@@ -1085,24 +1108,24 @@ public class Activity_trade_chat extends AppCompatActivity {
             }
         });
         thread.start();
-        sendThread=new Thread(new Runnable() {
+        sendThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 for (int i = 0; i < imageRoute.size(); i++) {
                     //경로를 이제 service_example broadcast에 보내야함
-                    Log.e("123", "imageRoute :"+imageRoute.get(i));
-                    Log.e("123","위치확인1");
+                    Log.e("123", "imageRoute :" + imageRoute.get(i));
+                    Log.e("123", "위치확인1");
                     Intent intent = new Intent("chatDataToServer");
                     intent.putExtra("purpose", "sendImage");
                     intent.putExtra("message", imageRoute.get(i));
                     LocalBroadcastManager.getInstance(Activity_trade_chat.this).sendBroadcast(intent);
-                    Log.e("123","위치확인2");
+                    Log.e("123", "위치확인2");
                     if (imageFileCollect.get(i).exists()) {
                         imageFileCollect.get(i).delete();
                     }
-                    try{
+                    try {
                         Thread.sleep(500);
-                    }catch (Exception e){
+                    } catch (Exception e) {
 
                     }
                 }
@@ -1296,7 +1319,7 @@ public class Activity_trade_chat extends AppCompatActivity {
     public void variableInit() {
 
         //
-        tradeChatVideoCamera=findViewById(R.id.trade_chat_video_camera);
+        tradeChatVideoCamera = findViewById(R.id.trade_chat_video_camera);
         //
         imageFileCollect = new ArrayList<>();
         files = new ArrayList<>();
@@ -1306,7 +1329,7 @@ public class Activity_trade_chat extends AppCompatActivity {
         phasingNum = "10";
 
         //방에 참가한 회원닉네임 모음
-        roomMemberNickname=new ArrayList<>();
+        roomMemberNickname = new ArrayList<>();
         //recyclerview 관련
         recyclerView = findViewById(R.id.trade_chat_recyclerview);
         linearLayoutManager = new LinearLayoutManager(Activity_trade_chat.this);
@@ -1378,12 +1401,12 @@ public class Activity_trade_chat extends AppCompatActivity {
                         ArrayList<DataChat> chatArrayList = dataChatAllList.getDataChatAllList();
 
                         //shared에 저장된 안보내진 데이터 입력 나타나게 하기;
-                        ArrayList<DataChat> noSendDataArrayList=getNoSendDataArrayList(roomNum);
-                        if(noSendDataArrayList.size()!=0){
-                            for(int i=0;i<noSendDataArrayList.size();i++){
-                                if(noSendDataArrayList.get(i).getChatRoomNum()!=null){
-                                    if(noSendDataArrayList.get(i).getChatRoomNum().equals(roomNum)){
-                                        chatArrayList.add(0,noSendDataArrayList.get(i));
+                        ArrayList<DataChat> noSendDataArrayList = getNoSendDataArrayList(roomNum);
+                        if (noSendDataArrayList.size() != 0) {
+                            for (int i = 0; i < noSendDataArrayList.size(); i++) {
+                                if (noSendDataArrayList.get(i).getChatRoomNum() != null) {
+                                    if (noSendDataArrayList.get(i).getChatRoomNum().equals(roomNum)) {
+                                        chatArrayList.add(0, noSendDataArrayList.get(i));
                                     }
                                 }
 
@@ -1413,19 +1436,17 @@ public class Activity_trade_chat extends AppCompatActivity {
                                 if (chatType != null) {
                                     if (chatType.equals("text")) {
 
-                                        if(networkStatus==3){
-                                            chatList.add(0,new DataChat(chatText,1,chatTime,writerNickname,isReadChat,3,"text",chatArrayList.get(i).getIdentifyNum(),chatArrayList.get(i).getChatRoomNum()));
-                                        }
-                                        else{
+                                        if (networkStatus == 3) {
+                                            chatList.add(0, new DataChat(chatText, 1, chatTime, writerNickname, isReadChat, 3, "text", chatArrayList.get(i).getIdentifyNum(), chatArrayList.get(i).getChatRoomNum()));
+                                        } else {
                                             chatList.add(0, new DataChat(chatText, 1, chatTime, writerNickname, isReadChat));
                                         }
 
                                     } else if (chatType.equals("image")) {
 
-                                        if(networkStatus==3){
-                                            chatList.add(0,new DataChat(chatText,3,chatTime,writerNickname,isReadChat,3,"image",chatArrayList.get(i).getIdentifyNum(),chatArrayList.get(i).getChatRoomNum()));
-                                        }
-                                        else{
+                                        if (networkStatus == 3) {
+                                            chatList.add(0, new DataChat(chatText, 3, chatTime, writerNickname, isReadChat, 3, "image", chatArrayList.get(i).getIdentifyNum(), chatArrayList.get(i).getChatRoomNum()));
+                                        } else {
                                             chatList.add(0, new DataChat(chatText, 3, chatTime, writerNickname, isReadChat));
                                         }
 
@@ -1490,16 +1511,18 @@ public class Activity_trade_chat extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.e("123", "onDestroy()");
-        activity_trade_chat=null;
-        roomNumGlobal=null;
-        otherUserNicknameGlobal=null;
+        activity_trade_chat = null;
+        roomNumGlobal = null;
+        otherUserNicknameGlobal = null;
         //채팅방 화면 나갈 때, 채팅방 나간 것을 자바 채팅서버에 데이터 전송해서 알려야함.
 
     }
+
     @Override
     protected void onStop() {
         super.onStop();
     }
+
     public String getMessageTime() {
 
         String formatedNow;

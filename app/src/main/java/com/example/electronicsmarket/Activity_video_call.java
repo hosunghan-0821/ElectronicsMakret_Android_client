@@ -4,11 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.webkit.ConsoleMessage;
-import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
@@ -16,24 +17,36 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 public class Activity_video_call extends AppCompatActivity {
 
     private WebView webView;
     private String otherUserNickname,roomNum;
+    private String position;
     private WebSettings mWebSettings;
+    private String serverURL = "https://f484-219-248-76-133.ngrok.io";
+    private ProgressBar progressBar;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_call);
-
-        variableInit();
-
+        //다른 activity 로 넘어온 intent 전화 받는 사람, 채팅방 고유번호, (수신자 or 발신자) 인지 intent 를 통해 확인
         Intent intent =getIntent();
         otherUserNickname=intent.getStringExtra("sendToNickname");
         roomNum=intent.getStringExtra("roomNum");
+        if(intent.getStringExtra("position")!=null){
+            position="caller";
+        }
+        else{
+            position="callee";
+        }
+        variableInit();
+
+
+
     }
 
     @Override
@@ -54,6 +67,7 @@ public class Activity_video_call extends AppCompatActivity {
 
     public void variableInit(){
         //웹뷰 기본 세팅
+        progressBar=findViewById(R.id.video_call_progressbar);
         WebView.setWebContentsDebuggingEnabled(true);
         webView=findViewById(R.id.video_call_webview);
         webView.setWebViewClient(new MyWebViewClient());
@@ -77,6 +91,7 @@ public class Activity_video_call extends AppCompatActivity {
 
         //webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
 
+        webView.setInitialScale(1);
         mWebSettings = webView.getSettings(); // 웹뷰에서 webSettings를 사용할 수 있도록 함.
         mWebSettings.setMediaPlaybackRequiresUserGesture(false);
         mWebSettings.setAllowContentAccess(true);
@@ -84,22 +99,32 @@ public class Activity_video_call extends AppCompatActivity {
         mWebSettings.setUseWideViewPort(true); //화면 사이즈 맞추기
         mWebSettings.setDefaultTextEncodingName("UTF-8");
         mWebSettings.setDomStorageEnabled(true);
+
         mWebSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         mWebSettings.setLoadWithOverviewMode(true); // 메타태그
         webView.clearCache(true);
-        webView.loadUrl("https://a872-219-248-76-133.ngrok.io");
+        //webView.loadUrl(serverURL +"?roomNum="+roomNum+"&sendToNickname="+otherUserNickname+"&position="+position);
+        webView.loadUrl(serverURL +"/"+roomNum+"/"+otherUserNickname+"/"+position);
     }
 
     public class MyWebViewClient extends WebViewClient{
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
+            progressBar.setVisibility(View.VISIBLE);
+            webView.setVisibility(View.INVISIBLE);
             Log.e("123","onPagedStarted");
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+            progressBar.setVisibility(View.INVISIBLE);
+            webView.setVisibility(View.VISIBLE);
+//            MediaPlayer mediaPlayer;
+//            mediaPlayer=MediaPlayer.create(Activity_video_call.this,R.raw.callingsound);
+//            mediaPlayer.start();
+
             Log.e("123","onPagedFinished");
         }
 

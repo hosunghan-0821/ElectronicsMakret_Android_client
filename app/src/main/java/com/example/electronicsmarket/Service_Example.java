@@ -457,7 +457,9 @@ public class Service_Example extends Service {
             RequestBody typeRequest, memberRequest, messageRequest, postRequest,senderRequest;
 
             RetrofitService service = retrofit.create(RetrofitService.class);
-
+            if(type==-1){
+                return;
+            }
             switch (type) {
                 case 0:
                     typeRequest = RequestBody.create(MediaType.parse("text/plain"), "0");
@@ -555,7 +557,9 @@ public class Service_Example extends Service {
                         out.println(jsonObject.toString());
                         Log.e("123", "위치확인4");
 
-                    } else if (purpose.equals("sendNotification")) {
+                    }
+                    //개별알림 보내기
+                    else if (purpose.equals("sendNotification")) {
                         Log.e("123", "writeThread message :" + message);
                         saveNotification();
                         JSONObject jsonObject = new JSONObject();
@@ -843,6 +847,12 @@ public class Service_Example extends Service {
                 firstBackStackIntent.putExtra("boughtList", "boughtList");
                 Intent backStackIntent = stackBuilder.editIntentAt(0);
                 backStackIntent.putExtra("mypageFragment", "mypageFragment");
+            }
+            else if(type ==-1){
+                Intent intent = new Intent(Service_Example.this,Activity_video_call.class);
+                intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                return;
             }
             else if (type == 1) {
                 notifyIntent = new Intent(Service_Example.this, Activity_writer_review_collect.class);
