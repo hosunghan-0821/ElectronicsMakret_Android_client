@@ -25,7 +25,7 @@ public class Activity_video_call extends AppCompatActivity {
     private String otherUserNickname,roomNum;
     private String position;
     private WebSettings mWebSettings;
-    private String serverURL = "https://f484-219-248-76-133.ngrok.io";
+    private String serverURL = "https://05b1-1-227-215-212.ngrok.io";
     private ProgressBar progressBar;
 
 
