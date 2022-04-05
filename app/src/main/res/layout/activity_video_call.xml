@@ -37,7 +37,8 @@
             </WebView>
 
             <ImageView
-                android:id="@+id/imageView12"
+                android:visibility="invisible"
+                android:id="@+id/video_call_camera_off"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_marginStart="50dp"
@@ -56,25 +57,28 @@
                 android:text="수산자 : 닉네임 \n 연결 대기중입니다."
                 android:textColor="@color/black"
                 android:textSize="25dp"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toTopOf="@+id/video_call_progressbar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/imageView10"
+                android:visibility="invisible"
+                android:id="@+id/video_call_mic_off"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_marginTop="70dp"
                 android:background="@drawable/background_round"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/video_call_cancel1"
-                app:layout_constraintStart_toEndOf="@+id/imageView12"
+                app:layout_constraintEnd_toStartOf="@+id/video_call_cancel"
+                app:layout_constraintStart_toEndOf="@+id/video_call_camera_off"
                 app:layout_constraintTop_toBottomOf="@+id/video_call_progressbar"
                 app:srcCompat="@drawable/ic_baseline_mic_off_24" />
 
             <ImageView
-                android:id="@+id/video_call_cancel1"
+                android:visibility="invisible"
+                android:id="@+id/video_call_cancel"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_marginTop="70dp"
@@ -86,7 +90,8 @@
                 app:srcCompat="@drawable/ic_baseline_call_end_24" />
 
             <ImageView
-                android:id="@+id/imageView13"
+                android:visibility="invisible"
+                android:id="@+id/video_call_camera_swap"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="30dp"
@@ -94,6 +99,32 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_baseline_flip_camera_android_24" />
+
+            <ImageView
+                android:visibility="invisible"
+                android:id="@+id/video_call_callee_cancel"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="70dp"
+                android:background="@drawable/background_round_red"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/video_call_callee_accept"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/video_call_progressbar"
+                app:srcCompat="@drawable/ic_baseline_call_end_24" />
+
+            <ImageView
+                android:visibility="invisible"
+                android:id="@+id/video_call_callee_accept"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="70dp"
+                android:background="@drawable/background_round_green"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/video_call_mic_off"
+                app:layout_constraintTop_toBottomOf="@+id/video_call_progressbar"
+                app:srcCompat="@drawable/ic_baseline_call_24" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>

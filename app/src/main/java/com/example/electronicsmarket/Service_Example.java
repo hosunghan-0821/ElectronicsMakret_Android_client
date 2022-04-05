@@ -121,7 +121,10 @@ public class Service_Example extends Service {
                     String message = intent.getStringExtra("message");
                     writeThread writeThread = new writeThread(message, "sendImage");
                     writeThread.start();
-                } else if (purpose.equals("sendNotification")) {
+
+                }
+                //개별알람 보낼때,
+                else if (purpose.equals("sendNotification")) {
                     int type = intent.getIntExtra("type", -1);
                     String message = intent.getStringExtra("message");
                     String postNum = intent.getStringExtra("postNum");
@@ -850,6 +853,8 @@ public class Service_Example extends Service {
             }
             else if(type ==-1){
                 Intent intent = new Intent(Service_Example.this,Activity_video_call.class);
+                intent.putExtra("roomNum",postNum);
+                intent.putExtra("sendToNickname",message);
                 intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 return;

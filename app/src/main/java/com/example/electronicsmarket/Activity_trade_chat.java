@@ -234,11 +234,12 @@ public class Activity_trade_chat extends AppCompatActivity {
                         intent.putExtra("position","caller");
                         startActivity(intent);
 
-                        Intent sendAlarmintent = new Intent("chatDataToServer");
-                        sendAlarmintent.putExtra("purpose", "sendNotification");
-                        sendAlarmintent.putExtra("message", "영상통화");
-                        sendAlarmintent.putExtra("sendToNickname", otherUserNickname);
-                        LocalBroadcastManager.getInstance(Activity_trade_chat.this).sendBroadcast(sendAlarmintent);
+//                        Intent sendAlarmintent = new Intent("chatDataToServer");
+//                        sendAlarmintent.putExtra("purpose", "sendNotification");
+//                        sendAlarmintent.putExtra("message", nickName);
+//                        sendAlarmintent.putExtra("postNum",roomNum);
+//                        sendAlarmintent.putExtra("sendToNickname", otherUserNickname);
+//                        LocalBroadcastManager.getInstance(Activity_trade_chat.this).sendBroadcast(sendAlarmintent);
 
                         dialog.dismiss();
                     }
@@ -280,6 +281,7 @@ public class Activity_trade_chat extends AppCompatActivity {
             buyer = intent.getStringExtra("buyer");
         } else {
             roomNum = intent.getStringExtra("roomNum");
+            Log.e("123","roomNum : "+roomNum);
         }
         activity_trade_chat = Activity_trade_chat.this;
 
