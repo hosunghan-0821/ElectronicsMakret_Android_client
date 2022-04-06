@@ -5,130 +5,152 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activity_video_call">
-    <FrameLayout
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/video_call_status_bar">
+
+        <ProgressBar
+            android:id="@+id/video_call_progressbar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <WebView
+            android:id="@+id/video_call_webview"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </WebView>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/video_call_constraint"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ProgressBar
-                android:id="@+id/video_call_progressbar"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <WebView
-                android:id="@+id/video_call_webview"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-            </WebView>
-
-            <ImageView
-                android:visibility="invisible"
-                android:id="@+id/video_call_camera_off"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_marginStart="50dp"
-                android:layout_marginTop="70dp"
-                android:background="@drawable/background_round"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/video_call_progressbar"
-                app:srcCompat="@drawable/ic_baseline_videocam_off_24" />
-
-            <TextView
-                android:id="@+id/video_call_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="수산자 : 닉네임 \n 연결 대기중입니다."
-                android:textColor="@color/black"
-                android:textSize="25dp"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toTopOf="@+id/video_call_progressbar"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:visibility="invisible"
-                android:id="@+id/video_call_mic_off"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_marginTop="70dp"
-                android:background="@drawable/background_round"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/video_call_cancel"
-                app:layout_constraintStart_toEndOf="@+id/video_call_camera_off"
-                app:layout_constraintTop_toBottomOf="@+id/video_call_progressbar"
-                app:srcCompat="@drawable/ic_baseline_mic_off_24" />
-
-            <ImageView
-                android:visibility="invisible"
-                android:id="@+id/video_call_cancel"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_marginTop="70dp"
-                android:layout_marginEnd="50dp"
-                android:background="@drawable/background_round_red"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/video_call_progressbar"
-                app:srcCompat="@drawable/ic_baseline_call_end_24" />
-
-            <ImageView
-                android:visibility="invisible"
-                android:id="@+id/video_call_camera_swap"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="30dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_baseline_flip_camera_android_24" />
-
-            <ImageView
-                android:visibility="invisible"
-                android:id="@+id/video_call_callee_cancel"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_marginTop="70dp"
-                android:background="@drawable/background_round_red"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/video_call_callee_accept"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/video_call_progressbar"
-                app:srcCompat="@drawable/ic_baseline_call_end_24" />
-
-            <ImageView
-                android:visibility="invisible"
-                android:id="@+id/video_call_callee_accept"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_marginTop="70dp"
-                android:background="@drawable/background_round_green"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/video_call_mic_off"
-                app:layout_constraintTop_toBottomOf="@+id/video_call_progressbar"
-                app:srcCompat="@drawable/ic_baseline_call_24" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </FrameLayout>
+
+        <ImageView
+            android:id="@+id/video_call_camera_off"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="70dp"
+            android:background="@drawable/background_round"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/video_call_progressbar"
+            app:srcCompat="@drawable/ic_baseline_videocam_on_24" />
 
 
+        <TextView
+            android:id="@+id/video_call_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="수산자 : 닉네임 \n 연결 대기중입니다."
+            android:textColor="@color/black"
+            android:textSize="25dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/video_call_progressbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/video_call_mic_off"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="70dp"
+            android:background="@drawable/background_round"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/video_call_cancel"
+            app:layout_constraintStart_toEndOf="@+id/video_call_camera_off"
+            app:layout_constraintTop_toBottomOf="@+id/video_call_progressbar"
+            app:srcCompat="@drawable/ic_baseline_mic_on_24" />
+
+        <ImageView
+            android:id="@+id/video_call_cancel"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="70dp"
+            android:layout_marginEnd="50dp"
+            android:background="@drawable/background_round_red"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/video_call_progressbar"
+            app:srcCompat="@drawable/ic_baseline_call_end_24" />
+
+        <ImageView
+            android:id="@+id/video_call_camera_swap"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="30dp"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_baseline_flip_camera_android_24" />
+
+        <ImageView
+            android:id="@+id/video_call_callee_cancel"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="70dp"
+            android:background="@drawable/background_round_red"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/video_call_callee_accept"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/video_call_progressbar"
+            app:srcCompat="@drawable/ic_baseline_call_end_24" />
+
+        <ImageView
+            android:id="@+id/video_call_callee_accept"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="70dp"
+            android:background="@drawable/background_round_green"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/video_call_mic_off"
+            app:layout_constraintTop_toBottomOf="@+id/video_call_progressbar"
+            app:srcCompat="@drawable/ic_baseline_call_24" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/video_call_status_bar"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:textStyle="bold"
+        android:background="#808080"
+        android:visibility="gone"
+        android:textSize="15dp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

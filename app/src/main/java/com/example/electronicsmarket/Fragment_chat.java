@@ -64,17 +64,20 @@ public class Fragment_chat extends Fragment {
             String purpose = intent.getStringExtra("purpose");
             Message msg = new Message();
             Bundle bundle = new Bundle();
-            if (purpose.equals("reloadRoomList")) {
-                String readValue = intent.getStringExtra("message");
-                //만약 알림이 왔을 떄, 데이터 reload 할 경우라 하나하나 데이터 가져올 때랑 비교좀 해보자.
-                bundle.putString("purpose","reloadRoomList");
-                bundle.putString("message", readValue);
-                msg.setData(bundle);
-                handler.sendMessage(msg);
-            } else if (purpose.equals("reloadAlarmImage")) {
-                bundle.putString("purpose","reloadAlarmImage");
-                msg.setData(bundle);
-                handler.sendMessage(msg);
+            if(purpose!=null){
+                if (purpose.equals("reloadRoomList")) {
+                    String readValue = intent.getStringExtra("message");
+                    //만약 알림이 왔을 떄, 데이터 reload 할 경우라 하나하나 데이터 가져올 때랑 비교좀 해보자.
+                    bundle.putString("purpose","reloadRoomList");
+                    bundle.putString("message", readValue);
+                    msg.setData(bundle);
+                    handler.sendMessage(msg);
+                } else if (purpose.equals("reloadAlarmImage")) {
+                    bundle.putString("purpose","reloadAlarmImage");
+                    msg.setData(bundle);
+                    handler.sendMessage(msg);
+                }
+
             }
 
         }
