@@ -36,6 +36,7 @@ import java.util.ArrayList;
 
 public class Activity_main_home extends AppCompatActivity {
 
+    public static Activity_main_home activity_main_home =null;
     private BottomNavigationView bottomNavigationView;
     private String nickName;
     private TextView networkText;
@@ -58,12 +59,22 @@ public class Activity_main_home extends AppCompatActivity {
         }
     };
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.e("123","on NewIntent");
+        boolean k_f = intent.getBooleanExtra("kill", false);
+        if(k_f == true){
+            finish();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_home);
 
+        activity_main_home=this;
         variableInit();
         Intent intent = getIntent();
 

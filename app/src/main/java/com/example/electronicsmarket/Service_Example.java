@@ -448,7 +448,7 @@ public class Service_Example extends Service {
         public void saveNotification() {
 
 
-            Log.e("123","saveNotification () :");
+            Log.e("123", "saveNotification () :");
             Gson gson = new GsonBuilder()
                     .setLenient()
                     .create();
@@ -457,10 +457,10 @@ public class Service_Example extends Service {
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
             HashMap<String, RequestBody> notificationHashMap = new HashMap<>();
-            RequestBody typeRequest, memberRequest, messageRequest, postRequest,senderRequest;
+            RequestBody typeRequest, memberRequest, messageRequest, postRequest, senderRequest;
 
             RetrofitService service = retrofit.create(RetrofitService.class);
-            if(type==-1){
+            if (type == -1 || type == -2) {
                 return;
             }
             switch (type) {
@@ -471,11 +471,11 @@ public class Service_Example extends Service {
                     postRequest = RequestBody.create(MediaType.parse("text/plain"), postNum);
                     senderRequest = RequestBody.create(MediaType.parse("text/plain"), nickname);
 
-                    notificationHashMap.put("type",typeRequest);
-                    notificationHashMap.put("sendToNickname",memberRequest);
-                    notificationHashMap.put("message",messageRequest);
-                    notificationHashMap.put("postNum",postRequest);
-                    notificationHashMap.put("sender",  senderRequest);
+                    notificationHashMap.put("type", typeRequest);
+                    notificationHashMap.put("sendToNickname", memberRequest);
+                    notificationHashMap.put("message", messageRequest);
+                    notificationHashMap.put("postNum", postRequest);
+                    notificationHashMap.put("sender", senderRequest);
                     break;
                 case 1:
 
@@ -484,24 +484,24 @@ public class Service_Example extends Service {
                     messageRequest = RequestBody.create(MediaType.parse("text/plain"), message);
                     senderRequest = RequestBody.create(MediaType.parse("text/plain"), nickname);
 
-                    notificationHashMap.put("type",typeRequest);
-                    notificationHashMap.put("sendToNickname",memberRequest);
-                    notificationHashMap.put("message",messageRequest);
-                    notificationHashMap.put("sender",  senderRequest);
+                    notificationHashMap.put("type", typeRequest);
+                    notificationHashMap.put("sendToNickname", memberRequest);
+                    notificationHashMap.put("message", messageRequest);
+                    notificationHashMap.put("sender", senderRequest);
 
                     break;
-                case 2 :
+                case 2:
                     typeRequest = RequestBody.create(MediaType.parse("text/plain"), "2");
                     memberRequest = RequestBody.create(MediaType.parse("text/plain"), sendToNickname);
                     messageRequest = RequestBody.create(MediaType.parse("text/plain"), message);
                     postRequest = RequestBody.create(MediaType.parse("text/plain"), postNum);
                     senderRequest = RequestBody.create(MediaType.parse("text/plain"), nickname);
 
-                    notificationHashMap.put("type",typeRequest);
-                    notificationHashMap.put("sendToNickname",memberRequest);
-                    notificationHashMap.put("message",messageRequest);
-                    notificationHashMap.put("postNum",postRequest);
-                    notificationHashMap.put("sender",  senderRequest);
+                    notificationHashMap.put("type", typeRequest);
+                    notificationHashMap.put("sendToNickname", memberRequest);
+                    notificationHashMap.put("message", messageRequest);
+                    notificationHashMap.put("postNum", postRequest);
+                    notificationHashMap.put("sender", senderRequest);
                     break;
 
 
@@ -850,16 +850,21 @@ public class Service_Example extends Service {
                 firstBackStackIntent.putExtra("boughtList", "boughtList");
                 Intent backStackIntent = stackBuilder.editIntentAt(0);
                 backStackIntent.putExtra("mypageFragment", "mypageFragment");
-            }
-            else if(type ==-1){
-                Intent intent = new Intent(Service_Example.this,Activity_video_call.class);
-                intent.putExtra("roomNum",postNum);
-                intent.putExtra("sendToNickname",message);
+            } else if (type == -1) {
+                Intent intent = new Intent(Service_Example.this, Activity_video_call.class);
+                intent.putExtra("roomNum", postNum);
+                intent.putExtra("sendToNickname", message);
                 intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 return;
-            }
-            else if (type == 1) {
+            } else if (type == -2) {
+                Intent intent = new Intent("videoCall");
+                intent.putExtra("purpose", "disconnect");
+                intent.putExtra("otherUserNickname", message);
+                LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
+                return;
+
+            } else if (type == 1) {
                 notifyIntent = new Intent(Service_Example.this, Activity_writer_review_collect.class);
                 title = "거래후기 알림";
                 notifyIntent.putExtra("email", email);
@@ -868,12 +873,11 @@ public class Service_Example extends Service {
                 stackBuilder.addNextIntentWithParentStack(notifyIntent);
                 Intent backStackIntent = stackBuilder.editIntentAt(0);
                 backStackIntent.putExtra("mypageFragment", "mypageFragment");
-            }
-            else if(type==2){
-                notifyIntent = new Intent(Service_Example.this,Activity_post_read.class );
+            } else if (type == 2) {
+                notifyIntent = new Intent(Service_Example.this, Activity_post_read.class);
                 title = "좋아요 알림";
                 notifyIntent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-                notifyIntent.putExtra("postNum",postNum);
+                notifyIntent.putExtra("postNum", postNum);
                 stackBuilder.addNextIntentWithParentStack(notifyIntent);
 //                Intent backStackIntent = stackBuilder.editIntentAt(0);
 //                backStackIntent.putExtra("mypageFragment", "mypageFragment");
@@ -881,7 +885,7 @@ public class Service_Example extends Service {
             Intent intent = new Intent("reloadRoomList");
             intent.putExtra("purpose", "reloadAlarmImage");
             LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
-            Intent mainHomeIntent = new Intent ("homeReloadAlarm");
+            Intent mainHomeIntent = new Intent("homeReloadAlarm");
             mainHomeIntent.putExtra("purpose", "reloadAlarmImage");
             LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(mainHomeIntent);
             //Notification 만들기
