@@ -1,7 +1,6 @@
 package com.example.electronicsmarket;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -74,14 +71,32 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_chat_center, parent, false);
             CenterViewHolder centerViewHolder = new CenterViewHolder(view);
             return centerViewHolder;
-        } else if (viewType == 3) {
+        }
+        //내가 보낸 이미지일 경우
+        else if (viewType == 3) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_right_image, parent, false);
             RightImageViewHolder rightImageViewHolder = new RightImageViewHolder(view);
             return rightImageViewHolder;
-        }else if(viewType==4){
+        }
+        //상대방이 보낸 이미지일 경우
+        else if(viewType==4){
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_left_image, parent, false);
             LeftImageViewHolder leftImageViewHolder = new LeftImageViewHolder(view);
             return leftImageViewHolder;
+        }
+        //내가 건 영상통화 일 경우
+        else if(viewType==5){
+            View view=LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_call_right,parent,false);
+            RightCallViewHolder rightCallViewHolder=new RightCallViewHolder(view);
+            return rightCallViewHolder;
+        }
+        //상대방이 건 영상통화 일 경우
+        else if(viewType==6){
+
+            View view=LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_call_left,parent,false);
+            LeftCallViewHolder leftCallViewHolder = new LeftCallViewHolder(view);
+            return leftCallViewHolder;
+
         }
 
         return null;
@@ -92,6 +107,7 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 
         if (holder instanceof LeftViewHolder) {
+
             ((LeftViewHolder) holder).chatText.setText(chatList.get(position).getChat());
             ((LeftViewHolder) holder).nickname.setText(chatList.get(position).getNickname());
             //시간 가공
@@ -103,6 +119,7 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
             } else {
                 Glide.with(context).load(chatList.get(position).getProfileImageRoute()).into(((LeftViewHolder) holder).profileImage);
             }
+
         } else if (holder instanceof RightViewHolder) {
 
             //네트워크 연결 상태에 문제가 존재하지 않을 경우
@@ -136,7 +153,6 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
                 }
 
             }
-
 
         } else if (holder instanceof CenterViewHolder) {
             ((CenterViewHolder) holder).chatDate.setText(chatList.get(position).getChat());
@@ -185,7 +201,34 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
             //시간 가공
             ((LeftImageViewHolder) holder).chatTime.setText(chatList.get(position).getChatTime());
             //상대방 회원 프로필 사진
+        }
+        //내가 보낸 영상통화일 경우
+        else if (holder instanceof  RightCallViewHolder){
 
+            if (chatList.get(position).getIsReadChat().equals("0")) {
+                ((RightCallViewHolder) holder).chatRead.setText("1");
+            } else {
+                ((RightCallViewHolder) holder).chatRead.setText("");
+            }
+
+            //텍스트 가공
+            ((RightCallViewHolder) holder).chatText.setText(chatList.get(position).getChat());
+            //시간 가공
+            ((RightCallViewHolder) holder).chatTime.setText(chatList.get(position).getChatTime());
+        }
+        else if (holder instanceof  LeftCallViewHolder){
+
+            (( LeftCallViewHolder) holder).chatText.setText(chatList.get(position).getChat());
+            (( LeftCallViewHolder) holder).nickname.setText(chatList.get(position).getNickname());
+            //시간 가공
+            (( LeftCallViewHolder) holder).chatTime.setText(chatList.get(position).getChatTime());
+            //상대방 회원 프로필 사진
+
+            if (chatList.get(position).getProfileImageRoute() == null) {
+                (( LeftCallViewHolder) holder).profileImage.setImageResource(R.drawable.ic_baseline_person_black);
+            } else {
+                Glide.with(context).load(chatList.get(position).getProfileImageRoute()).into((( LeftCallViewHolder) holder).profileImage);
+            }
         }
     }
 
@@ -197,6 +240,37 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public int getItemViewType(int position) {
         return chatList.get(position).getViewType();
+    }
+
+    public class RightCallViewHolder extends RecyclerView.ViewHolder{
+
+        protected ImageView callImage;
+        protected TextView chatText,chatTime,chatRead;
+
+        public RightCallViewHolder(@NonNull View itemView) {
+            super(itemView);
+            callImage =itemView.findViewById(R.id.call_right_image);
+            chatText=itemView.findViewById(R.id.call_right_text);
+            chatTime=itemView.findViewById(R.id.call_right_time);
+            chatRead=itemView.findViewById(R.id.call_right_read);
+        }
+    }
+
+    public class LeftCallViewHolder extends RecyclerView.ViewHolder{
+
+        protected  CircleImageView profileImage;
+        protected  TextView chatText,chatTime,nickname;
+        protected  ImageView callImage;
+
+        public LeftCallViewHolder(@NonNull View itemView) {
+            super(itemView);
+            profileImage=itemView.findViewById(R.id.call_left_profile_image);
+            chatText=itemView.findViewById(R.id.call_left_text);
+            chatTime=itemView.findViewById(R.id.call_left_time);
+            nickname=itemView.findViewById(R.id.call_left_nickname);
+            callImage=itemView.findViewById(R.id.call_left_image);
+
+        }
     }
 
     public class LeftViewHolder extends RecyclerView.ViewHolder {

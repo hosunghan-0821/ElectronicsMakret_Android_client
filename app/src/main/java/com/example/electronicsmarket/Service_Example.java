@@ -112,9 +112,24 @@ public class Service_Example extends Service {
                 else if (purpose.equals("send")) {
 
                     String message = intent.getStringExtra("message");
+                    String call = intent.getStringExtra("callPurpose");
+                    String roomNum= intent.getStringExtra("roomNum");
+                    String caller = intent.getStringExtra("caller");
+
+                    Log.e("123","callPurpose : "+ call);
                     Log.e("123", "onReceive message :" + message);
-                    writeThread writeThread = new writeThread(message, "send");
-                    writeThread.start();
+                    if(call==null){
+                        writeThread writeThread = new writeThread(message, "send");
+                        writeThread.start();
+                    }
+                    else if (call.equals("call")){
+                        writeThread writeThread = new writeThread(roomNum,"",message,"send","call");
+                        writeThread.start();
+                    }else if(call.equals("result")){
+                        writeThread writeThread = new writeThread(roomNum,"",message,"send","result",caller);
+                        writeThread.start();
+                    }
+
                 }
                 //서버로 보내는 목적이 이미지 경로일 경우;
                 else if (purpose.equals("sendImage")) {
@@ -419,6 +434,8 @@ public class Service_Example extends Service {
         private String sendToNickname, postNum;
         private int type;
         private Retrofit retrofit;
+        private String stringMessageType;
+        private String caller;
 
 
         public writeThread(String roomNum, String otherUserNickname, String message, String purpose) {
@@ -426,6 +443,27 @@ public class Service_Example extends Service {
             this.otherUserNickname = otherUserNickname;
             this.message = message;
             this.purpose = purpose;
+        }
+        public writeThread(String roomNum, String otherUserNickname, String message, String purpose,String stringMessageType) {
+            this.roomNum = roomNum;
+            this.otherUserNickname = otherUserNickname;
+            this.message = message;
+            this.purpose = purpose;
+            this.stringMessageType=stringMessageType;
+        }
+        public writeThread(String roomNum, String otherUserNickname, String message, String purpose,String stringMessageType,String caller) {
+            this.roomNum = roomNum;
+            this.otherUserNickname = otherUserNickname;
+            this.message = message;
+            this.purpose = purpose;
+            this.stringMessageType=stringMessageType;
+            this.caller=caller;
+        }
+
+        public writeThread(String message, String purpose, String stringMessageType) {
+            this.message = message;
+            this.purpose = purpose;
+            this.stringMessageType = stringMessageType;
         }
 
         public writeThread(String readValue) {
@@ -544,12 +582,51 @@ public class Service_Example extends Service {
                     }
                     //채팅방 채팅 보내기
                     else if (purpose.equals("send")) {
-                        Log.e("123", "writeThread message :" + message);
-                        JSONObject jsonObject = new JSONObject();
-                        message = message.replace("\n", CHANGE_LINE_CHAR);
-                        jsonObject.put("message", message);
-                        jsonObject.put("purpose", "send");
-                        out.println(jsonObject.toString());
+
+                        if(stringMessageType==null){
+
+                            Log.e("123","일반텍스트 보내기 ");
+
+                            Log.e("123", "writeThread message :" + message);
+                            JSONObject jsonObject = new JSONObject();
+                            message = message.replace("\n", CHANGE_LINE_CHAR);
+                            jsonObject.put("message", message);
+                            jsonObject.put("purpose", "send");
+                            out.println(jsonObject.toString());
+                        }
+
+                        //기본 영상통화 내용 보내기
+                        else if(stringMessageType.equals("call")){
+
+                            Log.e("123","영상통화 시작채팅 보내기");
+
+                            JSONObject jsonObject = new JSONObject();
+                            message = message.replace("\n", CHANGE_LINE_CHAR);
+
+
+                            jsonObject.put("roomNum",roomNum);
+                            jsonObject.put("message", message);
+                            jsonObject.put("purpose", "send");
+                            jsonObject.put("callPurpose","call");
+                            out.println(jsonObject.toString());
+                        }
+                        //영상통화 결과 보내기기
+                        else if(stringMessageType.equals("result")){
+
+                            Log.e("123","영상통화 결과채팅 보내기");
+
+                            JSONObject jsonObject = new JSONObject();
+                            message = message.replace("\n", CHANGE_LINE_CHAR);
+
+                            jsonObject.put("caller",caller);
+                            jsonObject.put("roomNum",roomNum);
+                            jsonObject.put("message", message);
+                            jsonObject.put("purpose", "send");
+                            jsonObject.put("callPurpose","result");
+                            out.println(jsonObject.toString());
+
+                        }
+
                     }
                     //채팅방 이미지 보내기
                     else if (purpose.equals("sendImage")) {
@@ -563,6 +640,7 @@ public class Service_Example extends Service {
                     }
                     //개별알림 보내기
                     else if (purpose.equals("sendNotification")) {
+                        Log.e("123","개별알람 보내기 ");
                         Log.e("123", "writeThread message :" + message);
                         saveNotification();
                         JSONObject jsonObject = new JSONObject();
@@ -624,6 +702,7 @@ public class Service_Example extends Service {
                     String writer = null;
                     String message = null;
                     String notice = null;
+                    String type = null;
 
                     //서버로부터 오는 데이터 받아서 상황에 맞게 처리
                     JSONObject jsonObject = new JSONObject(readValue);
@@ -632,12 +711,13 @@ public class Service_Example extends Service {
                         notice = jsonObject.getString("notice");
                         writer = jsonObject.getString("writer");
                         message = jsonObject.getString("message");
+                        type=jsonObject.getString("type");
                     } catch (Exception e) {
                     }
+
                     //채팅방 명수 정보 받기. 방 맨처음 들어왔을 경우
                     if (jsonObject.getString("notice").equals("인원체크")) {
                         JSONArray jsonArray = jsonObject.getJSONArray("nickname");
-
 
                         Log.e("123", "jsonArray : " + jsonArray);
                         ArrayList<String> roomUsers = new ArrayList<>();
@@ -713,15 +793,23 @@ public class Service_Example extends Service {
                             //알림끄기 기능 확인해서 해당 채팅방에 대해서는 알림 보내지 않기
                             boolean alarmCheck = false;
                             for (int i = 0; i < getNoAlarmRoomArrayList().size(); i++) {
+
                                 if (getNoAlarmRoomArrayList().get(i) != null) {
+
                                     if (getNoAlarmRoomArrayList().get(i).equals(notifyRoom)) {
                                         alarmCheck = true;
                                         break;
                                     }
+
                                 }
                             }
                             if (alarmCheck) {
                                 continue;
+                            }
+                            if(type!=null){
+                                if(type.equals("call")){
+                                    continue;
+                                }
                             }
 
                             //Notification 만들기
@@ -776,14 +864,21 @@ public class Service_Example extends Service {
                             e.printStackTrace();
                         }
                     } else if (notice.equals("채팅전송")) {
+
                         //알람처리가 안될 경우 (방에 둘다 있다는 뜻)
                         Intent intent = new Intent("chatData");
                         message = message.replace(CHANGE_LINE_CHAR, "\n");
                         //readValue = readValue.replace(CHANGE_LINE_CHAR, "\n");
-                        intent.putExtra("type", "text");
+                        if(type==null){
+                            intent.putExtra("type", "text");
+                        }
+                        else if(type.equals("call")){
+                            intent.putExtra("type", "call");
+                        }
                         intent.putExtra("writer", writer);
                         intent.putExtra("message", message);
                         LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
+
                     } else if (notice.equals("이미지전송")) {
                         Intent intent = new Intent("chatData");
                         intent.putExtra("type", "image");
