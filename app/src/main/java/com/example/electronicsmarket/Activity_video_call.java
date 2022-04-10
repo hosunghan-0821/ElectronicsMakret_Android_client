@@ -59,6 +59,7 @@ public class Activity_video_call extends AppCompatActivity {
     private Thread thread;
     private AudioManager audioManager;
     private Vibrator vibrator;
+    private boolean cutterState = false;
 
     private BroadcastReceiver dataReceiver = new BroadcastReceiver() {
         @Override
@@ -99,14 +100,14 @@ public class Activity_video_call extends AppCompatActivity {
         public void callOtherUser() {
             if (position.equals("caller")) {
 
-                //서버로 넘겨서 날려야겟네.
-                Intent intent = new Intent("chatDataToServer");
-                intent.putExtra("purpose", "send");
-                intent.putExtra("message", "영상통화");
-                intent.putExtra("callPurpose", "call");
-                intent.putExtra("otherUserNickname", otherUserNickname);
-                intent.putExtra("roomNum", roomNum);
-                LocalBroadcastManager.getInstance(Activity_video_call.this).sendBroadcast(intent);
+//                //서버로 넘겨서 날려야겟네.
+//                Intent intent = new Intent("chatDataToServer");
+//                intent.putExtra("purpose", "send");
+//                intent.putExtra("message", "영상통화");
+//                intent.putExtra("callPurpose", "call");
+//                intent.putExtra("otherUserNickname", otherUserNickname);
+//                intent.putExtra("roomNum", roomNum);
+//                LocalBroadcastManager.getInstance(Activity_video_call.this).sendBroadcast(intent);
 
                 Intent sendAlarmintent = new Intent("chatDataToServer");
                 sendAlarmintent.putExtra("purpose", "sendNotification");
@@ -122,12 +123,16 @@ public class Activity_video_call extends AppCompatActivity {
                 msg.setData(bundle);
                 handler.sendMessage(msg);
 
+                cutterState = true;
+
             } else if (position.equals("callee")) {
                 Message msg = new Message();
                 Bundle bundle = new Bundle();
                 bundle.putString("purpose", "socketConnect");
                 msg.setData(bundle);
                 handler.sendMessage(msg);
+
+                cutterState = true;
 
             }
         }
@@ -317,13 +322,10 @@ public class Activity_video_call extends AppCompatActivity {
                 } else if (purpose.equals("socketConnect")) {
 
                     //벨소리시작
-
                     if (position.equals("caller")) {
                         mediaPlayer.start();
                         callStatusBar.setText("\" " + otherUserNickname + " \" 님에게 연결 대기중입니다.");
                     } else if (position.equals("callee")) {
-
-
                         callStatusBar.setText("\" " + otherUserNickname + " \" 님으로 부터 영상통화 요청이 왔습니다.");
 
                     }
@@ -586,52 +588,102 @@ public class Activity_video_call extends AppCompatActivity {
     public void callFinish(boolean cutter) {
 
         //nullPointer exception 방지.
-        if(cutter){
+        if (cutter) {
 
-            Log.e("123","전화끊은 사람 : "+nickname);
-            //tcp 서버로 데이터 전송
-            Intent resultIntent = new Intent("chatDataToServer");
-            resultIntent.putExtra("purpose", "send");
-            resultIntent.putExtra("callPurpose", "result");
-            resultIntent.putExtra("roomNum", roomNum);
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.e("123", "전화끊은 사람 : " + nickname);
+                    //tcp 서버로 데이터 전송
+                    Intent resultIntent = new Intent("chatDataToServer");
+                    resultIntent.putExtra("purpose", "send");
+                    resultIntent.putExtra("callPurpose", "result");
+                    resultIntent.putExtra("roomNum", roomNum);
 
-            //전화 끊은 사람이 통화 건 사람일 경우, (caller)
-            if(position.equals("caller")){
+                    //전화 끊은 사람이 통화 건 사람일 경우, (caller)
+                    if (position.equals("caller")) {
 
-                //통화건사람 정보를 전달해주야 그 사람 이름으로 db에 저장
-                resultIntent.putExtra("caller",nickname);
+                        //통화건사람 정보를 전달해주야 그 사람 이름으로 db에 저장
+                        resultIntent.putExtra("caller", nickname);
 
-                if (timeToString != null) {
-                    //통화 진행 x
-                    if (timeToString.equals("")) {
-                        resultIntent.putExtra("message", "응답없음1");
+                        if (timeToString != null) {
+                            //통화 진행 x
+                            if (timeToString.equals("")) {
+                                resultIntent.putExtra("message", "응답없음1");
+                            }
+                            //통화 진행
+                            else {
+                                Log.e("123", "통화진행시간 : " + timeToString);
+                                resultIntent.putExtra("message", timeToString);
+                            }
+                        }
                     }
-                    //통화 진행
+                    //전화 끊은 사람이 통화를 받은 사람일 경우 (callee)
                     else {
-                        Log.e("123", "통화진행시간 : " +  timeToString);
-                        resultIntent.putExtra("message",  timeToString);
-                    }
-                }
-            }
-            //전화 끊은 사람이 통화를 받은 사람일 경우 (callee)
-            else{
-                Log.e("123","전화건 사람 : " +otherUserNickname);
-                resultIntent.putExtra("caller",otherUserNickname);
+                        Log.e("123", "전화건 사람 : " + otherUserNickname);
+                        resultIntent.putExtra("caller", otherUserNickname);
 
-                if (timeToString != null) {
-                    //통화 진행 x
-                    if (timeToString.equals("")) {
-                        resultIntent.putExtra("message", "응답없음2");
-                    }
-                    //통화 진행
-                    else {
-                        Log.e("123", "통화진행시간 : " +  timeToString);
-                        resultIntent.putExtra("message",  timeToString);
-                    }
-                }
+                        if (timeToString != null) {
+                            //통화 진행 x
+                            if (timeToString.equals("")) {
+                                resultIntent.putExtra("message", "응답없음2");
+                            }
+                            //통화 진행
+                            else {
+                                Log.e("123", "통화진행시간 : " + timeToString);
+                                resultIntent.putExtra("message", timeToString);
+                            }
+                        }
 
-            }
-            LocalBroadcastManager.getInstance(Activity_video_call.this).sendBroadcast(resultIntent);
+                    }
+                    LocalBroadcastManager.getInstance(Activity_video_call.this).sendBroadcast(resultIntent);
+                }
+            });
+            thread.start();
+//            Log.e("123", "전화끊은 사람 : " + nickname);
+//            //tcp 서버로 데이터 전송
+//            Intent resultIntent = new Intent("chatDataToServer");
+//            resultIntent.putExtra("purpose", "send");
+//            resultIntent.putExtra("callPurpose", "result");
+//            resultIntent.putExtra("roomNum", roomNum);
+//
+//            //전화 끊은 사람이 통화 건 사람일 경우, (caller)
+//            if (position.equals("caller")) {
+//
+//                //통화건사람 정보를 전달해주야 그 사람 이름으로 db에 저장
+//                resultIntent.putExtra("caller", nickname);
+//
+//                if (timeToString != null) {
+//                    //통화 진행 x
+//                    if (timeToString.equals("")) {
+//                        resultIntent.putExtra("message", "응답없음1");
+//                    }
+//                    //통화 진행
+//                    else {
+//                        Log.e("123", "통화진행시간 : " + timeToString);
+//                        resultIntent.putExtra("message", timeToString);
+//                    }
+//                }
+//            }
+//            //전화 끊은 사람이 통화를 받은 사람일 경우 (callee)
+//            else {
+//                Log.e("123", "전화건 사람 : " + otherUserNickname);
+//                resultIntent.putExtra("caller", otherUserNickname);
+//
+//                if (timeToString != null) {
+//                    //통화 진행 x
+//                    if (timeToString.equals("")) {
+//                        resultIntent.putExtra("message", "응답없음2");
+//                    }
+//                    //통화 진행
+//                    else {
+//                        Log.e("123", "통화진행시간 : " + timeToString);
+//                        resultIntent.putExtra("message", timeToString);
+//                    }
+//                }
+//
+//            }
+//            LocalBroadcastManager.getInstance(Activity_video_call.this).sendBroadcast(resultIntent);
         }
         //벨소리 제거,진동
         releaseMediaPlayer();
@@ -683,7 +735,7 @@ public class Activity_video_call extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(dataReceiver);
-        Toast.makeText(getApplicationContext(), "영상통화가 종료되었습니다.", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "영상통화가 종료되었습니다.", Toast.LENGTH_SHORT).show();
     }
 
     public class MyWebViewClient extends WebViewClient {

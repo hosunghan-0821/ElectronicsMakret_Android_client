@@ -205,10 +205,19 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
         //내가 보낸 영상통화일 경우
         else if (holder instanceof  RightCallViewHolder){
 
+            //읽음 읽지 않음 처리
             if (chatList.get(position).getIsReadChat().equals("0")) {
                 ((RightCallViewHolder) holder).chatRead.setText("1");
             } else {
                 ((RightCallViewHolder) holder).chatRead.setText("");
+            }
+
+            //이미지 처리
+            if(chatList.get(position).getChat().equals("통화취소")||chatList.get(position).getChat().equals("응답없음")){
+                ((RightCallViewHolder) holder).callImage.setImageResource(R.drawable.ic_baseline_videocam_off_24);
+            }
+            else{
+                ((RightCallViewHolder) holder).callImage.setImageResource(R.drawable.ic_baseline_videocam_on_24);
             }
 
             //텍스트 가공
@@ -218,17 +227,26 @@ public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
         else if (holder instanceof  LeftCallViewHolder){
 
+            //영상통화 상태 및 회원 닉네임
             (( LeftCallViewHolder) holder).chatText.setText(chatList.get(position).getChat());
             (( LeftCallViewHolder) holder).nickname.setText(chatList.get(position).getNickname());
             //시간 가공
             (( LeftCallViewHolder) holder).chatTime.setText(chatList.get(position).getChatTime());
             //상대방 회원 프로필 사진
-
             if (chatList.get(position).getProfileImageRoute() == null) {
                 (( LeftCallViewHolder) holder).profileImage.setImageResource(R.drawable.ic_baseline_person_black);
             } else {
                 Glide.with(context).load(chatList.get(position).getProfileImageRoute()).into((( LeftCallViewHolder) holder).profileImage);
             }
+            //이미지 처리
+            if(chatList.get(position).getChat().equals("통화취소")||chatList.get(position).getChat().equals("부재중")){
+                ((LeftCallViewHolder) holder).callImage.setImageResource(R.drawable.ic_baseline_videocam_off_24);
+            }
+            else{
+                ((LeftCallViewHolder) holder).callImage.setImageResource(R.drawable.ic_baseline_videocam_on_24);
+            }
+
+
         }
     }
 

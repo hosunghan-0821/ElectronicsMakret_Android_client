@@ -460,6 +460,13 @@ public class Activity_trade_chat extends AppCompatActivity {
                                             }
                                             //영상통화 관련
                                             else if (chatType.equals("call")) {
+
+                                                if(chatText.equals("응답없음1")){
+                                                    chatText="통화취소";
+                                                }
+                                                else if(chatText.equals("응답없음2")){
+                                                    chatText="응답없음";
+                                                }
                                                 chatList.add(0, new DataChat(chatText, 5, chatTime, writerNickname, isReadChat));
                                             }
                                         }
@@ -479,6 +486,14 @@ public class Activity_trade_chat extends AppCompatActivity {
                                             } else if (chatType.equals("image")) {
                                                 chatList.add(0, new DataChat(4, chatText, chatTime, writerNickname, otherUserImageRoute));
                                             } else if (chatType.equals("call")) {
+
+                                                if(chatText.equals("응답없음1")){
+                                                    chatText="부재중";
+                                                }
+                                                else if(chatText.equals("응답없음2")){
+                                                    chatText="통화취소";
+                                                }
+
                                                 chatList.add(0, new DataChat(6, chatText, chatTime, writerNickname, otherUserImageRoute));
                                             }
 
@@ -560,6 +575,14 @@ public class Activity_trade_chat extends AppCompatActivity {
                                                         chatList.add(0, new DataChat(chatText, 3, chatTime, writerNickname, isReadChat));
                                                     }   //영상통화 관련
                                                     else if (chatType.equals("call")) {
+
+                                                        if(chatText.equals("응답없음1")){
+                                                            chatText="통화취소";
+                                                        }
+                                                        else if(chatText.equals("응답없음2")){
+                                                            chatText="응답없음";
+                                                        }
+
                                                         chatList.add(0, new DataChat(chatText, 5, chatTime, writerNickname, isReadChat));
                                                     }
                                                 }
@@ -578,6 +601,13 @@ public class Activity_trade_chat extends AppCompatActivity {
                                                     } else if (chatType.equals("image")) {
                                                         chatList.add(0, new DataChat(4, chatText, chatTime, writerNickname, otherUserImageRoute));
                                                     } else if (chatType.equals("call")) {
+                                                        if(chatText.equals("응답없음1")){
+                                                            chatText="부재중";
+                                                        }
+                                                        else if(chatText.equals("응답없음2")){
+                                                            chatText="통화취소";
+                                                        }
+
                                                         chatList.add(0, new DataChat(6, chatText, chatTime, writerNickname, otherUserImageRoute));
                                                     }
 
@@ -762,6 +792,14 @@ public class Activity_trade_chat extends AppCompatActivity {
                                                     chatList.add(0, new DataChat(chatText, 3, chatTime, writerNickname, isReadChat));
                                                 }
                                             } else if (chatType.equals("call")) {
+
+                                                if(chatText.equals("응답없음1")){
+                                                    chatText="통화취소";
+                                                }
+                                                else if(chatText.equals("응답없음2")){
+                                                    chatText="응답없음";
+                                                }
+
                                                 chatList.add(0, new DataChat(chatText, 5, chatTime, writerNickname, isReadChat));
                                             }
 
@@ -781,6 +819,14 @@ public class Activity_trade_chat extends AppCompatActivity {
                                             } else if (chatType.equals("image")) {
                                                 chatList.add(0, new DataChat(4, chatText, chatTime, writerNickname, otherUserImageRoute));
                                             } else if (chatType.equals("call")) {
+
+                                                if(chatText.equals("응답없음1")){
+                                                    chatText="부재중";
+                                                }
+                                                else if(chatText.equals("응답없음2")){
+                                                    chatText="통화취소";
+                                                }
+
                                                 chatList.add(0, new DataChat(6, chatText, chatTime, writerNickname, otherUserImageRoute));
                                             }
 
@@ -1323,6 +1369,7 @@ public class Activity_trade_chat extends AppCompatActivity {
             LocalBroadcastManager.getInstance(Activity_trade_chat.this).registerReceiver(dataReceiver, new IntentFilter("chatData"));
             //  데이터 보낼 떄 쓸 것들
             //  채팅방 입장!!
+
             Intent intent = new Intent("chatDataToServer");
             intent.putExtra("purpose", "changeRoomNum");
             intent.putExtra("roomNum", roomNum);
@@ -1336,7 +1383,6 @@ public class Activity_trade_chat extends AppCompatActivity {
             chatDataCall.enqueue(new Callback<DataChatAll>() {
                 @Override
                 public void onResponse(Call<DataChatAll> call, Response<DataChatAll> response) {
-
                     if (response.isSuccessful() && response.body() != null) {
                         chatList.clear();
                         DataChatAll dataChatAllList = response.body();
@@ -1392,6 +1438,13 @@ public class Activity_trade_chat extends AppCompatActivity {
                                             chatList.add(0, new DataChat(chatText, 3, chatTime, writerNickname, isReadChat));
                                         }
                                     } else if (chatType.equals("call")) {
+
+                                        if(chatText.equals("응답없음1")){
+                                            chatText="통화취소";
+                                        }
+                                        else if(chatText.equals("응답없음2")){
+                                            chatText="응답없음";
+                                        }
                                         chatList.add(0, new DataChat(chatText, 5, chatTime, writerNickname, isReadChat));
                                     }
 
@@ -1410,6 +1463,13 @@ public class Activity_trade_chat extends AppCompatActivity {
                                     } else if (chatType.equals("image")) {
                                         chatList.add(0, new DataChat(4, chatText, chatTime, writerNickname, otherUserImageRoute));
                                     } else if (chatType.equals("call")) {
+                                        if(chatText.equals("응답없음1")){
+                                            chatText="부재중";
+                                        }
+                                        else if(chatText.equals("응답없음2")){
+                                            chatText="통화취소";
+                                        }
+
                                         chatList.add(0, new DataChat(6, chatText, chatTime, writerNickname, otherUserImageRoute));
                                     }
 
@@ -1424,8 +1484,6 @@ public class Activity_trade_chat extends AppCompatActivity {
                             resumeAddChatCheck = chatList.size();
                         }
                         adapter.notifyDataSetChanged();
-//                        recyclerView.scrollToPosition(chatList.size() - 1);
-                        setStackFromEnd();
                     }
                 }
 

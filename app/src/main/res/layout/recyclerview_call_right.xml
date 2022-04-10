@@ -12,6 +12,8 @@
         android:id="@+id/linearLayoutCompat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minWidth="120dp"
+        android:maxWidth="120dp"
         android:background="#6abdef"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
