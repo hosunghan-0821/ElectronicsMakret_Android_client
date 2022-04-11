@@ -8,7 +8,7 @@
     >
 
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <LinearLayout
         android:id="@+id/linearLayoutCompat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,6 +23,9 @@
         >
 
         <ImageView
+
+            android:gravity="center"
+            android:layout_weight="1"
             android:id="@+id/call_right_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -30,6 +33,8 @@
             app:srcCompat="@drawable/category_video" />
 
         <TextView
+
+            android:layout_weight="1"
             android:id="@+id/call_right_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -38,7 +43,7 @@
             android:text="영상통화"
             android:textColor="@color/black"
             android:textStyle="bold" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/call_right_time"

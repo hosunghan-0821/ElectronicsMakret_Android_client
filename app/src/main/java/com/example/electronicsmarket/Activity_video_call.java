@@ -47,7 +47,7 @@ public class Activity_video_call extends AppCompatActivity {
     private String otherUserNickname, roomNum;
     private String position, timeToString = "";
     private WebSettings mWebSettings;
-    private String serverURL = "https://f894-219-248-76-133.ngrok.io";
+    private String serverURL = "https://8df7-1-227-215-212.ngrok.io";
     private ProgressBar progressBar;
     private TextView callInfoText, callStatusBar;
     private ImageView videoCameraOff, videoMicOff, callCancel, callCalleeCancel, videoSwap, callCalleeAccept;
@@ -60,6 +60,8 @@ public class Activity_video_call extends AppCompatActivity {
     private AudioManager audioManager;
     private Vibrator vibrator;
     private boolean cutterState = false;
+    private boolean missedCall = false;
+    private Thread missedThread;
 
     private BroadcastReceiver dataReceiver = new BroadcastReceiver() {
         @Override
@@ -123,7 +125,26 @@ public class Activity_video_call extends AppCompatActivity {
                 msg.setData(bundle);
                 handler.sendMessage(msg);
 
-                cutterState = true;
+                //그 다음 부재중 시간을 확인하기 위해 thread 돌리기
+                missedThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(15000);
+                            Message msg = new Message();
+                            Bundle bundle = new Bundle();
+                            bundle.putString("purpose", "missedCall");
+                            msg.setData(bundle);
+                            handler.sendMessage(msg);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+
+
+                    }
+                });
+                missedThread.start();
 
             } else if (position.equals("callee")) {
                 Message msg = new Message();
@@ -132,7 +153,6 @@ public class Activity_video_call extends AppCompatActivity {
                 msg.setData(bundle);
                 handler.sendMessage(msg);
 
-                cutterState = true;
 
             }
         }
@@ -147,6 +167,14 @@ public class Activity_video_call extends AppCompatActivity {
             bundle.putString("purpose", "socketConnectSuccess");
             msg.setData(bundle);
             handler.sendMessage(msg);
+        }
+        @JavascriptInterface
+        @SuppressWarnings("unused") //컴파일러가 일반적으로 경고하는 내용에서 제외시킬 때 사용하는 노테이션
+        public void missedThreadInterrupt(){
+            if(missedThread!=null){
+                missedThread.interrupt();
+            }
+
         }
 
         @JavascriptInterface
@@ -331,6 +359,11 @@ public class Activity_video_call extends AppCompatActivity {
                     }
 
                 }
+                else if (purpose.equals("missedCall")){
+                    missedCall = true;
+                    callFinish(true);
+                    sendCancelCallAlarm();
+                }
             }
         };
 
@@ -451,13 +484,19 @@ public class Activity_video_call extends AppCompatActivity {
 
     public void sendCancelCallAlarm() {
 
-        Intent sendAlarmintent = new Intent("chatDataToServer");
-        sendAlarmintent.putExtra("type", -2);
-        sendAlarmintent.putExtra("purpose", "sendNotification");
-        sendAlarmintent.putExtra("message", nickname);
-        sendAlarmintent.putExtra("postNum", roomNum);
-        sendAlarmintent.putExtra("sendToNickname", otherUserNickname);
-        LocalBroadcastManager.getInstance(Activity_video_call.this).sendBroadcast(sendAlarmintent);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent sendAlarmintent = new Intent("chatDataToServer");
+                sendAlarmintent.putExtra("type", -2);
+                sendAlarmintent.putExtra("purpose", "sendNotification");
+                sendAlarmintent.putExtra("message", nickname);
+                sendAlarmintent.putExtra("postNum", roomNum);
+                sendAlarmintent.putExtra("sendToNickname", otherUserNickname);
+                LocalBroadcastManager.getInstance(Activity_video_call.this).sendBroadcast(sendAlarmintent);
+            }
+        },200);
+
 
     }
 
@@ -587,10 +626,14 @@ public class Activity_video_call extends AppCompatActivity {
 
     public void callFinish(boolean cutter) {
 
+        Log.e("123","callFinsih()  시작");
         //nullPointer exception 방지.
+        if (cutterState) {
+            return;
+        }
         if (cutter) {
-
-            Thread thread = new Thread(new Runnable() {
+            cutterState = true;
+            Thread saveThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     Log.e("123", "전화끊은 사람 : " + nickname);
@@ -609,7 +652,15 @@ public class Activity_video_call extends AppCompatActivity {
                         if (timeToString != null) {
                             //통화 진행 x
                             if (timeToString.equals("")) {
-                                resultIntent.putExtra("message", "응답없음1");
+                                //상대가 (부재중)응답없음 일 때,
+                                if(missedCall){
+                                    resultIntent.putExtra("message", "응답없음3");
+                                }
+                                //전화건 사람이 끊었을 때,
+                                else{
+                                    resultIntent.putExtra("message", "응답없음1");
+                                }
+
                             }
                             //통화 진행
                             else {
@@ -639,84 +690,52 @@ public class Activity_video_call extends AppCompatActivity {
                     LocalBroadcastManager.getInstance(Activity_video_call.this).sendBroadcast(resultIntent);
                 }
             });
-            thread.start();
-//            Log.e("123", "전화끊은 사람 : " + nickname);
-//            //tcp 서버로 데이터 전송
-//            Intent resultIntent = new Intent("chatDataToServer");
-//            resultIntent.putExtra("purpose", "send");
-//            resultIntent.putExtra("callPurpose", "result");
-//            resultIntent.putExtra("roomNum", roomNum);
-//
-//            //전화 끊은 사람이 통화 건 사람일 경우, (caller)
-//            if (position.equals("caller")) {
-//
-//                //통화건사람 정보를 전달해주야 그 사람 이름으로 db에 저장
-//                resultIntent.putExtra("caller", nickname);
-//
-//                if (timeToString != null) {
-//                    //통화 진행 x
-//                    if (timeToString.equals("")) {
-//                        resultIntent.putExtra("message", "응답없음1");
-//                    }
-//                    //통화 진행
-//                    else {
-//                        Log.e("123", "통화진행시간 : " + timeToString);
-//                        resultIntent.putExtra("message", timeToString);
-//                    }
-//                }
-//            }
-//            //전화 끊은 사람이 통화를 받은 사람일 경우 (callee)
-//            else {
-//                Log.e("123", "전화건 사람 : " + otherUserNickname);
-//                resultIntent.putExtra("caller", otherUserNickname);
-//
-//                if (timeToString != null) {
-//                    //통화 진행 x
-//                    if (timeToString.equals("")) {
-//                        resultIntent.putExtra("message", "응답없음2");
-//                    }
-//                    //통화 진행
-//                    else {
-//                        Log.e("123", "통화진행시간 : " + timeToString);
-//                        resultIntent.putExtra("message", timeToString);
-//                    }
-//                }
-//
-//            }
-//            LocalBroadcastManager.getInstance(Activity_video_call.this).sendBroadcast(resultIntent);
+            saveThread.start();
         }
-        //벨소리 제거,진동
-        releaseMediaPlayer();
-        vibrator.cancel();
-
-        //timeThread 관련
-        isCalling = false;
-        if (thread != null) {
-            thread.interrupt();
+        if(missedThread!=null){
+            missedThread.interrupt();
         }
-        //mediaplayer null로 변환
-        webView.loadUrl("javascript:finishCall()");
+        Log.e("123","여기지나감");
 
-        //background 에서 실행될 경우..
-        if (Activity_main_home.activity_main_home == null) {
-            Log.e("123", "finishAndRemoveTask()");
-            Intent intent = new Intent(this, Activity_main_home.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            intent.putExtra("kill", true);
-            startActivity(intent);
-            if (webView != null) {
-                webView.destroy();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.e("123","postDelayed 작동");
+                //벨소리 제거,진동
+                releaseMediaPlayer();
+                vibrator.cancel();
+
+                //timeThread 관련
+                isCalling = false;
+                if (thread != null) {
+                    thread.interrupt();
+                }
+                //mediaplayer null로 변환
+                webView.loadUrl("javascript:finishCall()");
+
+                //background 에서 실행될 경우..
+                if (Activity_main_home.activity_main_home == null) {
+                    Log.e("123", "finishAndRemoveTask()");
+                    Intent intent = new Intent(Activity_video_call.this, Activity_main_home.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    intent.putExtra("kill", true);
+                    startActivity(intent);
+                    if (webView != null) {
+                        webView.destroy();
+                    }
+                    finish();
+                }
+                //기존 앱 켜진 상태에서 실행될 경우
+                else {
+                    if (webView != null) {
+                        webView.destroy();
+                    }
+                    finish();
+                }
             }
-            finish();
-        }
-        //기존 앱 켜진 상태에서 실행될 경우
-        else {
-            if (webView != null) {
-                webView.destroy();
-            }
-            finish();
-        }
+        }, 600);// 0.6초 정도 딜레이를 준 후 시작
 
+        Log.e("123","여기지나감2");
     }
 
     @Override
