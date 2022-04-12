@@ -10,10 +10,9 @@
 
     <LinearLayout
         android:id="@+id/linearLayoutCompat"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:minWidth="120dp"
-        android:maxWidth="120dp"
+        android:minWidth="150dp"
         android:background="#6abdef"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
@@ -23,26 +22,25 @@
         >
 
         <ImageView
-
             android:gravity="center"
             android:layout_weight="1"
             android:id="@+id/call_right_image"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:padding="10dp"
             app:srcCompat="@drawable/category_video" />
 
         <TextView
-
             android:layout_weight="1"
             android:id="@+id/call_right_text"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
             android:padding="10dp"
             android:text="영상통화"
             android:textColor="@color/black"
             android:textStyle="bold" />
+
     </LinearLayout>
 
     <TextView

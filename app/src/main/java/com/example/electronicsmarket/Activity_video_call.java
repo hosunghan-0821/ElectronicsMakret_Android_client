@@ -1,6 +1,7 @@
 package com.example.electronicsmarket;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -8,6 +9,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -47,7 +49,7 @@ public class Activity_video_call extends AppCompatActivity {
     private String otherUserNickname, roomNum;
     private String position, timeToString = "";
     private WebSettings mWebSettings;
-    private String serverURL = "https://8df7-1-227-215-212.ngrok.io";
+    private String serverURL = "https://3f13-1-227-215-212.ngrok.io";
     private ProgressBar progressBar;
     private TextView callInfoText, callStatusBar;
     private ImageView videoCameraOff, videoMicOff, callCancel, callCalleeCancel, videoSwap, callCalleeAccept;
@@ -62,6 +64,7 @@ public class Activity_video_call extends AppCompatActivity {
     private boolean cutterState = false;
     private boolean missedCall = false;
     private Thread missedThread;
+    private boolean callOtherUser = false, alreadyCall = false;
 
     private BroadcastReceiver dataReceiver = new BroadcastReceiver() {
         @Override
@@ -100,6 +103,7 @@ public class Activity_video_call extends AppCompatActivity {
         @JavascriptInterface
         @SuppressWarnings("unused") //컴파일러가 일반적으로 경고하는 내용에서 제외시킬 때 사용하는 노테이션
         public void callOtherUser() {
+            callOtherUser = true;
             if (position.equals("caller")) {
 
 //                //서버로 넘겨서 날려야겟네.
@@ -141,7 +145,6 @@ public class Activity_video_call extends AppCompatActivity {
                         }
 
 
-
                     }
                 });
                 missedThread.start();
@@ -168,10 +171,11 @@ public class Activity_video_call extends AppCompatActivity {
             msg.setData(bundle);
             handler.sendMessage(msg);
         }
+
         @JavascriptInterface
         @SuppressWarnings("unused") //컴파일러가 일반적으로 경고하는 내용에서 제외시킬 때 사용하는 노테이션
-        public void missedThreadInterrupt(){
-            if(missedThread!=null){
+        public void missedThreadInterrupt() {
+            if (missedThread != null) {
                 missedThread.interrupt();
             }
 
@@ -213,6 +217,21 @@ public class Activity_video_call extends AppCompatActivity {
             bundle.putString("purpose", "peerConnectionStart");
             msg.setData(bundle);
             handler.sendMessage(msg);
+        }
+
+        @JavascriptInterface
+        @SuppressWarnings("unused")
+        public void cannotCall() {
+            //여기서 음성메시지 띄우고 끝나면 자동 activity 종료
+
+
+            Message msg = new Message();
+            Bundle bundle = new Bundle();
+            bundle.putString("purpose", "cannotCall");
+            msg.setData(bundle);
+            handler.sendMessage(msg);
+
+            Log.e("123", "상대방 통화중");
         }
 
     }
@@ -287,7 +306,6 @@ public class Activity_video_call extends AppCompatActivity {
                         videoMicOff.setVisibility(View.VISIBLE);
                         callCancel.setVisibility(View.VISIBLE);
                         calleeAccept = true;
-
                     }
                     //수신자
                     else {
@@ -358,11 +376,15 @@ public class Activity_video_call extends AppCompatActivity {
 
                     }
 
-                }
-                else if (purpose.equals("missedCall")){
+                } else if (purpose.equals("missedCall")) {
                     missedCall = true;
                     callFinish(true);
                     sendCancelCallAlarm();
+
+
+                } else if (purpose.equals("cannotCall")) {
+                    alreadyCall = true;
+                    callFinish(true);
                 }
             }
         };
@@ -484,6 +506,9 @@ public class Activity_video_call extends AppCompatActivity {
 
     public void sendCancelCallAlarm() {
 
+        if (!callOtherUser) {
+            return;
+        }
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -495,7 +520,7 @@ public class Activity_video_call extends AppCompatActivity {
                 sendAlarmintent.putExtra("sendToNickname", otherUserNickname);
                 LocalBroadcastManager.getInstance(Activity_video_call.this).sendBroadcast(sendAlarmintent);
             }
-        },200);
+        }, 200);
 
 
     }
@@ -563,7 +588,7 @@ public class Activity_video_call extends AppCompatActivity {
         mWebSettings.setLoadWithOverviewMode(true); // 메타태그
         //webView.clearCache(true);
         //webView.loadUrl(serverURL +"?roomNum="+roomNum+"&sendToNickname="+otherUserNickname+"&position="+position);
-        webView.loadUrl(serverURL + "/" + roomNum + "/" + otherUserNickname + "/" + position);
+        webView.loadUrl(serverURL + "/" + roomNum + "/" + otherUserNickname + "/" + position + "/" + nickname);
 
     }
 
@@ -626,7 +651,7 @@ public class Activity_video_call extends AppCompatActivity {
 
     public void callFinish(boolean cutter) {
 
-        Log.e("123","callFinsih()  시작");
+        Log.e("123", "callFinsih()  시작");
         //nullPointer exception 방지.
         if (cutterState) {
             return;
@@ -642,6 +667,7 @@ public class Activity_video_call extends AppCompatActivity {
                     resultIntent.putExtra("purpose", "send");
                     resultIntent.putExtra("callPurpose", "result");
                     resultIntent.putExtra("roomNum", roomNum);
+                    resultIntent.putExtra("sendToNickname", otherUserNickname);
 
                     //전화 끊은 사람이 통화 건 사람일 경우, (caller)
                     if (position.equals("caller")) {
@@ -653,14 +679,15 @@ public class Activity_video_call extends AppCompatActivity {
                             //통화 진행 x
                             if (timeToString.equals("")) {
                                 //상대가 (부재중)응답없음 일 때,
-                                if(missedCall){
+                                if (missedCall) {
                                     resultIntent.putExtra("message", "응답없음3");
+                                } else if (alreadyCall) {
+                                    resultIntent.putExtra("message", "상대방 통화중");
                                 }
                                 //전화건 사람이 끊었을 때,
-                                else{
+                                else {
                                     resultIntent.putExtra("message", "응답없음1");
                                 }
-
                             }
                             //통화 진행
                             else {
@@ -692,15 +719,15 @@ public class Activity_video_call extends AppCompatActivity {
             });
             saveThread.start();
         }
-        if(missedThread!=null){
+        if (missedThread != null) {
             missedThread.interrupt();
         }
-        Log.e("123","여기지나감");
+        Log.e("123", "여기지나감");
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Log.e("123","postDelayed 작동");
+                Log.e("123", "postDelayed 작동");
                 //벨소리 제거,진동
                 releaseMediaPlayer();
                 vibrator.cancel();
@@ -710,7 +737,6 @@ public class Activity_video_call extends AppCompatActivity {
                 if (thread != null) {
                     thread.interrupt();
                 }
-                //mediaplayer null로 변환
                 webView.loadUrl("javascript:finishCall()");
 
                 //background 에서 실행될 경우..
@@ -727,15 +753,21 @@ public class Activity_video_call extends AppCompatActivity {
                 }
                 //기존 앱 켜진 상태에서 실행될 경우
                 else {
+                    Log.e("123","foreground");
                     if (webView != null) {
                         webView.destroy();
+                        Log.e("123","foreground webview destroy() ");
                     }
                     finish();
+
+                    if (alreadyCall) {
+                        Toast.makeText(getApplicationContext(), "상대방이 통화중입니다. 잠시 후 다시 하세요", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         }, 600);// 0.6초 정도 딜레이를 준 후 시작
 
-        Log.e("123","여기지나감2");
+        Log.e("123", "여기지나감2");
     }
 
     @Override

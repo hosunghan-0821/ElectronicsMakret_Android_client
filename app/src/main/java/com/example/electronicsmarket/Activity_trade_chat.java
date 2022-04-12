@@ -486,7 +486,7 @@ public class Activity_trade_chat extends AppCompatActivity {
                                                 chatList.add(0, new DataChat(4, chatText, chatTime, writerNickname, otherUserImageRoute));
                                             } else if (chatType.equals("call")) {
 
-                                                if (chatText.equals("응답없음1")||chatText.equals("응답없음3")) {
+                                                if (chatText.equals("응답없음1")||chatText.equals("응답없음3")||chatText.equals("상대방 통화중")) {
                                                     chatText = "부재중";
                                                 } else if (chatText.equals("응답없음2")) {
                                                     chatText = "통화취소";
@@ -598,7 +598,7 @@ public class Activity_trade_chat extends AppCompatActivity {
                                                     } else if (chatType.equals("image")) {
                                                         chatList.add(0, new DataChat(4, chatText, chatTime, writerNickname, otherUserImageRoute));
                                                     } else if (chatType.equals("call")) {
-                                                        if (chatText.equals("응답없음1")||chatText.equals("응답없음3")) {
+                                                        if (chatText.equals("응답없음1")||chatText.equals("응답없음3")||chatText.equals("상대방 통화중")) {
                                                             chatText = "부재중";
                                                         } else if (chatText.equals("응답없음2")) {
                                                             chatText = "통화취소";
@@ -815,7 +815,7 @@ public class Activity_trade_chat extends AppCompatActivity {
                                                 chatList.add(0, new DataChat(4, chatText, chatTime, writerNickname, otherUserImageRoute));
                                             } else if (chatType.equals("call")) {
 
-                                                if (chatText.equals("응답없음1") ||chatText.equals("응답없음3")) {
+                                                if (chatText.equals("응답없음1") ||chatText.equals("응답없음3")||chatText.equals("상대방 통화중")) {
                                                     chatText = "부재중";
                                                 } else if (chatText.equals("응답없음2")) {
                                                     chatText = "통화취소";
@@ -1456,7 +1456,7 @@ public class Activity_trade_chat extends AppCompatActivity {
                                     } else if (chatType.equals("image")) {
                                         chatList.add(0, new DataChat(4, chatText, chatTime, writerNickname, otherUserImageRoute));
                                     } else if (chatType.equals("call")) {
-                                        if (chatText.equals("응답없음1") ||chatText.equals("응답없음3")) {
+                                        if (chatText.equals("응답없음1") ||chatText.equals("응답없음3")||chatText.equals("상대방 통화중")) {
                                             chatText = "부재중";
                                         } else if (chatText.equals("응답없음2")) {
                                             chatText = "통화취소";

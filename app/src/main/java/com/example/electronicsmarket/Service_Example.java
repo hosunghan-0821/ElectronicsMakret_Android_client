@@ -115,6 +115,7 @@ public class Service_Example extends Service {
                     String call = intent.getStringExtra("callPurpose");
                     String roomNum= intent.getStringExtra("roomNum");
                     String caller = intent.getStringExtra("caller");
+                    String otherUserNickname = intent.getStringExtra("sendToNickname");
 
                     Log.e("123","callPurpose : "+ call);
                     Log.e("123", "onReceive message :" + message);
@@ -123,10 +124,10 @@ public class Service_Example extends Service {
                         writeThread.start();
                     }
                     else if (call.equals("call")){
-                        writeThread writeThread = new writeThread(roomNum,"",message,"send","call");
+                        writeThread writeThread = new writeThread(roomNum,otherUserNickname,message,"send","call");
                         writeThread.start();
                     }else if(call.equals("result")){
-                        writeThread writeThread = new writeThread(roomNum,"",message,"send","result",caller);
+                        writeThread writeThread = new writeThread(roomNum,otherUserNickname,message,"send","result",caller);
                         writeThread.start();
                     }
 
@@ -623,6 +624,7 @@ public class Service_Example extends Service {
                             jsonObject.put("message", message);
                             jsonObject.put("purpose", "send");
                             jsonObject.put("callPurpose","result");
+                            jsonObject.put("sendToNickname",otherUserNickname);
                             out.println(jsonObject.toString());
 
                         }
