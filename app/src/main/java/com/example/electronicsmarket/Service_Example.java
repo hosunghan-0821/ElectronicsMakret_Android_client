@@ -960,8 +960,8 @@ public class Service_Example extends Service {
                 intent.putExtra("otherUserNickname", message);
                 LocalBroadcastManager.getInstance(Service_Example.this).sendBroadcast(intent);
                 return;
-
-            } else if (type == 1) {
+            }
+            else if (type == 1) {
                 notifyIntent = new Intent(Service_Example.this, Activity_writer_review_collect.class);
                 title = "거래후기 알림";
                 notifyIntent.putExtra("email", email);
@@ -995,18 +995,41 @@ public class Service_Example extends Service {
             //notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             //notifyIntent.setFlags(FLAG_ACTIVITY_NEW_TASK);
 
-            PendingIntent notifyStackPendingIntent = stackBuilder.getPendingIntent(1000, PendingIntent.FLAG_CANCEL_CURRENT);
-            builder = new NotificationCompat.Builder(Service_Example.this, CHANNEL_ID)
-                    .setPriority(NotificationCompat.PRIORITY_MAX)
-                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                    .setContentTitle(title)
-                    .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
-                    .setContentIntent(notifyStackPendingIntent)
-                    .setContentText(message)
-                    .setSmallIcon(R.drawable.ic_baseline_favorite_24)
-                    .setAutoCancel(true)
-                    .setGroup(notiGroup);
-            notificationManager.notify(1000, builder.build());
+
+
+
+            //타이밍 꼬여서.delay 시키자
+            if(type==-3){
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        builder = new NotificationCompat.Builder(Service_Example.this, CHANNEL_ID)
+                                .setPriority(NotificationCompat.PRIORITY_MAX)
+                                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                                .setContentTitle("부재중 알림")
+                                .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
+                                .setContentText(message)
+                                .setSmallIcon(R.drawable.ic_baseline_favorite_24)
+                                .setAutoCancel(true);
+                        notificationManager.notify(1000, builder.build());
+                    }
+                },400);
+            }
+            else{
+                PendingIntent notifyStackPendingIntent = stackBuilder.getPendingIntent(1000, PendingIntent.FLAG_CANCEL_CURRENT);
+                builder = new NotificationCompat.Builder(Service_Example.this, CHANNEL_ID)
+                        .setPriority(NotificationCompat.PRIORITY_MAX)
+                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                        .setContentTitle(title)
+                        .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
+                        .setContentIntent(notifyStackPendingIntent)
+                        .setContentText(message)
+                        .setSmallIcon(R.drawable.ic_baseline_favorite_24)
+                        .setAutoCancel(true)
+                        .setGroup(notiGroup);
+                notificationManager.notify(1000, builder.build());
+            }
+
 
         } catch (Exception e) {
             e.printStackTrace();

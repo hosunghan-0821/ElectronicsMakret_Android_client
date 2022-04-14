@@ -49,7 +49,7 @@ public class Activity_video_call extends AppCompatActivity {
     private String otherUserNickname, roomNum;
     private String position, timeToString = "";
     private WebSettings mWebSettings;
-    private String serverURL = "https://3f13-1-227-215-212.ngrok.io";
+    private String serverURL = "https://ef4d-219-248-76-133.ngrok.io";
     private ProgressBar progressBar;
     private TextView callInfoText, callStatusBar;
     private ImageView videoCameraOff, videoMicOff, callCancel, callCalleeCancel, videoSwap, callCalleeAccept;
