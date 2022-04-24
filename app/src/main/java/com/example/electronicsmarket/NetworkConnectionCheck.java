@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 public class NetworkConnectionCheck extends ConnectivityManager.NetworkCallback {
+
     private int beforeNetwork=0;
     private Context context;
     private NetworkRequest networkRequest;
@@ -25,8 +26,6 @@ public class NetworkConnectionCheck extends ConnectivityManager.NetworkCallback 
         networkRequest= new NetworkRequest.Builder()
                 .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                 .addCapability(NetworkCapabilities.NET_CAPABILITY_NOT_RESTRICTED)
-//                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-//                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
                 .build();
         this.connectivityManager=(ConnectivityManager) this.context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -34,7 +33,8 @@ public class NetworkConnectionCheck extends ConnectivityManager.NetworkCallback 
 
     public void register() {
         beforeNetwork=NetworkStatus.getConnectivityStatus(context);
-        this.connectivityManager.registerNetworkCallback(networkRequest, this);}
+        this.connectivityManager.registerNetworkCallback(networkRequest, this);
+    }
 
     public void unregister() {
         this.connectivityManager.unregisterNetworkCallback(this);

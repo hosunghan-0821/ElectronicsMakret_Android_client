@@ -49,7 +49,7 @@ public class Activity_video_call extends AppCompatActivity {
     private String otherUserNickname, roomNum;
     private String position, timeToString = "";
     private WebSettings mWebSettings;
-    private String serverURL = "https://ef4d-219-248-76-133.ngrok.io";
+    private String serverURL = "https://af02-219-248-76-133.ngrok.io";
     private ProgressBar progressBar;
     private TextView callInfoText, callStatusBar;
     private ImageView videoCameraOff, videoMicOff, callCancel, callCalleeCancel, videoSwap, callCalleeAccept;
@@ -506,7 +506,7 @@ public class Activity_video_call extends AppCompatActivity {
 
     public void sendCancelCallAlarm() {
 
-        if (!callOtherUser) {
+        if (!callOtherUser&&position.equals("caller")) {
             return;
         }
         new Handler().postDelayed(new Runnable() {
@@ -624,8 +624,6 @@ public class Activity_video_call extends AppCompatActivity {
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         //
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-
-
         mediaPlayer = MediaPlayer.create(Activity_video_call.this, R.raw.callingsound);
         //기본 xml
         callStatusBar = findViewById(R.id.video_call_status_bar);

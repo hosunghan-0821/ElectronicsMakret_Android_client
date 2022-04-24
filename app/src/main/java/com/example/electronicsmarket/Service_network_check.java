@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.IBinder;
 
 public class Service_network_check extends Service {
+
     NetworkConnectionCheck networkConnectionCheck;
     public Service_network_check() {
     }
