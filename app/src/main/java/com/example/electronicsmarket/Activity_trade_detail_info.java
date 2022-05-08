@@ -53,10 +53,11 @@ public class Activity_trade_detail_info extends AppCompatActivity {
             buyProductActivity.finish();
         }
         Intent intent = getIntent();
+
         tradeNum = intent.getStringExtra("tradeNum");
         readType = intent.getStringExtra("readType");
         tradeType=intent.getStringExtra("tradeType");
-
+        Log.e("123","tradeType : "+tradeType);
 
         RetrofitService service = retrofit.create(RetrofitService.class);
 

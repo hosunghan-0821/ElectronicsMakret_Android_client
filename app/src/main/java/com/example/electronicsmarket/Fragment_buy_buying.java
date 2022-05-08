@@ -340,7 +340,9 @@ public class Fragment_buy_buying extends Fragment {
                 Intent intent = new Intent(getActivity(), Activity_trade_detail_info.class);
                 intent.putExtra("tradeNum", buyingList.get(position).getTradeNum());
                 intent.putExtra("readType", "buyer");
+                intent.putExtra("tradeType",buyingList.get(position).getPostTradeType());
                 startActivity(intent);
+                //asd
             }
         });
 

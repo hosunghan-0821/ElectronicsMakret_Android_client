@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -33,7 +35,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Activity_kakaopay_api extends AppCompatActivity {
 
     public final static int payResultCode = 100;
-    public final String API_KEY = "KakaoAK 980cc4d9e8446ee50d352b75e72f73ae";
+    public String API_KEY="";
     private WebView webView;
     private MyWebViewClient myWebViewclient;
     private Handler handler;
@@ -66,6 +68,7 @@ public class Activity_kakaopay_api extends AppCompatActivity {
                 Intent intent =new Intent (Activity_kakaopay_api.this,Activity_trade_detail_info.class);
                 intent.putExtra("tradeNum",tradeNum);
                 intent.putExtra("readType","buyer");
+                intent.putExtra("tradeType","택배거래");
                 startActivity(intent);
                 finish();
             }
@@ -89,6 +92,14 @@ public class Activity_kakaopay_api extends AppCompatActivity {
         webView = findViewById(R.id.webview);
         progressBar=findViewById(R.id.kakao_api_progressbar);
         Intent getIntent = getIntent();
+
+        try{
+            ApplicationInfo applicationInfo = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+            API_KEY = applicationInfo.metaData.getString("KAKAO_API_KEY");
+            Log.e("123456",API_KEY);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
 
         productName = getIntent.getStringExtra("productName");

@@ -2,6 +2,11 @@ plugins {
     id 'com.android.application'
 }
 
+Properties properties= new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def KAKAO_API_KEY= properties.getProperty('KAKAO_API_KEY')
+def GOOGLE_API_KEY= properties.getProperty('GOOGLE_API_KEY')
+
 android {
     compileSdk 31
 
@@ -11,8 +16,8 @@ android {
         targetSdk 31
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders=[KAKAOAPIKEY :KAKAO_API_KEY,GOOGLEAPIKEY: GOOGLE_API_KEY]
     }
 
     buildTypes {

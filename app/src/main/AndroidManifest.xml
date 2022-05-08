@@ -213,7 +213,10 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDTN-7TI4yFL7ikRJ0LmHdobNHurvsg5Dc" />
+            android:value="${GOOGLEAPIKEY}" />
+        <meta-data
+            android:name="KAKAO_API_KEY"
+            android:value="${KAKAOAPIKEY}" />
     </application>
 
 </manifest>
