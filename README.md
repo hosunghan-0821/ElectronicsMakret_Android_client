@@ -31,22 +31,23 @@
 
 
 #### Library<br>
-<img src="https://img.shields.io/badge/Retorfit2-색상?style=for-the-badge&logo=기술스택아이콘&logoColor=white">
-<img src="https://img.shields.io/badge/KAKAO PAY API-FFCD00?style=for-the-badge&logo=기술스택아이콘&logoColor=white">
-<img src="https://img.shields.io/badge/Google Map API-4285F4?style=for-the-badge&logo=기술스택아이콘&logoColor=white">
+<img src="https://img.shields.io/badge/Retorfit2-색상?style=for-the-badge&logo=&logoColor=white">
+<img src="https://img.shields.io/badge/KAKAO PAY API-FFCD00?style=for-the-badge&logo=&logoColor=white">
+<img src="https://img.shields.io/badge/Google Map API-4285F4?style=for-the-badge&logo=&logoColor=white">
 
 ## 📚 Backend 기술스택
 
 ### Rest API Server
-<img src="https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=기술스택아이콘&logoColor=white">
-<img src="https://img.shields.io/badge/Apache-D22128?style=for-the-badge&logo=기술스택아이콘&logoColor=white">
+<img src="https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=&logoColor=white">
+<img src="https://img.shields.io/badge/Apache-D22128?style=for-the-badge&logo=&logoColor=white">
 <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white"/>
 <img src="https://img.shields.io/badge/AmazonEC2-FF9900?style=for-the-badge&logo=AmazonEC2&logoColor=white"/>
 
-### WebRTC Signaling Server<br>
-<img src="https://img.shields.io/badge/WebRTC-333333?style=for-the-badge&logo=기술스택아이콘&logoColor=white">
-<img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=기술스택아이콘&logoColor=white">
-<img src="https://img.shields.io/badge/Nodejs-339933?style=for-the-badge&logo=기술스택아이콘&logoColor=white">
+### WebRTC Signaling Server
+
+<img src="https://img.shields.io/badge/WebRTC-333333?style=for-the-badge&logo=&logoColor=white">
+<img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=&logoColor=white">
+<img src="https://img.shields.io/badge/Nodejs-339933?style=for-the-badge&logo=&logoColor=white">
 <img src="https://img.shields.io/badge/socket.io-010101?style=for-the-badge&logo=socket.io&logoColor=white">
 
 ### Chatting Server(Java socket)<BR>
