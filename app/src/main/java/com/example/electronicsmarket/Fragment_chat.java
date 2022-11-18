@@ -99,7 +99,7 @@ public class Fragment_chat extends Fragment {
         call.enqueue(new Callback<DataChatRoomAll>() {
             @Override
             public void onResponse(Call<DataChatRoomAll> call, Response<DataChatRoomAll> response) {
-                Log.e("123", "통신옴");
+                Log.e("123", "여기123456"+"통신옴");
 
                 if (response.isSuccessful() && response.body() != null) {
                     Log.e("123", "통신옴2");
@@ -133,7 +133,7 @@ public class Fragment_chat extends Fragment {
 
             @Override
             public void onFailure(Call<DataChatRoomAll> call, Throwable t) {
-                Log.e("123", t.getMessage());
+                Log.e("123", "여기가 문제"+t.getMessage());
             }
         });
 
@@ -440,7 +440,7 @@ public class Fragment_chat extends Fragment {
                 .setLenient()
                 .create();
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/")
+                .baseUrl("http://43.201.72.60/")
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 

@@ -21,7 +21,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Adapter_trade_chat extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    public static final String imageRoute = "http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/Resource/chatImage";
+    public static final String imageRoute = "http://43.201.72.60/realMarketServer/Resource/chatImage";
 
     private ArrayList<DataChat> chatList;
     private Context context;

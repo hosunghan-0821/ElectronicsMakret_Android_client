@@ -133,9 +133,9 @@ public class Activity_kakaopay_api extends AppCompatActivity {
                 "1",
                 productPriceS,
                 "0",
-                "http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/success.html",
-                "http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/cancel.html",
-                "http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/fail.html"
+                "http://43.201.72.60/success.html",
+                "http://43.201.72.60/cancel.html",
+                "http://43.201.72.60/fail.html"
         );
         call.enqueue(new Callback<KaKaoPayResult>() {
             @Override

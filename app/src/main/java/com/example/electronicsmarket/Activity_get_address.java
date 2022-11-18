@@ -53,7 +53,7 @@ public class Activity_get_address extends AppCompatActivity {
 
         });
 
-        webView.loadUrl("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/realMarketServer/lib/daum.html");
+        webView.loadUrl("http://43.201.72.60/realMarketServer/lib/daum.html");
     }
 
 }

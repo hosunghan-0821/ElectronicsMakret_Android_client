@@ -492,7 +492,7 @@ public class Service_Example extends Service {
                     .setLenient()
                     .create();
             retrofit = new Retrofit.Builder()
-                    .baseUrl("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/")
+                    .baseUrl("http://43.201.72.60/")
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
             HashMap<String, RequestBody> notificationHashMap = new HashMap<>();
@@ -522,10 +522,12 @@ public class Service_Example extends Service {
                     memberRequest = RequestBody.create(MediaType.parse("text/plain"), sendToNickname);
                     messageRequest = RequestBody.create(MediaType.parse("text/plain"), message);
                     senderRequest = RequestBody.create(MediaType.parse("text/plain"), nickname);
+                    postRequest = RequestBody.create(MediaType.parse("text/plain"), postNum);
 
                     notificationHashMap.put("type", typeRequest);
                     notificationHashMap.put("sendToNickname", memberRequest);
                     notificationHashMap.put("message", messageRequest);
+                    notificationHashMap.put("postNum", postRequest);
                     notificationHashMap.put("sender", senderRequest);
 
                     break;

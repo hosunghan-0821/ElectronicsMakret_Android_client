@@ -264,7 +264,7 @@ public class Fragment_buy_bought extends Fragment {
                 .setLenient()
                 .create();
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://ec2-3-34-199-7.ap-northeast-2.compute.amazonaws.com/")
+                .baseUrl("http://43.201.72.60/")
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
