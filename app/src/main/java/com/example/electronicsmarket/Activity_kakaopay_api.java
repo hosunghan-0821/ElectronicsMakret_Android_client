@@ -133,9 +133,9 @@ public class Activity_kakaopay_api extends AppCompatActivity {
                 "1",
                 productPriceS,
                 "0",
-                "http://43.201.72.60/success.html",
-                "http://43.201.72.60/cancel.html",
-                "http://43.201.72.60/fail.html"
+                "http://43.201.72.60/realMarketServer/kakaopayApi/success.html",
+                "http://43.201.72.60/realMarketServer/kakaopayApi/cancel.html",
+                "http://43.201.72.60/realMarketServer/kakaopayApi/fail.html"
         );
         call.enqueue(new Callback<KaKaoPayResult>() {
             @Override
@@ -323,6 +323,7 @@ public class Activity_kakaopay_api extends AppCompatActivity {
                     if (existPackage != null) {
                         startActivity(intent);
                     } else {
+                        Log.e("123","url : "+url);
                         Toast.makeText(Activity_kakaopay_api.this, "카카오톡 앱이 없어요", Toast.LENGTH_SHORT).show();
                     }
                     isFinishPay="결제저장대기";
