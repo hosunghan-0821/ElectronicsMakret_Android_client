@@ -103,13 +103,10 @@ public class Fragment_sell_selling extends Fragment {
                 public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
 
                     if(!v.canScrollVertically(1)&&scrollCheck){
-                        //Log.e("123","스크롤의 최하단입니다. 이거 연속으로 찍히는거면 터치의 문제");
+
                         scrollCheck=false;
-//                            Toast.makeText(getActivity(), "스크롤의 최하단입니다.", Toast.LENGTH_SHORT).show()
-                        //System.out.println("postinfoSize : "+sellingList.size());
+
                         if(!isFinalPhase){
-//                                postList.add(new PostInfo(1));
-//                                adapter.notifyItemInserted(postList.size()-1);
                             RetrofitService service = retrofit.create(RetrofitService.class);
                             Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,phasingNum,"sellingInfo",id);
                             call.enqueue(new Callback<PostAllInfo>() {
@@ -146,7 +143,6 @@ public class Fragment_sell_selling extends Fragment {
                                 }
                                 @Override
                                 public void onFailure(Call<PostAllInfo> call, Throwable t) {
-                                    Log.e("123", t.getMessage());
 
                                 }
                             });
@@ -164,7 +160,7 @@ public class Fragment_sell_selling extends Fragment {
             public void onRefresh() {
 
                 RetrofitService service = retrofit.create(RetrofitService.class);
-                //Log.e("123","onRefresh CursorPostNum"+cursorPostNum);
+
                 Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,"update","sellingInfo",id);
                 call.enqueue(new Callback<PostAllInfo>() {
                     @Override
@@ -190,7 +186,6 @@ public class Fragment_sell_selling extends Fragment {
 
                     @Override
                     public void onFailure(Call<PostAllInfo> call, Throwable t) {
-                        Log.e("123", t.getMessage());
 
                     }
                 });
@@ -223,7 +218,7 @@ public class Fragment_sell_selling extends Fragment {
         super.onResume();
         if(onCreateViewIsSet){
             RetrofitService service = retrofit.create(RetrofitService.class);
-            //Log.e("123","onResume CursorPostNum"+cursorPostNum);
+
             Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,"update","sellingInfo",id);
             call.enqueue(new Callback<PostAllInfo>() {
                 @Override
@@ -247,7 +242,7 @@ public class Fragment_sell_selling extends Fragment {
 
                 @Override
                 public void onFailure(Call<PostAllInfo> call, Throwable t) {
-                    Log.e("123", t.getMessage());
+
 
                 }
             });

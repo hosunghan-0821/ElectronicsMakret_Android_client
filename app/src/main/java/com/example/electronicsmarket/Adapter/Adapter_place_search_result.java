@@ -50,8 +50,7 @@ public class Adapter_place_search_result extends RecyclerView.Adapter<Adapter_pl
 
 
 
-        Log.e("456",mSelectedItems.toString());
-        Log.e("456",String.valueOf(mSelectedItems.get(position,false)));
+
         if ( mSelectedItems.get(position, false) ){
             //holder.itemView.setBackgroundColor(Color.GRAY);
             holder.itemView.setBackgroundResource(R.color.gray);
@@ -89,7 +88,7 @@ public class Adapter_place_search_result extends RecyclerView.Adapter<Adapter_pl
                         notifyItemChanged(allPosition);
                     }
 
-                    Log.e("456",String.valueOf(mSelectedItems.get(position,false)));
+
 
                     if ( mSelectedItems.get(position, false) ){
                         mSelectedItems.put(position, false);

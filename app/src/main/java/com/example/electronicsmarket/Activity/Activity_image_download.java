@@ -47,7 +47,7 @@ public class Activity_image_download extends AppCompatActivity {
         Intent intent = getIntent();
         imageRoute = intent.getStringExtra("imageRoute");
         String imageSender = intent.getStringExtra("imageSender");
-        Log.e("123", "imageRoute " + imageRoute);
+
 
         Glide.with(Activity_image_download.this).load(imageRoute).into(downloadImage);
         downloadImageSender.setText(imageSender);
@@ -75,11 +75,10 @@ public class Activity_image_download extends AppCompatActivity {
         //String savePath="/electronics/";
 
         dir = new File(Environment.getExternalStorageDirectory(), savePath);
-        Log.e("123", "file dir" + dir);
         if (!dir.exists()) {
 
             dir.mkdir();
-            Log.e("123", "mkdirs");
+
         }
     }
 
@@ -121,10 +120,9 @@ public class Activity_image_download extends AppCompatActivity {
             String nowTime = chatTimeDbDateFormat.format(date);
             tempFileName = nowTime + ".jpg";
             file = new File(dir, tempFileName);
-            Log.e("123", "strings[0] : "+strings[0]);
             // 서버로부터 다운로드 받을 경우
             if (strings[0].contains(Adapter_trade_chat.imageRoute)) {
-                Log.e("123", "서버이미지 저장");
+
                 try {
                     //Uri uri= Uri.parse(strings[0]);
                     URL url = new URL(strings[0]);
@@ -148,7 +146,7 @@ public class Activity_image_download extends AppCompatActivity {
 //                    }
                         output.write(data, 0, count);
                     }
-                    Log.e("123", "파일작성");
+
                     output.flush();
 
                 } catch (Exception e) {
@@ -172,7 +170,7 @@ public class Activity_image_download extends AppCompatActivity {
                 }
                 return "success";
             } else {
-                Log.e("123", "내꺼");
+
                 try {
                     Uri imgUri = Uri.parse(strings[0]);
                     File imgFile = new File(imgUri.getPath());
@@ -184,7 +182,7 @@ public class Activity_image_download extends AppCompatActivity {
                     while((readCount=fileInputStream.read(buffer))!=-1){
                         fileOutputStream.write(buffer,0,readCount);
                     }
-                    Log.e("123", "파일작성");
+
                     fileOutputStream.flush();
                     fileInputStream.close();
                     fileOutputStream.close();

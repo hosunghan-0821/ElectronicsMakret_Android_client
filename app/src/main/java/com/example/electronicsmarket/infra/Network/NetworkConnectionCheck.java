@@ -45,7 +45,6 @@ public class NetworkConnectionCheck extends ConnectivityManager.NetworkCallback 
         super.onAvailable(network);
 
         //네트워크가 연결되었을 때 할 동작
-        Log.e("456","network available : " + network.describeContents());
 
         try{
             Thread.sleep(500);
@@ -65,7 +64,7 @@ public class NetworkConnectionCheck extends ConnectivityManager.NetworkCallback 
             }
             if(NetworkStatus.getConnectivityStatus(context)!=beforeNetwork){
 
-                Log.e("123","이전 네트워크와 :"+beforeNetwork +"현재 네트워크 : "+NetworkStatus.getConnectivityStatus(context));
+
                 Intent stopIntent = new Intent(context, Service_Example.class);
                 context.stopService(stopIntent);
                 Intent startIntent = new Intent(context,Service_Example.class);
@@ -82,14 +81,14 @@ public class NetworkConnectionCheck extends ConnectivityManager.NetworkCallback 
 
         }
         beforeNetwork=NetworkStatus.getConnectivityStatus(context);
-        Log.e("456","인터넷 상태 : "+NetworkStatus.getConnectivityStatus(context));
+
     }
 
     @Override
     public void onLost(@NonNull Network network) {
         super.onLost(network);
         //네트워크 연결이 끊겼을 때 할 동작
-        Log.e("456","network lost" + network.describeContents());
+
         try{
             Thread.sleep(500);
         }catch (Exception e){
@@ -99,14 +98,12 @@ public class NetworkConnectionCheck extends ConnectivityManager.NetworkCallback 
             //이때만 UI 나타나게 하고
             Intent stopIntent = new Intent(context,Service_Example.class);
             context.stopService(stopIntent);
-            Log.e("456","인터넷 상태 : 연결 가능한 네트워크 x" );
+
             Intent intent = new Intent("networkStatus");
             intent.putExtra("networkStatus", 3);
             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
         }
-        else{
-            Log.e("456","인터넷 상태 : "+NetworkStatus.getConnectivityStatus(context));
-        }
+
         beforeNetwork=NetworkStatus.getConnectivityStatus(context);
 
     }

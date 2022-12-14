@@ -68,9 +68,6 @@ public class Activity_video_call extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
 
             String purpose = intent.getStringExtra("purpose");
-            Log.e("123", "Video Call getIntent");
-            Log.e("123", "purpose : " + intent.getStringExtra("purpose"));
-            Log.e("123", "otherUserNickname : " + intent.getStringExtra("otherUserNickname"));
             String disconnectFromUser = intent.getStringExtra("otherUserNickname");
             if (purpose != null) {
                 if (purpose.equals("disconnect")) {
@@ -89,7 +86,7 @@ public class Activity_video_call extends AppCompatActivity {
         @JavascriptInterface
         @SuppressWarnings("unused") //컴파일러가 일반적으로 경고하는 내용에서 제외시킬 때 사용하는 노테이션
         public void setCallInfo() {
-            Log.e("123", "setCallInfo");
+
             Message msg = new Message();
             Bundle bundle = new Bundle();
             bundle.putString("purpose", "setCallText");
@@ -161,7 +158,7 @@ public class Activity_video_call extends AppCompatActivity {
         @SuppressWarnings("unused") //컴파일러가 일반적으로 경고하는 내용에서 제외시킬 때 사용하는 노테이션
         public void socketConnectSuccess() {
 
-            Log.e("123", "setCallInfo");
+
             Message msg = new Message();
             Bundle bundle = new Bundle();
             bundle.putString("purpose", "socketConnectSuccess");
@@ -181,7 +178,7 @@ public class Activity_video_call extends AppCompatActivity {
         @JavascriptInterface
         @SuppressWarnings("unused") //컴파일러가 일반적으로 경고하는 내용에서 제외시
         public void socketConnectNotYet() {
-            Log.e("123", "setCallInfo");
+
             Message msg = new Message();
             Bundle bundle = new Bundle();
             bundle.putString("purpose", "socketConnectNotYet");
@@ -228,7 +225,7 @@ public class Activity_video_call extends AppCompatActivity {
             msg.setData(bundle);
             handler.sendMessage(msg);
 
-            Log.e("123", "상대방 통화중");
+
         }
 
     }
@@ -313,7 +310,7 @@ public class Activity_video_call extends AppCompatActivity {
                         //벨소리 시작 핸드폰 상태 체크해서 시작하자.
                         //return 값 : 0 소리모드 , 1 무음모드 ,2 진동모드
                         if (getPhoneAudioState() == 0) {
-                            Log.e("123", "소리모드");
+
                             mediaPlayer.start();
 
                         } else if (getPhoneAudioState() == 2) {
@@ -342,14 +339,14 @@ public class Activity_video_call extends AppCompatActivity {
                     Toast.makeText(Activity_video_call.this, "서버지연 잠시후 다시 시도해주세요", Toast.LENGTH_SHORT).show();
                 } else if (purpose.equals("peerConnectionStart")) {
                     //통화시작되면 시간초 재기
-                    Log.e("123", "몇번찎히나 보자");
+
                     callStatusBar.setText(otherUserNickname + "님과 연결되었습니다. 통화시간 00:00");
                     thread = new Thread(new Runnable() {
                         @Override
                         public void run() {
                             while (isCalling) {
 
-                                Log.e("123", "time : " + callTime);
+
                                 try {
                                     Thread.sleep(1000);
                                 } catch (Exception e) {
@@ -389,7 +386,7 @@ public class Activity_video_call extends AppCompatActivity {
         constraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("123", "눌리고 있냐");
+
                 if (toggle && position.equals("caller")) {
                     videoCameraOff.setVisibility(View.INVISIBLE);
                     videoSwap.setVisibility(View.INVISIBLE);
@@ -495,7 +492,7 @@ public class Activity_video_call extends AppCompatActivity {
                     micToggle = true;
                 }
                 webView.loadUrl("javascript:changeMuteMode()");
-                Log.e("123", "마이크 끄기 off");
+
             }
         });
 
@@ -557,13 +554,13 @@ public class Activity_video_call extends AppCompatActivity {
             public void onPermissionRequest(PermissionRequest request) {
                 runOnUiThread(() -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        Log.e("123", "작동확인1");
+
                         String[] PERMISSIONS = {
                                 PermissionRequest.RESOURCE_AUDIO_CAPTURE,
                                 PermissionRequest.RESOURCE_VIDEO_CAPTURE
                         };
                         request.grant(PERMISSIONS);
-                        Log.e("123", "작동확인2");
+
                     }
                 });
             }
@@ -593,21 +590,21 @@ public class Activity_video_call extends AppCompatActivity {
         int returnNum = -1;
         switch (audioManager.getRingerMode()) {
             case AudioManager.RINGER_MODE_NORMAL:
-                Log.e("123", "소리모드");
+
                 returnNum = 0;
                 break;
             case AudioManager.RINGER_MODE_SILENT:
-                Log.e("123", "무음모드");
+
                 returnNum = 1;
                 break;
             case AudioManager.RINGER_MODE_VIBRATE:
-                Log.e("123", "진동모드");
+
                 returnNum = 2;
                 break;
             default:
                 break;
         }
-        Log.e("123", "현재모드 : " + returnNum);
+
         return returnNum;
     }
 
@@ -646,7 +643,7 @@ public class Activity_video_call extends AppCompatActivity {
 
     public void callFinish(boolean cutter) {
 
-        Log.e("123", "callFinsih()  시작");
+
         //nullPointer exception 방지.
         if (cutterState) {
             return;
@@ -656,7 +653,7 @@ public class Activity_video_call extends AppCompatActivity {
             Thread saveThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    Log.e("123", "전화끊은 사람 : " + nickname);
+
                     //tcp 서버로 데이터 전송
                     Intent resultIntent = new Intent("chatDataToServer");
                     resultIntent.putExtra("purpose", "send");
@@ -686,14 +683,14 @@ public class Activity_video_call extends AppCompatActivity {
                             }
                             //통화 진행
                             else {
-                                Log.e("123", "통화진행시간 : " + timeToString);
+
                                 resultIntent.putExtra("message", timeToString);
                             }
                         }
                     }
                     //전화 끊은 사람이 통화를 받은 사람일 경우 (callee)
                     else {
-                        Log.e("123", "전화건 사람 : " + otherUserNickname);
+
                         resultIntent.putExtra("caller", otherUserNickname);
 
                         if (timeToString != null) {
@@ -703,7 +700,7 @@ public class Activity_video_call extends AppCompatActivity {
                             }
                             //통화 진행
                             else {
-                                Log.e("123", "통화진행시간 : " + timeToString);
+
                                 resultIntent.putExtra("message", timeToString);
                             }
                         }
@@ -717,12 +714,12 @@ public class Activity_video_call extends AppCompatActivity {
         if (missedThread != null) {
             missedThread.interrupt();
         }
-        Log.e("123", "여기지나감");
+
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Log.e("123", "postDelayed 작동");
+
                 //벨소리 제거,진동
                 releaseMediaPlayer();
                 vibrator.cancel();
@@ -736,7 +733,7 @@ public class Activity_video_call extends AppCompatActivity {
 
                 //background 에서 실행될 경우..
                 if (Activity_main_home.activity_main_home == null) {
-                    Log.e("123", "finishAndRemoveTask()");
+
                     Intent intent = new Intent(Activity_video_call.this, Activity_main_home.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     intent.putExtra("kill", true);
@@ -748,10 +745,10 @@ public class Activity_video_call extends AppCompatActivity {
                 }
                 //기존 앱 켜진 상태에서 실행될 경우
                 else {
-                    Log.e("123","foreground");
+
                     if (webView != null) {
                         webView.destroy();
-                        Log.e("123","foreground webview destroy() ");
+
                     }
                     finish();
 
@@ -762,7 +759,7 @@ public class Activity_video_call extends AppCompatActivity {
             }
         }, 600);// 0.6초 정도 딜레이를 준 후 시작
 
-        Log.e("123", "여기지나감2");
+
     }
 
     @Override
@@ -790,7 +787,7 @@ public class Activity_video_call extends AppCompatActivity {
             super.onPageStarted(view, url, favicon);
             progressBar.setVisibility(View.VISIBLE);
             webView.setVisibility(View.INVISIBLE);
-            Log.e("123", "onPagedStarted");
+
         }
 
         @Override
@@ -800,13 +797,13 @@ public class Activity_video_call extends AppCompatActivity {
             webView.setVisibility(View.VISIBLE);
 
 
-            Log.e("123", "onPagedFinished");
+
         }
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
 
-            Log.e("123", "shouldOverrideUrlLoading()");
+
             return super.shouldOverrideUrlLoading(view, request);
         }
     }

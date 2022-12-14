@@ -62,9 +62,9 @@ public class Activity_delivery_info extends AppCompatActivity {
             @Override
             public void onResponse(Call<DeliveryInfo> call, Response<DeliveryInfo> response) {
 
-                Log.e("123", "통신 123");
+
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.e("123", "issuccess" + response.body().isSuccess());
+
                     if (response.body().isSuccess()) {
                         deliveryInfo = response.body();
                         adapter.setDeliveryInfo(deliveryInfo);
@@ -82,7 +82,7 @@ public class Activity_delivery_info extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<DeliveryInfo> call, Throwable t) {
-                Log.e("123", "통신 실패" + t.getMessage());
+
 
             }
         });

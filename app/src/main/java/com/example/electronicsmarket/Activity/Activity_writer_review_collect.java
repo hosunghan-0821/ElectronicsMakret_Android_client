@@ -91,7 +91,7 @@ public class Activity_writer_review_collect extends AppCompatActivity {
                 public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
 
                     if (!v.canScrollVertically(1) && scrollCheck) {
-                        //Log.e("123","스크롤의 최하단입니다. 이거 연속으로 찍히는거면 터치의 문제");
+
                         scrollCheck = false;
                         System.out.println("postinfoSize : " + reviewList.size());
 

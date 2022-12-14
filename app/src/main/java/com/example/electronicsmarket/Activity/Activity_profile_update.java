@@ -104,7 +104,7 @@ public class Activity_profile_update extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                Log.e("123","123");
+
                 nicknameCheckBtn.setVisibility(View.VISIBLE);
                 if(nickname.getText().toString().equals(originNickname)){
                     nicknameCheckBtn.setVisibility(View.INVISIBLE);
@@ -164,7 +164,7 @@ public class Activity_profile_update extends AppCompatActivity {
                 public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
                     if(response.isSuccessful()){
                         if(response.body().isSuccess()){
-                            Log.e("123","123456");
+
                             nickname.setTextColor(Color.BLUE);
                             nickname.clearFocus();
                             builder.setTitle("닉네임 사용 가능합니다.");
@@ -229,7 +229,7 @@ public class Activity_profile_update extends AppCompatActivity {
 
             // 닉네임바뀌었으면, 닉네임 변경
             if(!nickname.getText().toString().equals(originNickname)){
-                Log.e("123","닉네임변경");
+
                 RetrofitService service = retrofit.create(RetrofitService.class);
                 Call<DataMemberSignup> call = service.setNickname(id,nickname.getText().toString());
                 call.enqueue(new Callback<DataMemberSignup>() {
@@ -242,7 +242,7 @@ public class Activity_profile_update extends AppCompatActivity {
                                 if(isImageChange&&imageFile!=null){
                                     RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), imageFile);
                                     MultipartBody.Part body= MultipartBody.Part.createFormData("upload",imageFile.getName(),reqFile);
-                                    Log.e("123","이미지 변경");
+
                                     RetrofitService service = retrofit.create(RetrofitService.class);
                                     Call<DataMemberSignup> call2 = service.setProfile(body,id);
 
@@ -276,7 +276,7 @@ public class Activity_profile_update extends AppCompatActivity {
                                 }
                                 //이미지가 기본이미지로 되었을 경우
                                 else if(standardImage){
-                                    Log.e("123","666");
+
                                     RetrofitService service = retrofit.create(RetrofitService.class);
                                     Call<DataMemberSignup> call2 = service.deleteProfile(id);
                                     call2.enqueue(new Callback<DataMemberSignup>() {
@@ -334,7 +334,7 @@ public class Activity_profile_update extends AppCompatActivity {
                 else if(isImageChange&&imageFile!=null){
                     RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), imageFile);
                     MultipartBody.Part body= MultipartBody.Part.createFormData("upload",imageFile.getName(),reqFile);
-                    Log.e("123","이미지 변경");
+
                     RetrofitService service = retrofit.create(RetrofitService.class);
                     Call<DataMemberSignup> call2 = service.setProfile(body,id);
                     call2.enqueue(new Callback<DataMemberSignup>() {
@@ -368,7 +368,7 @@ public class Activity_profile_update extends AppCompatActivity {
                 }
                 //이미지가 기본이미지로 되었을 경우
                 else if(standardImage){
-                    Log.e("123","666");
+
                     RetrofitService service = retrofit.create(RetrofitService.class);
                     Call<DataMemberSignup> call2 = service.deleteProfile(id);
                     call2.enqueue(new Callback<DataMemberSignup>() {
@@ -423,19 +423,19 @@ public class Activity_profile_update extends AppCompatActivity {
                     if(result.getResultCode()==RESULT_OK){
                         //받아온 uri 저장 후 , 절대경로 얻은 후 -> bitmap 으로바꾸고 -> 클라이언트 단에서 미리 이미지 띄우기
                         //그 다음 비트맵을 파일로 변경
-                        Log.e("123","1234");
+
                         selectedImage = result.getData().getData();
                         //uri를 파일로 만들어서 전송하는방법.
                         //uriToFile(getApplicationContext(),selectedImage);
 
-                        Log.e("1234",selectedImage.toString());
+
                         bitmap = BitmapFactory.decodeFile(getRealPathFromURI(selectedImage));
                         circleImageView.setImageBitmap(bitmap);
                         bitmapToFile(getApplicationContext(),bitmap);
                         standardImage=false;
                     }
                     else{
-                        Log.e("123","이미지 선택 x");
+
                     }
                 }
             }
@@ -489,15 +489,15 @@ public class Activity_profile_update extends AppCompatActivity {
     }
 
     private void uriToFile(Context context,Uri uri){
-        Log.e("123","함수 들어옴");
+
         //File uriFile = new File(context.getCacheDir(),"image");
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         uriFile = new File(getCacheDir(),getRealPathFromURI(uri));
-        Log.e("123",uriFile.getPath().toString());
+
         RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), uriFile);
         MultipartBody.Part body= MultipartBody.Part.createFormData("upload",uriFile.getName(),reqFile);
 
-        Log.e("123",uriFile.getPath());
+
         RetrofitService service = retrofit.create(RetrofitService.class);
         Call<DataMemberSignup> call2 = service.setProfile(body,"winsomed96@naver.com");
         call2.enqueue(new Callback<DataMemberSignup>() {

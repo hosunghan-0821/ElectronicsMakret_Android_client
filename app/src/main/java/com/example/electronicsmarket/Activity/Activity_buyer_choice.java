@@ -63,7 +63,7 @@ public class Activity_buyer_choice extends AppCompatActivity {
                         Intent intent = result.getData();
                         String sendToNickname = intent.getStringExtra("buyer");
 
-                        Log.e("123", "buyer : " + intent.getStringExtra("buyer"));
+
                         RetrofitService service = retrofit.create(RetrofitService.class);
                         Call<Void> call = service.tradeSuccess(nickname, postNum, sendToNickname);
                         call.enqueue(new Callback<Void>() {
@@ -71,7 +71,7 @@ public class Activity_buyer_choice extends AppCompatActivity {
                             public void onResponse(Call<Void> call, Response<Void> response) {
                                 if (response.isSuccessful()) {
 
-                                    Log.e("123", "성공");
+
                                     //PHP 작업 제대로 하고 난 후, TCP를 통해 상대방 회원에게 거래완료 알림.
                                     sendTransactionNotification(sendToNickname);
                                 }
@@ -80,7 +80,7 @@ public class Activity_buyer_choice extends AppCompatActivity {
 
                             @Override
                             public void onFailure(Call<Void> call, Throwable t) {
-                                 Log.e("123", t.getMessage());
+
                             }
                         });
 
@@ -107,8 +107,7 @@ public class Activity_buyer_choice extends AppCompatActivity {
 
                 if (response.isSuccessful() && response.body() != null) {
 
-                    //Log.e("123", "inquirerList size"+response.body().getInquirerList().size());
-                    //Log.e("123",response.body().getProductImageRoute());
+
 
                     //해당 상품정보 보여주기.
                     Glide.with(Activity_buyer_choice.this).load(response.body().getProductImageRoute()).into(buyerChoiceProductImage);
@@ -121,7 +120,7 @@ public class Activity_buyer_choice extends AppCompatActivity {
 
                     for (int i = 0; i < inquireUserList.size(); i++) {
                         inquireList.add(inquireUserList.get(i));
-                        Log.e("123", "finalChatTime" + inquireUserList.get(i).getFinalChatTime());
+
 
                     }
                     adapter.notifyDataSetChanged();
@@ -130,8 +129,7 @@ public class Activity_buyer_choice extends AppCompatActivity {
                     } else {
                         //커서 설정
                         cursorChatTime = inquireUserList.get(inquireUserList.size() - 1).getFinalChatTime();
-                        Log.e("123", "on create finalChatTime" + cursorChatTime);
-                        Log.e("123", "getInquireNum" + response.body().getInquireNum());
+
                         buyerChoiceNoListText.setVisibility(View.GONE);
                     }
                     if (!response.body().getInquireNum().equals(phasingNum)) {
@@ -172,7 +170,7 @@ public class Activity_buyer_choice extends AppCompatActivity {
 
                                         if (inquireUserList.size() != 0) {
                                             cursorChatTime = inquireUserList.get(inquireUserList.size() - 1).getFinalChatTime();
-                                            Log.e("123", "finalChatTime" + cursorChatTime);
+
                                         }
 
                                         if (!response.body().getInquireNum().equals(phasingNum)) {
@@ -185,7 +183,7 @@ public class Activity_buyer_choice extends AppCompatActivity {
 
                                 @Override
                                 public void onFailure(Call<DataInquirerAllInfo> call, Throwable t) {
-                                    Log.e("123", t.getMessage());
+
                                 }
                             });
                         }
@@ -213,7 +211,7 @@ public class Activity_buyer_choice extends AppCompatActivity {
 
                                 if (response.isSuccessful()) {
 
-                                    Log.e("123", "성공");
+
                                     //PHP 작업 제대로 하고 난 후, TCP를 통해 상대방 회원에게 거래완료 알림.
                                     sendTransactionNotification(inquireList.get(position).getNickname());
                                 }
@@ -222,7 +220,7 @@ public class Activity_buyer_choice extends AppCompatActivity {
 
                             @Override
                             public void onFailure(Call<Void> call, Throwable t) {
-                                Log.e("123", t.getMessage());
+
                             }
                         });
 

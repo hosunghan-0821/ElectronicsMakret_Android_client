@@ -16,7 +16,7 @@ public class BroadcastReceiver_Alarm extends BroadcastReceiver {
     SharedPreferences sharedPreferences;
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.e("123","broadcastReceiver onReceive 1:");
+
         //알람을 받으면, startForegroundService 실행
         //여기서 Shared에 닉네임 없으면 실행 x
         // shared 값 가져오기
@@ -24,7 +24,7 @@ public class BroadcastReceiver_Alarm extends BroadcastReceiver {
 
         String nickname=sharedPreferences.getString("nickName","");
         if(nickname.equals("")){
-            Log.e("123","로그아웃 상태여서 서비스 실행x");
+
             return;
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

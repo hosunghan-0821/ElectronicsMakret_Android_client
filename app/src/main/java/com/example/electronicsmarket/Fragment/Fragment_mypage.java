@@ -263,7 +263,7 @@ public class Fragment_mypage extends Fragment  {
 
                 if(response.isSuccessful()&&response.body()!=null){
 
-                    Log.e("123","응답옴");
+
                   DataMemberSignup memberInfo=response.body();
                   nickname.setText(memberInfo.getNickname());
 
@@ -294,7 +294,7 @@ public class Fragment_mypage extends Fragment  {
     @Override
     public void onResume() {
         super.onResume();
-        Log.e("123","onresume");
+
         setProfile(getContext());
 
         if(onCreateViewIsSet){

@@ -71,7 +71,7 @@ public class Activity_main extends AppCompatActivity {
                                     if(autoLogin.isChecked()){
 
                                         //자동로그인 체크되면 0
-                                        Log.e("123","닉네임"+response.body().getNickname());
+
                                         editor.putString("autoLogin","0");
                                         editor.putString("nickName",response.body().getNickname());
                                         editor.putString("userId",loginId.getText().toString());
@@ -79,7 +79,7 @@ public class Activity_main extends AppCompatActivity {
                                         editor.commit();
                                     }
                                     else{
-                                        Log.e("123","닉네임"+response.body().getNickname());
+
                                         editor.putString("autoLogin","1");
                                         editor.putString("nickName",response.body().getNickname());
                                         editor.putString("userId",loginId.getText().toString());

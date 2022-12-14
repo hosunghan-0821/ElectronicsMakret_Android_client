@@ -73,7 +73,7 @@ public class Activity_change_password extends AppCompatActivity {
             else{
 
                 //retrofit전송시작.
-                Log.e("123","들어옴");
+
                 SharedPreferences sharedPreferences=getSharedPreferences("autoLogin",MODE_PRIVATE);
                 String id=sharedPreferences.getString("userId","");
 

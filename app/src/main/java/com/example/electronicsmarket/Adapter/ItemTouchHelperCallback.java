@@ -45,7 +45,7 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
     }
     @Override
     public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-        Log.e("123"," getMovementFlags");
+
         int drag_flags = 0;
         int swipe_flags = ItemTouchHelper.START|ItemTouchHelper.END;
         return makeMovementFlags(swipe_flags,drag_flags);
@@ -54,19 +54,19 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     @Override
     public boolean isLongPressDragEnabled() {
-        Log.e("123","롱클릭");
+
         return super.isLongPressDragEnabled();
     }
 
     @Override
     public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-        Log.e("123"," 아이템 움직임 ");
+
         return listener.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
     }
 
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-        Log.e("123"," 스와이프 ");
+
         listener.onItemSwipe(viewHolder.getAdapterPosition());
 
     }

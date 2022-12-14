@@ -95,7 +95,6 @@ public class Activity_find_password extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<PostEmail> call, Response<PostEmail> response) {
                         if(response.isSuccessful()&&response.body().getIsSuccess()!=null){
-                            Log.e("123","123");
                             if(response.body().getIsSuccess().equals("비번변경 성공")){
                                 builder.setTitle("알림");
                                 builder.setMessage("임시비밀번호 이메일로 발송\n로그인 화면으로 이동합니다.");
@@ -154,7 +153,7 @@ public class Activity_find_password extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<PostEmail> call, Response<PostEmail> response) {
 
-                    Log.e("123","들어옴");
+
                     if(response.isSuccessful()&&response.body()!=null){
 
                         if(response.body().getIsSuccess().equals("아이디 없음")){
@@ -165,7 +164,7 @@ public class Activity_find_password extends AppCompatActivity {
 
                         }
                         else if(response.body().getIsSuccess().equals("아이디 존재")){
-                            Log.e("123","들어옴123");
+
 
                             verifyNumberText.setVisibility(View.VISIBLE);
                             verifyBtn.setVisibility(View.VISIBLE);

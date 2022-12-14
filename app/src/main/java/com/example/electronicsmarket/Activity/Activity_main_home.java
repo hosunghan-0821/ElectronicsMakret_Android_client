@@ -66,7 +66,7 @@ public class Activity_main_home extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.e("123","on NewIntent");
+
         boolean k_f = intent.getBooleanExtra("kill", false);
         if(k_f == true){
             finish();
@@ -122,8 +122,6 @@ public class Activity_main_home extends AppCompatActivity {
                 }
             }
         };
-//        Log.e("123","Activity_main_home intent() : "+intent.getStringExtra("chatFragment"));
-//        Log.e("123","Activity_main_home intent() : "+intent.toString());
 
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
@@ -173,13 +171,7 @@ public class Activity_main_home extends AppCompatActivity {
         }
 
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            Log.e(TAG, "Service is not running - START FOREGROUND SERVICE");
-//            getApplicationContext().startForegroundService(serviceIntent);
-//        } else {
-//            Log.e(TAG, "Service is not running - START SERVICE");
-//            getApplicationContext().startService(serviceIntent);
-//        }
+
         PowerManager pm = (PowerManager) getApplicationContext().getSystemService(POWER_SERVICE);
         boolean isWhiteListing = false;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -225,6 +217,6 @@ public class Activity_main_home extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         LocalBroadcastManager.getInstance(Activity_main_home.this).unregisterReceiver(dataReceiver);
-        Log.e("123","main_home_destroy() ");
+
     }
 }

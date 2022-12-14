@@ -60,14 +60,14 @@ public class Activity_trade_detail_info extends AppCompatActivity {
         tradeNum = intent.getStringExtra("tradeNum");
         readType = intent.getStringExtra("readType");
         tradeType=intent.getStringExtra("tradeType");
-        Log.e("123","tradeType : "+tradeType);
+
 
         RetrofitService service = retrofit.create(RetrofitService.class);
 
         //직거래일 경우
         if(tradeType!=null){
             if(tradeType.equals("직거래")){
-                Log.e("123","직거래 맞춤 변경");
+
                 constraintLayoutDeliveryInfo.setVisibility(View.GONE);
             }
             else if(tradeType.equals("택배거래")){
@@ -157,7 +157,7 @@ public class Activity_trade_detail_info extends AppCompatActivity {
                                 tradeInfoDeliveryCompany.setText(response.body().getTradeDeliveryCompany());
                             }
                             if (response.body().getTradeDeliveryNum() != null) {
-                                //Log.e("123", "getTradeDeliveryNum : " + response.body().getTradeDeliveryNum());
+
                                 tradeInfoDeliveryNum.setText(response.body().getTradeDeliveryNum());
                             }
                             //구매일자 처리 가공해줘야함
@@ -305,8 +305,6 @@ public class Activity_trade_detail_info extends AppCompatActivity {
                         String deliveryCompany = result.getData().getStringExtra("deliveryCompany");
                         String deliveryNum = result.getData().getStringExtra("deliveryNum");
 
-                        Log.e("123", result.getData().getStringExtra("deliveryCompany"));
-                        Log.e("123", result.getData().getStringExtra("deliveryNum"));
                         tradeInfoDeliveryCompany.setText(deliveryCompany);
                         tradeInfoDeliveryNum.setText(deliveryNum);
 

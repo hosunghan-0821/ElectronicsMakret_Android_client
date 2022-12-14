@@ -111,14 +111,14 @@ public class Adapter_place_search_previous extends RecyclerView.Adapter<Adapter_
                             mSelectedItems.put(allPosition, false);
                             notifyItemChanged(allPosition);
                         }
-                        Log.e("456",String.valueOf(mSelectedItems.get(position,false)));
+
                         if ( mSelectedItems.get(position, false) ){
                             mSelectedItems.put(position, false);
-//                        v.setBackgroundColor(Color.WHITE);
+
                             v.setBackgroundResource(R.color.whit_gray);
                         } else {
                             mSelectedItems.put(position, true);
-                            //v.setBackgroundColor(Color.GRAY);
+
                             v.setBackgroundResource(R.color.gray);
                         }
                     }

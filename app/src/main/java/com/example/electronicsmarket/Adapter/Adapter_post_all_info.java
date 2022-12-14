@@ -108,7 +108,7 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        //Log.e("123",String.valueOf(viewType));
+
         if(viewType==0){
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_post_all_info, parent, false);
             AllInfoViewHolder allinfoViewHolder = new AllInfoViewHolder(view);
@@ -285,7 +285,7 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
             ((AllInfoViewHolder) holder).postView.setText(postList.get(position).getPostViewNum());
         }
         else if(holder instanceof ProgressViewholder){
-            Log.e("123","ProgressViewholder binding");
+
         }
 
 
@@ -373,7 +373,7 @@ public class Adapter_post_all_info extends RecyclerView.Adapter<RecyclerView.Vie
                 public void onClick(View v) {
                     int position=getAdapterPosition();
                     if(cancelListener!=null){
-                        Log.e("123","cancelPosition : "+ position);
+
                         cancelListener.onItemCancel(position);
                     }
                 }
