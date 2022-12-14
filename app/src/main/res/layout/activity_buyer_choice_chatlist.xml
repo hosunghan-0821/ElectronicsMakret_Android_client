@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity_buyer_choice_chatlist">
+    tools:context=".Activity.Activity_buyer_choice_chatlist">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline6"

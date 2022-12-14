@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity_search_all_post">
+    tools:context=".Activity.Activity_search_all_post">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/horizontal_guideline1"

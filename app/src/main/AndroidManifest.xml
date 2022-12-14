@@ -50,29 +50,29 @@
         android:theme="@style/Theme.ElectronicsMarket"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".Activity_video_call"
+            android:name=".Activity.Activity_video_call"
             android:exported="false" />
         <activity
-            android:name=".Activity_alarm_collect"
+            android:name=".Activity.Activity_alarm_collect"
             android:exported="false" />
         <activity
-            android:name=".Activity_buyer_choice_chatlist"
+            android:name=".Activity.Activity_buyer_choice_chatlist"
             android:exported="false" />
         <activity
-            android:name=".Activity_buyer_choice"
+            android:name=".Activity.Activity_buyer_choice"
             android:exported="false" />
 
         <service
-            android:name=".Service_network_check"
+            android:name=".Service.Service_network_check"
             android:enabled="true"
             android:exported="true" /> <!-- android:requestLegacyExternalStorage="true" -->
         <activity
-            android:name=".Activity_image_download"
+            android:name=".Activity.Activity_image_download"
             android:exported="false" />
 
-        <receiver android:name=".BroadcastReceiver_Alarm" />
+        <receiver android:name=".BroadcastReceiver.BroadcastReceiver_Alarm" />
         <receiver
-            android:name=".BroadcastReceiver_Reboot"
+            android:name=".BroadcastReceiver.BroadcastReceiver_Reboot"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -81,128 +81,122 @@
         </receiver>
 
         <service
-            android:name=".Service_Restart"
+            android:name=".Service.Service_Restart"
             android:enabled="true"
             android:exported="true" />
         <service
-            android:name=".Service_Example"
+            android:name=".Service.Service_Example"
             android:enabled="true"
             android:exported="true" /> <!-- android:stopWithTask="false" -->
         <activity
-            android:name=".Activity_trade_chat"
+            android:name=".Activity.Activity_trade_chat"
             android:exported="false"
-            android:parentActivityName=".Activity_main_home" />
+            android:parentActivityName=".Activity.Activity_main_home" />
         <activity
-            android:name=".example_chat"
+            android:name=".Activity.Activity_trade_refund_cancel"
             android:exported="false" />
         <activity
-            android:name=".Activity_trade_refund_cancel"
-            android:exported="false" />
-        <activity
-            android:name=".Activity_writer_review_collect"
+            android:name=".Activity.Activity_writer_review_collect"
             android:exported="false"
-            android:parentActivityName=".Activity_main_home" />
+            android:parentActivityName=".Activity.Activity_main_home" />
         <activity
-            android:name=".Activity_review_write"
+            android:name=".Activity.Activity_review_write"
             android:exported="false"
-            android:parentActivityName=".Activity_buy_list" />
+            android:parentActivityName=".Activity.Activity_buy_list" />
         <activity
-            android:name=".Activity_delivery_info"
+            android:name=".Activity.Activity_delivery_info"
             android:exported="false" />
         <activity
-            android:name=".Activity_delivery_num_input"
+            android:name=".Activity.Activity_delivery_num_input"
             android:exported="false" />
         <activity
-            android:name=".Activity_buy_list"
+            android:name=".Activity.Activity_buy_list"
             android:exported="false"
-            android:parentActivityName=".Activity_main_home" />
+            android:parentActivityName=".Activity.Activity_main_home" />
         <activity
-            android:name=".Activity_address_change"
+            android:name=".Activity.Activity_address_change"
             android:exported="false" />
         <activity
-            android:name=".Activity_trade_detail_info"
+            android:name=".Activity.Activity_trade_detail_info"
             android:exported="false" />
         <activity
-            android:name=".Activity_get_address"
+            android:name=".Activity.Activity_get_address"
             android:exported="false" />
         <activity
-            android:name=".Activity_buy_product_delivery"
+            android:name=".Activity.Activity_buy_product_delivery"
             android:exported="false" />
         <activity
-            android:name=".Activity_kakaopay_api"
+            android:name=".Activity.Activity_kakaopay_api"
             android:exported="false" />
         <activity
-            android:name=".Activity_search_all_post"
+            android:name=".Activity.Activity_search_all_post"
             android:exported="false" />
         <activity
-            android:name=".Activity_category_search_result"
+            android:name=".Activity.Activity_category_search_result"
             android:exported="false" />
         <activity
-            android:name=".Activity_category_all_post"
+            android:name=".Activity.Activity_category_all_post"
             android:exported="false" />
         <activity
-            android:name=".Activity_sell_list"
+            android:name=".Activity.Activity_sell_list"
             android:exported="false" />
         <activity
-            android:name=".Activity_love_list"
+            android:name=".Activity.Activity_love_list"
             android:exported="false"
-            android:parentActivityName=".Activity_main_home"
+            android:parentActivityName=".Activity.Activity_main_home"
             />
         <activity
-            android:name=".Activity_seller_info"
+            android:name=".Activity.Activity_seller_info"
             android:exported="false" />
         <activity
-            android:name=".Activity_location_map"
+            android:name=".Activity.Activity_location_map"
             android:exported="false" />
         <activity
-            android:name=".Activity_place_search"
+            android:name=".Activity.Activity_place_search"
             android:exported="false" />
         <activity
-            android:name=".Activity_place_search_previous"
+            android:name=".Activity.Activity_place_search_previous"
             android:exported="false" />
         <activity
-            android:name=".Activity_post_read"
+            android:name=".Activity.Activity_post_read"
             android:exported="false"
-            android:parentActivityName=".Activity_main_home"
+            android:parentActivityName=".Activity.Activity_main_home"
             />
         <activity
-            android:name=".Activity_category_2"
+            android:name=".Activity.Activity_category_2"
             android:exported="false" />
         <activity
-            android:name=".Activity_category_1"
+            android:name=".Activity.Activity_category_1"
             android:exported="false" />
         <activity
-            android:name=".Activity_post_write"
+            android:name=".Activity.Activity_post_write"
             android:exported="false" />
         <activity
-            android:name=".example"
+            android:name=".Activity.Activity_change_password"
             android:exported="false" />
         <activity
-            android:name=".Activity_change_password"
+            android:name=".Activity.Activity_member_info"
             android:exported="false" />
         <activity
-            android:name=".Activity_member_info"
+            android:name=".Activity.Activity_profile_update"
             android:exported="false" />
         <activity
-            android:name=".Activity_profile_update"
+            android:name=".Activity.Activity_member_out"
             android:exported="false" />
         <activity
-            android:name=".Activity_member_out"
+            android:name=".Activity.Activity_setting"
             android:exported="false" />
         <activity
-            android:name=".Activity_setting"
+            android:name=".Activity.Activity_find_password"
             android:exported="false" />
         <activity
-            android:name=".Activity_find_password"
+            android:name=".Activity.Activity_main_home"
             android:exported="false" />
         <activity
-            android:name=".Activity_main_home"
+            android:name=".Activity.Activity_signup"
             android:exported="false" />
         <activity
-            android:name=".Activity_signup"
-            android:exported="false" />
-        <activity
-            android:name=".Activity_main"
+            android:name=".Activity.Activity_main"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
