@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity_address_change">
+    tools:context=".Activity.Activity_address_change">
 
     <ImageView
         android:id="@+id/address_change_back_arrow"

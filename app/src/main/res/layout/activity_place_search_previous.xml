@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/layout_main"
     android:orientation="vertical"
-    tools:context=".Activity_place_search_previous" >
+    tools:context=".Activity.Activity_place_search_previous" >
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/horizontal_guideline1"
