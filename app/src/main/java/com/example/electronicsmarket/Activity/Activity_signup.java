@@ -189,9 +189,9 @@ public class Activity_signup extends AppCompatActivity {
         public void onFocusChange(View v, boolean hasFocus) {
             //포커스 들어왔을 때,
             if(!hasFocus){
-                Log.e("123","나감");
+
                 if(!loginNickname.getText().toString().equals(verifyNickname)){
-                    Log.e("123","나가면서 값다름");
+
                     nicknameCheckText.setTextColor(Color.RED);
                     nicknameCheckText.setText("닉네임 중복검사 해주세요");
                     nicknameDuplicate=false;
@@ -199,9 +199,9 @@ public class Activity_signup extends AppCompatActivity {
             }
 
             else{
-                Log.e("123","포커스들어옴");
+
                 if(!loginNickname.getText().toString().equals(verifyNickname)){
-                    Log.e("123","포커스들어옴 값 다름");
+
                     nicknameDuplicate=false;
                 }
             }
@@ -284,7 +284,7 @@ public class Activity_signup extends AppCompatActivity {
                 nicknameDuplicate=false;
                 return;
             }
-            Log.e("123","123");
+
             RetrofitService service = retrofit.create(RetrofitService.class);
             Call<DataMemberSignup> call = service.sendNickname("nicknameCheck.php", loginNickname.getText().toString());
             call.enqueue(new Callback<DataMemberSignup>() {
@@ -392,7 +392,7 @@ public class Activity_signup extends AppCompatActivity {
                                     verifyNumberCheckBtn.setVisibility(View.VISIBLE);
                                 }
                                 if(isRunning){
-                                    Log.e("123","여기들어옴");
+
                                     thread1.interrupt();
                                 }
                                 thread1=new Thread(new Runnable() {
@@ -410,7 +410,7 @@ public class Activity_signup extends AppCompatActivity {
                                                 Thread.sleep(1000);
                                                 i-=1;
                                             } catch (Exception e) {
-                                                Log.e("123","쓰레드 인터럽트");
+
                                                 break;
                                             }
 

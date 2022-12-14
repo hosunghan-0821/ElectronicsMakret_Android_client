@@ -132,7 +132,7 @@ public class Activity_post_write extends AppCompatActivity {
         if (update) {
             postReadCompleteText.setText("수정");
             postNum = intent.getStringExtra("postNum");
-            Log.e("123", "업데이트");
+
 
             //업데이트 일 경우 데이터 정보 받아와서 화면에 뿌려주기
             RetrofitService service = retrofit.create(RetrofitService.class);
@@ -165,7 +165,7 @@ public class Activity_post_write extends AppCompatActivity {
                         } else {
                             deliverCheckBox.setChecked(false);
                         }
-                        Log.e("123", data.getPostSellType());
+
                         if (data.getPostSellType().equals("직거래/택배거래")) {
                             radioALL.toggle();
                             //여기에 위치 정보도 가져오고, 위도,경도 도로명주소 까지 값을 갖고 있어야한다.
@@ -194,7 +194,7 @@ public class Activity_post_write extends AppCompatActivity {
             });
 
         } else {
-            Log.e("123", "업데이트아님");
+
         }
 
 
@@ -301,7 +301,7 @@ public class Activity_post_write extends AppCompatActivity {
                 imageNumberText.setText(imageList.size() + "/5");
 
                 Collections.swap(imageFileCollect, from_position, to_position);
-                Log.e("123", imageFileCollect.toString());
+
                 return false;
             }
 
@@ -330,21 +330,19 @@ public class Activity_post_write extends AppCompatActivity {
                         //새로 올리는 파일일 경우 파일 만들어서 파일 업로드
                         if (imageList.get(i).getImguri() != null) {
 
-                            Log.e("123", (i + 1) + "번째 파일은 새로 올리는 사진이에요 ");
                             File uriFile = new File(createCopyAndReturnRealPath(imageList.get(i).getImguri(), "image" + i));
-                            Log.e("123", uriFile.getPath());
                             imageFileCollect.add(uriFile);
                             RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), uriFile);
                             MultipartBody.Part filepart = MultipartBody.Part.createFormData("image" + i, "image", fileBody);
                             files.add(filepart);
-                            Log.e("123", files.toString());
+
                             //확인
                         }
 
                     }
 
                     //여기는 파일에 순서에 대한 정보를 만드는곳
-                    Log.e("123", String.valueOf(imageList.size()));
+
                     for (int i = 0; i < imageList.size(); i++) {
 
                         if (imageList.get(i).getImguri() != null) {
@@ -404,14 +402,14 @@ public class Activity_post_write extends AppCompatActivity {
 
                     for (int i = 0; i < imageFileCollect.size(); i++) {
                         try {
-                            Log.e("123", String.valueOf(i));
+
                             RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), imageFileCollect.get(i));
                             MultipartBody.Part filepart = MultipartBody.Part.createFormData("image" + i, "image", fileBody);
                             files.add(filepart);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        Log.e("123", files.toString());
+
                     }
                 }
                 SharedPreferences sharedPreferences = getSharedPreferences("autoLogin", MODE_PRIVATE);
@@ -456,7 +454,7 @@ public class Activity_post_write extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
 
-                            Log.e("123", "통신성공");
+
                             if (response.isSuccessful() && response.body() != null) {
 
                                 if (response.body().isSuccess()) {
@@ -464,7 +462,7 @@ public class Activity_post_write extends AppCompatActivity {
                                     for (int i = 0; i < imageFileCollect.size(); i++) {
                                         if (imageFileCollect.get(i).exists()) {
                                             boolean result = imageFileCollect.get(i).delete();
-                                            Log.e("123", String.valueOf(result));
+
                                         }
                                     }
 
@@ -480,7 +478,7 @@ public class Activity_post_write extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<DataMemberSignup> call, Throwable t) {
-                            Log.e("123", "통신오류");
+
                         }
                     });
                     return;
@@ -491,13 +489,13 @@ public class Activity_post_write extends AppCompatActivity {
                 call.enqueue(new Callback<DataMemberSignup>() {
                     @Override
                     public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
-                        Log.e("123", "통신성공");
+
                         if (response.isSuccessful() && response.body() != null) {
                             //이미지 업로드 전송 성공하면 임시파일들 삭제.
                             for (int i = 0; i < imageFileCollect.size(); i++) {
                                 if (imageFileCollect.get(i).exists()) {
                                     boolean result = imageFileCollect.get(i).delete();
-                                    Log.e("123", String.valueOf(result));
+
                                 }
                             }
 
@@ -511,7 +509,7 @@ public class Activity_post_write extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<DataMemberSignup> call, Throwable t) {
-                        Log.e("123", "통신오류");
+
                     }
                 });
             }
@@ -536,7 +534,7 @@ public class Activity_post_write extends AppCompatActivity {
 
                     if (imageList.get(position).getImguri() == null) {
                         deleteImage += imageList.get(position).getImgUrl() + "///";
-                        Log.e("123", deleteImage);
+
                     }
                     imageList.remove(position);
                     imageAdapter.setImageList(imageList);
@@ -548,7 +546,7 @@ public class Activity_post_write extends AppCompatActivity {
                 if (imageFileCollect.get(position).exists()) {
 
                     boolean result = imageFileCollect.get(position).delete();
-                    Log.e("123", String.valueOf(result));
+
 
                 }
                 imageFileCollect.remove(position);
@@ -559,7 +557,7 @@ public class Activity_post_write extends AppCompatActivity {
                 }
                 imageAdapter.notifyItemRemoved(position);
                 imageNumberText.setText(imageList.size() + "/5");
-                Log.e("123", imageFileCollect.toString());
+
             }
         });
 
@@ -572,7 +570,6 @@ public class Activity_post_write extends AppCompatActivity {
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == RESULT_OK) {
                         Intent intent = result.getData();
-                        Log.e("123", "locationLauncehr");
 
                         locationPlaceName = intent.getStringExtra("location_placeName");
                         locationAddressName = intent.getStringExtra("location_addressName");
@@ -628,10 +625,10 @@ public class Activity_post_write extends AppCompatActivity {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == RESULT_OK) {
-                        Log.e("123", "41223");
+
                         Intent intent = result.getData();
                         String category = intent.getStringExtra("category");
-                        Log.e("123", category);
+
                     }
                 }
             }
@@ -666,7 +663,7 @@ public class Activity_post_write extends AppCompatActivity {
                                 builder.show();
                                 return;
                             }
-                            Log.e("123", "이미지 한개 선택");
+
                             Uri imageUri = intent.getData();
                             Data_post_image data = new Data_post_image(imageUri);
                             data.setImgUrl(imageUri.toString());
@@ -709,7 +706,7 @@ public class Activity_post_write extends AppCompatActivity {
                                     return;
                                 }
                                 Uri imageUri = clipData.getItemAt(i).getUri();
-                                //Log.e("123", imageUri.toString());
+
                                 Data_post_image data = new Data_post_image(imageUri);
                                 data.setImgUrl(imageUri.toString());
                                 imageList.add(data);
@@ -724,7 +721,7 @@ public class Activity_post_write extends AppCompatActivity {
                                     File uriFile = new File(createCopyAndReturnRealPath(imageUri, "image" + i));
                                     imageFileCollect.add(uriFile);
 
-                                    Log.e("123", uriFile.getPath());
+
                                 }
 
                             }
@@ -892,7 +889,7 @@ public class Activity_post_write extends AppCompatActivity {
         for (int i = 0; i < imageFileCollect.size(); i++) {
             if (imageFileCollect.get(i).exists()) {
                 boolean result = imageFileCollect.get(i).delete();
-                Log.e("123", String.valueOf(result));
+
             }
 
         }

@@ -71,7 +71,7 @@ public class Activity_buyer_choice_chatlist extends AppCompatActivity {
                     ArrayList<DataInquirerInfo> chatList = response.body().getInquirerList();
                     for (int i = 0; i < chatList.size(); i++) {
                         chatRecentList.add(chatList.get(i));
-                        Log.e("123", "finalChatTime" + chatList.get(i).getFinalChatTime());
+
                     }
                     adapter.notifyDataSetChanged();
 
@@ -80,8 +80,7 @@ public class Activity_buyer_choice_chatlist extends AppCompatActivity {
                     } else {
                         //커서 설정
                         cursorChatTime = chatList.get(chatList.size() - 1).getFinalChatTime();
-                        Log.e("123", "on create finalChatTime" + cursorChatTime);
-                        Log.e("123", "getInquireNum" + response.body().getInquireNum());
+
                         buyerChoiceChatlistNoText.setVisibility(View.GONE);
                     }
                     if (!response.body().getInquireNum().equals(phasingNum)) {
@@ -114,7 +113,6 @@ public class Activity_buyer_choice_chatlist extends AppCompatActivity {
                                         ArrayList<DataInquirerInfo> chatList = response.body().getInquirerList();
                                         for (int i = 0; i < chatList.size(); i++) {
                                             chatRecentList.add(chatList.get(i));
-                                            Log.e("123", "finalChatTime" + chatList.get(i).getFinalChatTime());
                                         }
                                         adapter.notifyDataSetChanged();
                                         if (chatList.size() != 0) {
@@ -131,7 +129,7 @@ public class Activity_buyer_choice_chatlist extends AppCompatActivity {
 
                                 @Override
                                 public void onFailure(Call<DataInquirerAllInfo> call, Throwable t) {
-                                    Log.e("123", t.getMessage());
+
                                 }
                             });
 
@@ -182,7 +180,7 @@ public class Activity_buyer_choice_chatlist extends AppCompatActivity {
 
                             @Override
                             public void onFailure(Call<Void> call, Throwable t) {
-                                Log.e("123","거래등록 실패"+ t.getMessage());
+
                             }
                         });
                     }

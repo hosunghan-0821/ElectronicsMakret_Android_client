@@ -48,7 +48,7 @@ public class Activity_get_address extends AppCompatActivity {
             //페이지를 다 load 하고 난 후에, 저 자바스크립트 함수 실행하도록
             @Override
             public void onPageFinished(WebView view, String url) {
-                Log.e("123","daum_api+등장");
+
                 webView.loadUrl("javascript:sample2_execDaumPostcode();");
             }
 

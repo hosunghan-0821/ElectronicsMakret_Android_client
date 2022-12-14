@@ -61,13 +61,13 @@ public class Activity_kakaopay_api extends AppCompatActivity {
         @SuppressWarnings("unused") //컴파일러가 일반적으로 경고하는 내용에서 제외시킬 때 사용하는 노테이션
         public void processResult(String data) {
             //db저장까지 끝난 후 , 화면전환하는곳.
-            Log.e("123", "processResult();");
+
 
             //data = 결제 결과; 결과에 따라다르게 나올 수 있도록,
             if(data.equals("결제성공")){
 
                 //결제상세보기 화면으로 이동
-                Log.e("123","결제성공");
+
                 Toast.makeText(getApplicationContext(), data, Toast.LENGTH_LONG).show();
                 Intent intent =new Intent (Activity_kakaopay_api.this, Activity_trade_detail_info.class);
                 intent.putExtra("tradeNum",tradeNum);
@@ -100,7 +100,7 @@ public class Activity_kakaopay_api extends AppCompatActivity {
         try{
             ApplicationInfo applicationInfo = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
             API_KEY = applicationInfo.metaData.getString("KAKAO_API_KEY");
-            Log.e("123456",API_KEY);
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -109,8 +109,7 @@ public class Activity_kakaopay_api extends AppCompatActivity {
         productName = getIntent.getStringExtra("productName");
         productPriceS = getIntent.getStringExtra("productPay");
 
-        Log.e("123", productName);
-        Log.e("123", productPriceS);
+
         variableInit();
 
         handler= new Handler(Looper.getMainLooper()){
@@ -146,19 +145,15 @@ public class Activity_kakaopay_api extends AppCompatActivity {
             public void onResponse(Call<KaKaoPayResult> call, Response<KaKaoPayResult> response) {
 
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.e("123", "통신성공");
+
 
                     String url = response.body().getRedirectUrl();
                     String tid = response.body().getTid();
                     webView.loadUrl(url);
                     tidPin = tid;
                     appURL = response.body().getAppUrl();
-                    Log.e("123","tid : "+tidPin);
+
                 } else {
-
-
-                    Log.e("123", response.message());
-                    Log.e("123", "통신실패");
                    Toast.makeText(getApplicationContext(), "카카오 페이 서버 통신 오류 발생 화면 reload", Toast.LENGTH_SHORT).show();
                     finish();//인텐트 종료
                     overridePendingTransition(0, 0);//인텐트 효과 없애기
@@ -225,17 +220,14 @@ public class Activity_kakaopay_api extends AppCompatActivity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
 
-            Log.e("123", "url 변경확인");
-            Log.e("123", "isFinishPay" + isFinishPay);
 
             if (url != null && url.contains("pg_token=")) {
                 isFinishPay="결제저장대기";
-                Log.e("123", "isFinishPay" + isFinishPay);
+
                 //이 타이밍에 webview invisible 하고, progressbar 띄어서 확인해보자 어떻게 되는지.
                 String pg_Token = url.substring(url.indexOf("pg_token=") + 9);
                 pgToken = pg_Token;
-                Log.e("123", "pg_token " + pgToken);
-                Log.e("123", "tid" + tidPin);
+
 
                 RetrofitService service = retrofit.create(RetrofitService.class);
                 Call<KaKaoPayResult> call = service.sendKaKaoPayApprovalRequest(
@@ -252,7 +244,6 @@ public class Activity_kakaopay_api extends AppCompatActivity {
                     public void onResponse(Call<KaKaoPayResult> call, Response<KaKaoPayResult> response) {
 
                         if (response.isSuccessful() && response.body() != null) {
-                            Log.e("123", "최종결제 통신성공");
 
                             Intent intent = getIntent();
                             //기존즈소지 설정
@@ -327,7 +318,7 @@ public class Activity_kakaopay_api extends AppCompatActivity {
                     if (existPackage != null) {
                         startActivity(intent);
                     } else {
-                        Log.e("123","url : "+url);
+
                         Toast.makeText(Activity_kakaopay_api.this, "카카오톡 앱이 없어요", Toast.LENGTH_SHORT).show();
                     }
                     isFinishPay="결제저장대기";
@@ -337,7 +328,7 @@ public class Activity_kakaopay_api extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-            Log.e("123", "아마 한번 찎힘 url : " + url);
+
             //view.loadUrl(url);
             return false;
             //이 함수 리턴 값 의미 : true to cancel the current load, otherwise return false.
@@ -349,13 +340,13 @@ public class Activity_kakaopay_api extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.e("456", "onStart : ");
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e("123", "onResume : + isFinishPay" + isFinishPay);
+
         if (isFinishPay.equals("결제성공")) {
             webView.setVisibility(View.INVISIBLE);
             progressBar.setVisibility(View.VISIBLE);
@@ -371,7 +362,7 @@ public class Activity_kakaopay_api extends AppCompatActivity {
                             break;
                         }catch (Exception e){
                             System.out.println("오류"+e);
-                            Log.e("123","여기로들어옴1?");
+
                             e.printStackTrace();
                             finish();
                             break;
@@ -384,15 +375,15 @@ public class Activity_kakaopay_api extends AppCompatActivity {
 //            webView.loadUrl("javascript:processFinish();");
         }
         else if(isFinishPay.equals("결제저장대기")){
-            Log.e("123","결제저장대기");
+
             webView.setVisibility(View.INVISIBLE);
             progressBar.setVisibility(View.VISIBLE);
             thread=new Thread(new Runnable() {
                 @Override
                 public void run() {
                     for(int i=0; i<3;i++){
-                        Log.e("123","쓰레드 도는중 i : "+ i);
-                        Log.e("123","isFinishPay"+isFinishPay);
+
+
                         try{
                             if(isFinishPay.equals("결제성공")){
                                 Message msg= new Message();
@@ -402,7 +393,7 @@ public class Activity_kakaopay_api extends AppCompatActivity {
                             }
                             Thread.sleep(1000);
                         }catch (Exception e){
-                            Log.e("123","여기로들어옴2?");
+
                             System.out.println("오류"+e);
                             e.printStackTrace();
                             finish();
@@ -424,19 +415,19 @@ public class Activity_kakaopay_api extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        Log.e("456", "onPause : ");
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.e("456", "onstop : ");
+
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        Log.e("456", "onRestart : ");
+
     }
 }
 

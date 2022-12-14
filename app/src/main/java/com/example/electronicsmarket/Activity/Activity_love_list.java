@@ -57,10 +57,10 @@ public class Activity_love_list extends AppCompatActivity {
         call.enqueue(new Callback<PostAllInfo>() {
             @Override
             public void onResponse(Call<PostAllInfo> call, Response<PostAllInfo> response) {
-                Log.e("456","통신성공");
+
                 if(response.isSuccessful() && response.body()!=null){
                     PostAllInfo postAllInfo = response.body();
-                    Log.e("123",response.body().getProductNum());
+
 
                     loveList=postAllInfo.postInfo;
                     if(loveList.size()==0){
@@ -76,7 +76,7 @@ public class Activity_love_list extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<PostAllInfo> call, Throwable t) {
-                Log.e("456","통신실패");
+
             }
         });
 
@@ -145,7 +145,7 @@ public class Activity_love_list extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<DataMemberSignup> call, Throwable t) {
-                        Log.e("123","통신 onFailure ()");
+
                     }
                 });
 

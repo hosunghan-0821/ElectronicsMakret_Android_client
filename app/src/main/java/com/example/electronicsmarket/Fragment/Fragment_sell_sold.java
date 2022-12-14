@@ -105,13 +105,11 @@ public class Fragment_sell_sold extends Fragment {
                 public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
 
                     if(!v.canScrollVertically(1)&&scrollCheck){
-                        //Log.e("123","스크롤의 최하단입니다. 이거 연속으로 찍히는거면 터치의 문제");
+
                         scrollCheck=false;
-//                       Toast.makeText(getActivity(), "스크롤의 최하단입니다.", Toast.LENGTH_SHORT).show()
-                        //System.out.println("postinfoSize : "+sellingList.size());
+
                         if(!isFinalPhase){
-//                                postList.add(new PostInfo(1));
-//                                adapter.notifyItemInserted(postList.size()-1);
+
                             RetrofitService service = retrofit.create(RetrofitService.class);
                             Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,phasingNum,"soldInfo",id);
                             call.enqueue(new Callback<PostAllInfo>() {
@@ -148,7 +146,7 @@ public class Fragment_sell_sold extends Fragment {
                                 }
                                 @Override
                                 public void onFailure(Call<PostAllInfo> call, Throwable t) {
-                                    Log.e("123", t.getMessage());
+
 
                                 }
                             });
@@ -156,9 +154,7 @@ public class Fragment_sell_sold extends Fragment {
 
 
                     }
-//                    else if(!v.canScrollVertically(-1)){
-//                        //Toast.makeText(getActivity(), "스크롤의 최상단입니다.", Toast.LENGTH_SHORT).show();
-//                    }
+
                 }
             });
         }
@@ -173,8 +169,7 @@ public class Fragment_sell_sold extends Fragment {
                     //택배거래일 경우 상세조회 화면으로 이동
                     if(soldList.get(position).getPostTradeType().equals("택배거래")){
                         Intent intent = new Intent(getActivity(), Activity_trade_detail_info.class);
-                        Log.e("123","tradeNum : "+soldList.get(position).getTradeNum());
-                        Log.e("123","tradeType :"+soldList.get(position).getPostTradeType());
+
                         intent.putExtra("tradeType",soldList.get(position).getPostTradeType());
                         intent.putExtra("tradeNum",soldList.get(position).getTradeNum());
                         intent.putExtra("readType","seller");
@@ -198,7 +193,7 @@ public class Fragment_sell_sold extends Fragment {
             public void onRefresh() {
 
                 RetrofitService service = retrofit.create(RetrofitService.class);
-                //Log.e("123","onRefresh CursorPostNum"+cursorPostNum);
+
                 Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,"update","soldInfo",id);
                 call.enqueue(new Callback<PostAllInfo>() {
                     @Override
@@ -224,7 +219,6 @@ public class Fragment_sell_sold extends Fragment {
 
                     @Override
                     public void onFailure(Call<PostAllInfo> call, Throwable t) {
-                        Log.e("123", t.getMessage());
 
                     }
                 });
@@ -278,7 +272,7 @@ public class Fragment_sell_sold extends Fragment {
         super.onResume();
         if(onCreateViewIsSet){
             RetrofitService service = retrofit.create(RetrofitService.class);
-            //Log.e("123","onResume CursorPostNum"+cursorPostNum);
+
             Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,"update","soldInfo",id);
             call.enqueue(new Callback<PostAllInfo>() {
                 @Override
@@ -301,7 +295,7 @@ public class Fragment_sell_sold extends Fragment {
 
                 @Override
                 public void onFailure(Call<PostAllInfo> call, Throwable t) {
-                    Log.e("123", t.getMessage());
+
 
                 }
             });

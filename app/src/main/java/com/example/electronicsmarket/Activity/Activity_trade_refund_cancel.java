@@ -68,16 +68,14 @@ public class Activity_trade_refund_cancel extends AppCompatActivity {
                         if(response.isSuccessful()&&response.body()!=null){
 
                             if(response.body().isSuccess()){
-                                Log.e("123","성공");
+
                                 if(response.body().getTradeType()!=null){
 
                                     //결제방식이 카카오페이일 경우,
                                     if(response.body().getTradeType().equals("카카오페이")){
-                                        Log.e("123","카카오페이일 경우");
+
 
                                         String tidPin=response.body().getKakaoTid();
-                                        Log.e("123","tidPin"+tidPin);
-                                        Log.e("123","productprcie"+productPrice);
                                         Call<KaKaoPayResult> call2=service.sendKaKaoPayCancelRequest(
                                                 API_KEY,
                                                 "TC0ONETIME",
@@ -88,7 +86,6 @@ public class Activity_trade_refund_cancel extends AppCompatActivity {
                                         call2.enqueue(new Callback<KaKaoPayResult>() {
                                             @Override
                                             public void onResponse(Call<KaKaoPayResult> call, Response<KaKaoPayResult> response) {
-                                                Log.e("123","카카오결제취소성공");
 
                                                 Toast.makeText(getApplicationContext(), "환불처리 되었습니다.", Toast.LENGTH_SHORT).show();
                                                 Intent intent =new Intent(Activity_trade_refund_cancel.this, Activity_buy_list.class);
@@ -99,7 +96,7 @@ public class Activity_trade_refund_cancel extends AppCompatActivity {
 
                                             @Override
                                             public void onFailure(Call<KaKaoPayResult> call, Throwable t) {
-                                                Log.e("123","카카오실패");
+
                                             }
                                         });
                                     }
@@ -113,7 +110,7 @@ public class Activity_trade_refund_cancel extends AppCompatActivity {
                     }
                     @Override
                     public void onFailure(Call<RefundInfo> call, Throwable t) {
-                        Log.e("123",t.toString());
+
                         Toast.makeText(getApplicationContext(), "통신오류", Toast.LENGTH_SHORT).show();
                     }
                 });

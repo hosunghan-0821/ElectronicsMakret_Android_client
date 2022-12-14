@@ -75,63 +75,6 @@ public class Activity_buy_product_delivery extends AppCompatActivity {
                 @Override
                 public void onActivityResult(ActivityResult result) {
 
-                    Log.e("123", "onActivityResult()");
-                    Log.e("123", "result.getresultcode" + result.getResultCode());
-//                    if (result.getResultCode() == Activity_kakaopay_api.payResultCode) {
-//                        Log.e("123", result.getData().getStringExtra("state"));
-//                        //결제 완료 후 처리 방법
-//                        //여기서 화면터치 잠그고, 비동기 통신 하고 응답오면 화면 이동 db에 데이터 다 전달하고, 결제전 화면 finish
-//                        Log.e("123", "카카오 페이 결제완료");
-//
-//                        //기본주소지로 사용자가 check 해놓았으면, 해당 체크된걸 db에 알려줘서 저장할 수 있게끔한다.
-//                        if (setStandardAddress.isChecked()) {
-//                            RequestBody isCheckBody = RequestBody.create(MediaType.parse("text/plain"), "true");
-//                            requestMap.put("setStandardAddress", isCheckBody);
-//                        }
-//
-//                        //결제 정보들을 서버에 넘겨서, DB에 저장해줘야함.
-//                        //결제방식 및, 게시글 번호
-//                        RequestBody postNumBody = RequestBody.create(MediaType.parse("text/plain"), postNum);
-//                        RequestBody payTypeBody = RequestBody.create(MediaType.parse("text/plain"), "카카오페이");
-//                        RequestBody tradeTypeBody = RequestBody.create(MediaType.parse("text/plain"), "택배거래");
-//                        RequestBody buyerId = RequestBody.create(MediaType.parse("text/plain"), id);
-//                        RequestBody buyerName = RequestBody.create(MediaType.parse("text/plain"), productBuyerName.getText().toString());
-//
-//
-//                        requestMap.put("buyerName", buyerName);
-//                        requestMap.put("postNum", postNumBody);
-//                        requestMap.put("payType", payTypeBody);
-//                        requestMap.put("tradeType", tradeTypeBody);
-//                        requestMap.put("buyerId", buyerId);
-//
-//                        //배송주소지 관련
-//                        RequestBody addressBody = RequestBody.create(MediaType.parse("text/plain"), productBuyerAddress.getText().toString());
-//                        RequestBody addressDetailBody = RequestBody.create(MediaType.parse("text/plain"), productBuyerAddressDetail.getText().toString());
-//                        RequestBody deliveryDetailBody = RequestBody.create(MediaType.parse("text/plain"), productBuySpinner.getSelectedItem().toString());
-//                        RequestBody deliveryDetail2Body = RequestBody.create(MediaType.parse("text/plain"), productDeliveryDetail.getText().toString());
-//
-//                        //배송주소지 관련
-//                        requestMap.put("deliveryDetail2Body", deliveryDetail2Body);
-//                        requestMap.put("deliveryDetail", deliveryDetailBody);
-//                        requestMap.put("addressDetail", addressDetailBody);
-//                        requestMap.put("address", addressBody);
-//
-//
-//                        RetrofitService service = retrofit.create(RetrofitService.class);
-//                        Call<paymentInfo> call = service.sendPaymentInfo(requestMap);
-//                        call.enqueue(new Callback<paymentInfo>() {
-//                            @Override
-//                            public void onResponse(Call<paymentInfo> call, Response<paymentInfo> response) {
-//                                //제대로 db에 저장됬으면 -> 구메 상세 페이지로 이동해서 해당 정보들 보여줄 수 있게끔
-//                            }
-//
-//                            @Override
-//                            public void onFailure(Call<paymentInfo> call, Throwable t) {
-//
-//                            }
-//                        });
-//
-//                    }
                 }
             }
     );
@@ -169,7 +112,7 @@ public class Activity_buy_product_delivery extends AppCompatActivity {
                     productBuyerPhoneNumber.setText(response.body().getClientPhoneNumber());
 
 
-                    Log.e("123", "getaddressdetail" + response.body().getAddressDetail());
+
                     String addressInfo = response.body().getAddressDetail();
                     String deliveryRequireInfo = response.body().getDeliveryRequire();
 
@@ -241,8 +184,6 @@ public class Activity_buy_product_delivery extends AppCompatActivity {
                 if (radioKakakoPay.isChecked()) {
                     //카카오페이 결제 선택시,
                     Intent intent = new Intent(Activity_buy_product_delivery.this, Activity_kakaopay_api.class);
-                    Log.e("123", productName);
-                    Log.e("123", productPriceS);
 
                     //기본주소지로 사용자가 check 해놓았으면, 해당 체크된걸 db에 알려줘서 저장할 수 있게끔한다.
                     if (setStandardAddress.isChecked()) {

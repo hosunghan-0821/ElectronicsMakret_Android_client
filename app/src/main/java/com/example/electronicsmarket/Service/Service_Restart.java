@@ -33,8 +33,7 @@ public class Service_Restart extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        //
-        Log.e("123","restartService onstartcommand :");
+
 
         createNotificationChannel();
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "default123")
@@ -67,6 +66,6 @@ public class Service_Restart extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.e("123","restartService destroy :");
+
     }
 }

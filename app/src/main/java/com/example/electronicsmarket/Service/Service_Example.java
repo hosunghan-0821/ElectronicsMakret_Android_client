@@ -95,14 +95,14 @@ public class Service_Example extends Service {
             String purpose = intent.getStringExtra("purpose");
 
             if (purpose != null) {
-                Log.e("123", "changeRoomNum : ");
+
                 //서버로 보내는 목적이 방번호 변경일 경우;
                 if (purpose.equals("changeRoomNum")) {
 
-                    Log.e("123", "위치확인3");
+
                     String roomNum = intent.getStringExtra("roomNum");
 
-                    Log.e("123", "purpose : " + purpose);
+
                     String otherUserNickname = intent.getStringExtra("otherUserNickname");
 
                     //String roomNum, String otherUserNickname, String message
@@ -119,8 +119,8 @@ public class Service_Example extends Service {
                     String caller = intent.getStringExtra("caller");
                     String otherUserNickname = intent.getStringExtra("sendToNickname");
 
-                    Log.e("123","callPurpose : "+ call);
-                    Log.e("123", "onReceive message :" + message);
+
+
                     if(call==null){
                         writeThread writeThread = new writeThread(message, "send");
                         writeThread.start();
@@ -154,14 +154,14 @@ public class Service_Example extends Service {
 
                 //서버로 보내는 목적이 채팅방 나가는 경우;
                 else if (purpose.equals("quit")) {
-                    Log.e("123", "quit : ");
+
                     writeThread writeThread = new writeThread("", "quit");
                     writeThread.start();
 
                 }
                 //서버로 보내는 목적이 소켓 종료 알림;
                 else if (purpose.equals("close")) {
-                    Log.e("123", "close : 소켓종료 ");
+
                     writeThread writeThread = new writeThread("close", "closeSocket");
                     writeThread.start();
                     stopSelf();
@@ -170,7 +170,7 @@ public class Service_Example extends Service {
             }
             //purpose가 없을 떄.. 좀 있다 바꿀꺼야
             else {
-                Log.e("123", "purpose null 일 경우");
+
                 writeThread writeThread = new writeThread(readValue);
                 writeThread.start();
             }
@@ -183,9 +183,7 @@ public class Service_Example extends Service {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
-        Log.e("123", "onTaskRemoved : ");
-//        writeThread writeThread = new writeThread("close");
-//        writeThread.start();
+
         writeThread writeThread = new writeThread("close", "closeSocket");
         writeThread.start();
 
@@ -199,7 +197,7 @@ public class Service_Example extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.e("123", "onBind()");
+
         // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
     }
@@ -226,24 +224,19 @@ public class Service_Example extends Service {
         nickname = sharedPreferences.getString("nickName", "");
 
 
-        Log.e("123", "service onCreate()");
+
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-
-        Log.e("123", "service onStartCommand()");
-
-
-//        String nickName = intent.getStringExtra("nickName");
         createNotificationChannel();
         // shared 값 가져오기
         SharedPreferences sharedPreferences = getSharedPreferences("autoLogin", MODE_PRIVATE);
         String nickName = sharedPreferences.getString("nickName", "");
 
         if (tcpService != null) {
-            Log.e("123", "socket 연결 잘 진행중 ");
+
             return START_NOT_STICKY;
         }
         connectThread = new Thread(new Runnable() {
@@ -273,7 +266,7 @@ public class Service_Example extends Service {
                     //192.168.163.1  local ip / port 80
                     //192.168.0.6
                     //192.168.0.5    집 무선인터넷
-                    Log.e("123", "통신성공");
+
                     //연결이 성공 했다면, 듣는 쓰레드 지속적으로 유지시켜야함.
                     listenThread = new ListenThread();
                     listenThread.setDaemon(true);
@@ -314,7 +307,7 @@ public class Service_Example extends Service {
                         Intent intent = new Intent(getApplicationContext(), Service_Example.class);
                         startService(intent);
                     } else {
-                        Log.e("123", "이미연결되어있음");
+
                     }
                 } catch (SocketException socketException) {
                     socketException.printStackTrace();
@@ -332,7 +325,7 @@ public class Service_Example extends Service {
             public void run() {
                 try {
                     while (socket.getKeepAlive()) {
-                        Log.e("123", "socketKeepAlive : " + socket.getKeepAlive());
+
                         Thread.sleep(10000);
                     }
 
@@ -350,20 +343,19 @@ public class Service_Example extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.e("123", "service onDestroy()");
+
         tcpService = null;
 
         Thread.currentThread().interrupt();
 
         if (listenThread != null) {
-            //Log.e("123","listenThread interrupt");
+
             listenThread.interrupt();
-            Log.e("123", "listenThtread isAlive" + listenThread.isAlive());
-            Log.e("123", "Thread.currentThread isAlive" + Thread.currentThread().isAlive());
+
             try {
                 socket.close();
             } catch (Exception ea) {
-                Log.e("123", ea.toString());
+
             }
         }
 
@@ -443,7 +435,7 @@ public class Service_Example extends Service {
         public void saveNotification() {
 
 
-            Log.e("123", "saveNotification () :");
+
             Gson gson = new GsonBuilder()
                     .setLenient()
                     .create();
@@ -517,7 +509,7 @@ public class Service_Example extends Service {
 
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
-                    Log.e("123", t.getMessage());
+
 
                 }
             });
@@ -544,9 +536,6 @@ public class Service_Example extends Service {
 
                         if(stringMessageType==null){
 
-                            Log.e("123","일반텍스트 보내기 ");
-
-                            Log.e("123", "writeThread message :" + message);
                             JSONObject jsonObject = new JSONObject();
                             message = message.replace("\n", CHANGE_LINE_CHAR);
                             jsonObject.put("message", message);
@@ -557,7 +546,7 @@ public class Service_Example extends Service {
                         //기본 영상통화 내용 보내기
                         else if(stringMessageType.equals("call")){
 
-                            Log.e("123","영상통화 시작채팅 보내기");
+
 
                             JSONObject jsonObject = new JSONObject();
                             message = message.replace("\n", CHANGE_LINE_CHAR);
@@ -572,7 +561,7 @@ public class Service_Example extends Service {
                         //영상통화 결과 보내기기
                         else if(stringMessageType.equals("result")){
 
-                            Log.e("123","영상통화 결과채팅 보내기");
+
 
                             JSONObject jsonObject = new JSONObject();
                             message = message.replace("\n", CHANGE_LINE_CHAR);
@@ -590,18 +579,18 @@ public class Service_Example extends Service {
                     }
                     //채팅방 이미지 보내기
                     else if (purpose.equals("sendImage")) {
-                        Log.e("123", "writeThread message :" + message);
+
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("message", message);
                         jsonObject.put("purpose", "sendImage");
                         out.println(jsonObject.toString());
-                        Log.e("123", "위치확인4");
+
 
                     }
                     //개별알림 보내기
                     else if (purpose.equals("sendNotification")) {
-                        Log.e("123","개별알람 보내기 ");
-                        Log.e("123", "writeThread message :" + message);
+
+
                         saveNotification();
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("type", (int) type);
@@ -679,12 +668,12 @@ public class Service_Example extends Service {
                     if (jsonObject.getString("notice").equals("인원체크")) {
                         JSONArray jsonArray = jsonObject.getJSONArray("nickname");
 
-                        Log.e("123", "jsonArray : " + jsonArray);
+
                         ArrayList<String> roomUsers = new ArrayList<>();
                         for (int i = 0; i < jsonArray.length(); i++) {
                             roomUsers.add(jsonArray.getString(i));
                         }
-                        Log.e("123", "jsonArray length : " + jsonArray.length());
+
                         Intent intent = new Intent("chatData");
                         intent.putStringArrayListExtra("roomUsers", roomUsers);
                         intent.putExtra("purpose", "인원체크");
@@ -733,7 +722,6 @@ public class Service_Example extends Service {
 
                     //채팅이 아니라 debugging 필요한 정보들 왔을 때 코드 여기까지 작동
                     if (writer == null || message == null) {
-                        Log.e("123", "notice만 존재");
                         continue;
                     }
 
@@ -783,7 +771,7 @@ public class Service_Example extends Service {
 
                             //notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             notifyIntent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-                            Log.e("123", "notifyRoom" + notifyRoom);
+
                             notifyIntent.putExtra("roomNum", notifyRoom);
 
                             PendingIntent notifyPendingIntent =
@@ -854,14 +842,14 @@ public class Service_Example extends Service {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e("123", "서비스 종료 ListeningThread 종료");
+
                 writeThread writeThread = new writeThread("close", "closeSocket");
                 writeThread.start();
 
                 try {
                     socket.close();
                 } catch (Exception ea) {
-                    Log.e("123", ea.toString());
+
                 }
 
                 //서버에 의한 강종일시, service 재시작하는 코드가 필요
@@ -881,13 +869,13 @@ public class Service_Example extends Service {
     public void makeIndividualNotification(String readValue) {
 
         try {
-            Log.e("123", "개별알람 만들기");
+
             JSONObject jsonObject = new JSONObject(readValue);
 
             String postNum = jsonObject.getString("postNum");
             int type = jsonObject.getInt("type");
 
-            Log.e("123", "type" + type);
+
             String message = jsonObject.getString("message");
             String title = "";
 

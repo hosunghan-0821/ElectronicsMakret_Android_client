@@ -104,13 +104,11 @@ public class Fragment_buy_buying extends Fragment {
                 public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
 
                     if (!v.canScrollVertically(1) && scrollCheck) {
-                        //Log.e("123","스크롤의 최하단입니다. 이거 연속으로 찍히는거면 터치의 문제");
+
                         scrollCheck = false;
-//                            Toast.makeText(getActivity(), "스크롤의 최하단입니다.", Toast.LENGTH_SHORT).show()
-                        //System.out.println("postinfoSize : "+sellingList.size());
+
                         if (!isFinalPhase) {
-//                                postList.add(new PostInfo(1));
-//                                adapter.notifyItemInserted(postList.size()-1);
+
                             RetrofitService service = retrofit.create(RetrofitService.class);
                             Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum, phasingNum, "buyingInfo", id);
                             call.enqueue(new Callback<PostAllInfo>() {
@@ -147,7 +145,6 @@ public class Fragment_buy_buying extends Fragment {
 
                                 @Override
                                 public void onFailure(Call<PostAllInfo> call, Throwable t) {
-                                    Log.e("123", t.getMessage());
 
                                 }
                             });
@@ -226,7 +223,6 @@ public class Fragment_buy_buying extends Fragment {
             public void onRefresh() {
 
                 RetrofitService service = retrofit.create(RetrofitService.class);
-                //Log.e("123","onRefresh CursorPostNum"+cursorPostNum);
                 Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum,"update","buyingInfo",id);
                 call.enqueue(new Callback<PostAllInfo>() {
                     @Override
@@ -252,7 +248,7 @@ public class Fragment_buy_buying extends Fragment {
 
                     @Override
                     public void onFailure(Call<PostAllInfo> call, Throwable t) {
-                        Log.e("123", t.getMessage());
+
 
                     }
                 });
@@ -266,10 +262,9 @@ public class Fragment_buy_buying extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.e("123", "buying : onresume");
+
         if (onCreateViewIsSet) {
             RetrofitService service = retrofit.create(RetrofitService.class);
-            //Log.e("123","onResume CursorPostNum"+cursorPostNum);
             Call<PostAllInfo> call = service.getPostAllInfo(cursorPostNum, "update", "buyingInfo", id);
             call.enqueue(new Callback<PostAllInfo>() {
                 @Override
@@ -293,7 +288,7 @@ public class Fragment_buy_buying extends Fragment {
 
                 @Override
                 public void onFailure(Call<PostAllInfo> call, Throwable t) {
-                    Log.e("123", t.getMessage());
+
 
                 }
             });

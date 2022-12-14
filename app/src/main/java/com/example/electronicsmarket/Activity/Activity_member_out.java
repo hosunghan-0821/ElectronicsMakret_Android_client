@@ -129,7 +129,7 @@ public class Activity_member_out extends AppCompatActivity {
 
                     sharedPreferences=getSharedPreferences("autoLogin",MODE_PRIVATE);
                     String id=sharedPreferences.getString("userId","");
-                    Log.e("123",id);
+
                     RetrofitService service = retrofit.create(RetrofitService.class);
                     Call<DataMemberSignup> call = service.memberOut(id,reason);
                     call.enqueue(new Callback<DataMemberSignup>() {
@@ -157,7 +157,7 @@ public class Activity_member_out extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<DataMemberSignup> call, Throwable t) {
-                            Log.e("123","통신 실패");
+
                             dialog.dismiss();
                         }
                     });

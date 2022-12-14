@@ -96,19 +96,19 @@ public class Fragment_chat extends Fragment {
 
         variableInit(view);
         chatNotificationImage.setVisibility(View.INVISIBLE);
-        //Log.e("123","인터넷 상태 : "+NetworkStatus.getConnectivityStatus(getActivity()));
+
         //서버로부터 데이터 가져오기..
         RetrofitService service = retrofit.create(RetrofitService.class);
         Call<DataChatRoomAll> call = service.getRoomAllInfo(nickName, phasingNum, cursorChatRoomNum, "chatList");
         call.enqueue(new Callback<DataChatRoomAll>() {
             @Override
             public void onResponse(Call<DataChatRoomAll> call, Response<DataChatRoomAll> response) {
-                Log.e("123", "여기123456"+"통신옴");
+
 
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.e("123", "통신옴2");
+
                     DataChatRoomAll dataChatRoomALL = response.body();
-                    Log.e("123", dataChatRoomALL.getRoomList().toString());
+
                     for (int i = 0; i < dataChatRoomALL.getRoomList().size(); i++) {
                         try {
                             roomList.add(dataChatRoomALL.getRoomList().get(i));
@@ -137,7 +137,7 @@ public class Fragment_chat extends Fragment {
 
             @Override
             public void onFailure(Call<DataChatRoomAll> call, Throwable t) {
-                Log.e("123", "여기가 문제"+t.getMessage());
+
             }
         });
 
@@ -155,9 +155,9 @@ public class Fragment_chat extends Fragment {
                                 public void onResponse(Call<DataChatRoomAll> call, Response<DataChatRoomAll> response) {
 
                                     if (response.isSuccessful() && response.body() != null) {
-                                        Log.e("123", "통신옴2");
+
                                         DataChatRoomAll dataChatRoomALL = response.body();
-                                        Log.e("123", dataChatRoomALL.getRoomList().toString());
+
                                         for (int i = 0; i < dataChatRoomALL.getRoomList().size(); i++) {
                                             try {
                                                 roomList.add(dataChatRoomALL.getRoomList().get(i));
@@ -195,7 +195,7 @@ public class Fragment_chat extends Fragment {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
-                Log.e("123", "fragment확인");
+
                 Bundle bundle = msg.getData();
                 String purpose=bundle.getString("purpose");
                 if(purpose.equals("reloadAlarmImage")){
@@ -214,9 +214,9 @@ public class Fragment_chat extends Fragment {
 
                         //통신 성공할 경우
                         if (response.isSuccessful() && response.body() != null) {
-                            Log.e("123", "fragment reload2");
+
                             roomList.clear();
-                            Log.e("123", response.body().getRoomList().toString());
+
                             DataChatRoomAll dataChatRoomALL = response.body();
                             for (int i = 0; i < dataChatRoomALL.getRoomList().size(); i++) {
                                 try {
@@ -238,7 +238,7 @@ public class Fragment_chat extends Fragment {
 
                     @Override
                     public void onFailure(Call<DataChatRoomAll> call, Throwable t) {
-                        Log.e("123", t.getMessage());
+
                     }
 
 
@@ -300,7 +300,7 @@ public class Fragment_chat extends Fragment {
 
                 @Override
                 public void onFailure(Call<DataChatRoomAll> call, Throwable t) {
-                    Log.e("123", t.getMessage());
+
                 }
 
 
@@ -370,7 +370,7 @@ public class Fragment_chat extends Fragment {
                         int id = item.getItemId();
                         if (id == R.id.chat_room_out) {
                             //채팅방 나가기
-                            Log.e("123", "채팅방 나가기 position : " + position);
+
                             RetrofitService service = retrofit.create(RetrofitService.class);
                             Call<DataChatRoom> call = service.userRoomOut(roomList.get(position).getRoomNum(), nickName, roomList.get(position).getOtherUserNickname());
                             call.enqueue(new Callback<DataChatRoom>() {
@@ -381,21 +381,21 @@ public class Fragment_chat extends Fragment {
 
                                         //여기서 해당 포지션 삭제해야함.
                                         if (response.body().getSuccess()) {
-                                            Log.e("123", "채팅방 나가기 성공");
+
 
                                             //채팅방 알림껏던 기록들 제거해야함
-                                            Log.e("123", "채팅방 알림 켜기1");
+
                                             ArrayList<String> noAlarmArrayList = getNoAlarmRoomArrayList();
                                             for (int i = 0; i < noAlarmArrayList.size(); i++) {
                                                 if (noAlarmArrayList.get(i) != null) {
                                                     if (noAlarmArrayList.get(i).equals(roomList.get(position).getRoomNum())) {
-                                                        Log.e("123", "채팅방 알림 켜기2");
+
                                                         noAlarmArrayList.remove(i);
                                                         break;
                                                     }
                                                 }
                                             }
-                                            Log.e("123", "채팅방 알림 켜기3");
+
                                             setNoAlarmRoomArrayList(noAlarmArrayList);
                                             roomList.remove(position);
                                             adapter.notifyItemRemoved(position);
@@ -411,7 +411,7 @@ public class Fragment_chat extends Fragment {
                             });
                         } else if (id == R.id.chat_room_announce_off) {
                             //채팅방 알림끄기
-                            Log.e("123", "채팅방 알림끄기 position : " + position);
+
                             ArrayList<String> noAlarmArrayList = getNoAlarmRoomArrayList();
                             noAlarmArrayList.add(roomList.get(position).getRoomNum());
                             setNoAlarmRoomArrayList(noAlarmArrayList);
@@ -429,10 +429,7 @@ public class Fragment_chat extends Fragment {
                             }
                             setNoAlarmRoomArrayList(noAlarmArrayList);
                         }
-//                        else if(id==R.id.chat_room_block){
-//                            //상대방 차단하기
-//                            Log.e("123","상대방 차단하기 position : "+position);
-//                        }
+
                         return false;
                     }
                 });

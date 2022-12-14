@@ -84,7 +84,7 @@ public class Activity_category_search_result extends AppCompatActivity {
         //화면에 들어 왔을 떄, 어떤 목적으로 왔는지 case 나누기!
         if (intent.getStringExtra("category") != null) {
             //2. category 선택의 결과일 경우
-            Log.e("123", "카테고리선택");
+
             categoryText.setVisibility(View.VISIBLE);
             String str = intent.getStringExtra("category");
             str = str.replace("\n", "");
@@ -119,7 +119,6 @@ public class Activity_category_search_result extends AppCompatActivity {
             });
         } else {
             // 1. search의 결과일 경우
-            // Log.e("123", "검색결과");
             linearSearchKeyword.setVisibility(View.VISIBLE);
             searchKeyword.setText(intent.getStringExtra("keyword"));
             RetrofitService service = retrofit.create(RetrofitService.class);
@@ -322,7 +321,7 @@ public class Activity_category_search_result extends AppCompatActivity {
                                 maxPrice = Integer.parseInt(maxPriceText.getText().toString().replace(",", ""));
 
                                 //가격 정하기 전에, sorting 된 arraylist 가져오기
-                                Log.e("123","sortedPostList"+postInfoList.toString());
+
 
                                 postInfoList=getSortedPostList();
 
@@ -331,19 +330,9 @@ public class Activity_category_search_result extends AppCompatActivity {
                                     if (!(postPrice <= maxPrice && postPrice >= minPrice)) {
                                         postInfoList.remove(i);
                                         i--;
-                                    } else {
-//                                        Log.e("123","maxPrice : "+ String.valueOf(maxPrice));
-//                                        Log.e("123","minPrice : "+ String.valueOf(minPrice));
-//                                        Log.e("123",String.valueOf(postPrice));
                                     }
                                 }
 
-//                                for(int i=0;i<postInfoList.size();i++){
-//                                    Log.e("123","postInfoList : "+postInfoList.get(i).getPostPrice());
-//                                }
-//                                for(int i=0;i<originPostInfoList.size();i++){
-//                                    Log.e("123","originPostInfoList : "+originPostInfoList.get(i).getPostPrice());
-//                                }
                                 adapter.setPostList(postInfoList);
                                 isSearchNoResult();
                                 adapter.notifyDataSetChanged();
@@ -537,7 +526,7 @@ public class Activity_category_search_result extends AppCompatActivity {
         //최대 최소 범위가 정해져 있을경우
         if(maxPrice!=-1&&minPrice!=-1){
             for (int i = 0; i < beSortPostList.size(); i++) {
-                Log.e("123","최대 최소 범위가 정해져 있을경우");
+
                 int postPrice = Integer.parseInt(beSortPostList.get(i).getPostPrice().replace(",", ""));
                 if (!(postPrice <= maxPrice && postPrice >= minPrice)) {
                     beSortPostList.remove(i);
@@ -548,7 +537,7 @@ public class Activity_category_search_result extends AppCompatActivity {
         }
         //최대값 정해져있지 않을경우
         else if (minPrice !=-1){
-            Log.e("123","최대값 정해져있지 않을경우");
+
             for (int i = 0; i < beSortPostList.size(); i++) {
                 int postPrice = Integer.parseInt(beSortPostList.get(i).getPostPrice().replace(",", ""));
                 if (!(postPrice >= minPrice)) {
@@ -560,7 +549,7 @@ public class Activity_category_search_result extends AppCompatActivity {
         }
         //최소값 정해져있지 않을 경우
         else if(maxPrice!=-1){
-            Log.e("123","최소값 정해져있지 않을 경우");
+
             for (int i = 0; i <beSortPostList.size(); i++) {
                 int postPrice = Integer.parseInt(beSortPostList.get(i).getPostPrice().replace(",", ""));
                 if (!(postPrice <= maxPrice)) {
@@ -594,9 +583,6 @@ public class Activity_category_search_result extends AppCompatActivity {
         beSortPostList.addAll(originPostInfoList);
 
 
-        for(int i=0;i<originPostInfoList.size();i++){
-            Log.e("123","가격"+originPostInfoList.get(i).getPostPrice());
-        }
 
         switch (filterNum) {
             case 0:
@@ -635,7 +621,7 @@ public class Activity_category_search_result extends AppCompatActivity {
             default:
                 break;
         }
-        Log.e("123","sortedPostList"+beSortPostList.toString());
+
         return beSortPostList;
     }
 

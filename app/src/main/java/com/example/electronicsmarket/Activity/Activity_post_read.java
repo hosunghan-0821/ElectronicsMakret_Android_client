@@ -104,16 +104,13 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
         //onresume 을 통해 데이터들을 갱신하고있는데, 이 떄 ,조회수 관련해서 계속 증가한다. 데이터를 받아오면서
         //oncreate 할 떄만 증가할 수 있또록, 따로 서버통신하기
 
-        Log.e("123","이게 첫번 째");
+
         RetrofitService service = retrofit.create(RetrofitService.class);
         Call<PostInfo> call2 = service.viewPlus(postNum);
         call2.enqueue(new Callback<PostInfo>() {
             @Override
             public void onResponse(Call<PostInfo> call, Response<PostInfo> response) {
                 if(response.isSuccessful()&&response.body()!=null){
-                    Log.e("456","통신성공");
-                    Log.e("123","이게 먼저");
-//                    Log.e("123","getviewnum"+response.body().getPostViewNum());
                      postReadView.setText(response.body().getPostViewNum());
 
                 }
@@ -203,115 +200,6 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
             }
         });
 
-//        //onCreate 일 떄,
-//        //retrofit 통신
-//        RetrofitService service = retrofit.create(RetrofitService.class);
-//        Call<PostInfo> call = service.getPostInfo(postNum, "read", id);
-//        Log.e("456", id);
-//        call.enqueue(new Callback<PostInfo>() {
-//            @Override
-//            public void onResponse(Call<PostInfo> call, Response<PostInfo> response) {
-//                sellerId = response.body().getMemberId();
-//
-//                //System.out.println("isClientLike"+response.body().isClientIsLike());
-//                // shared 값 가져오기
-//                Log.e("123", "확인" + response.body().getPostLocationDetail());
-//
-//                // client 가 좋아요 눌렀던 게시글 이면, 하트에 색칠해놔야함 like boolean 값도 변경;
-//                if (response.body().isClientIsLike()) {
-//                    postReadLikeImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_baseline_favorite_24));
-//                    postReadLikeNumImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_baseline_favorite_24));
-//                    like = false;
-//                }
-//
-//                // 판매자일 경우 처리
-//                if (sellerId != null) {
-//                    if (!sellerId.equals(id)) {
-//                        postReadLinearStatus.setVisibility(View.GONE);
-//                    } else {
-//                        postReadLinearBottomOption.setVisibility(View.GONE);
-//                    }
-//                }
-//                //이미지 처리
-//                PostInfo info = response.body();
-//                adapter.setImageRoute(info.getImageRoute());
-//                adapter.notifyDataSetChanged();
-//                setupIndicators(info.getImageRoute().size());
-//                if (info.getMemberImage() == null) {
-//                    circleImageView.setImageResource(R.drawable.ic_baseline_person_black);
-//                } else {
-//                    Glide.with(getApplicationContext()).load(info.getMemberImage().toString()).into(circleImageView);
-//                }
-//
-//
-//                //시간 관련 로직 작성해야지
-//                timeDifferentCheck(info.getPostRegTime());
-//                //위치정보 세팅
-//                if (info.getPostLocationAddress() != null) {
-//                    if (info.getPostLocationAddress().equals("")) {
-//                        postReadLocationInfo.setText(" " + info.getPostLocationName());
-//
-//                    } else {
-//                        postReadLocationInfo.setText(" " + info.getPostLocationName() + " ( " + info.getPostLocationAddress() + " )");
-//                        if (info.getPostLocationDetail() != null) {
-//                            if (!info.getPostLocationDetail().equals("")) {
-//                                locationDetailImage.setVisibility(View.VISIBLE);
-//                                postReadPlaceDetail.setText("상세위치 정보 : " + info.getPostLocationDetail());
-//                            }
-//                        }
-//
-//                    }
-//                }
-//
-//                postReadLatitude = info.getPostLocationLatitude();
-//                postReadLongitude = info.getPostLocationLongitude();
-//                postLocationName = info.getPostLocationName();
-//                postLocationAddress = info.getPostLocationAddress();
-//
-//                //
-//                Log.e("123", info.getProductNum());
-//                postReadProductNum.setText(info.getProductNum());
-//                postReadView.setText(info.getPostViewNum());
-//                postReadLike.setText(info.getPostLikeNum());
-//
-//                postReadContents.setText(info.getPostContents());
-//                System.out.println("postcontents" + info.getPostContents());
-//
-//
-//                postReadTitle.setText(info.getPostTitle());
-//                postReadPrice.setText(info.getPostPrice() + "원");
-//                if (info.getPostCategory().equals("카테고리 선택")) {
-//                    postReadCategory.setVisibility(View.INVISIBLE);
-//                }
-//                postReadCategory.setText("  *  " + info.getPostCategory());
-//                postReadNickname.setText(info.getNickname());
-//
-//                if (info.getPostSellType().equals("직거래/택배거래")) {
-//
-//
-//                } else if (info.getPostSellType().equals("직거래")) {
-//                    postReadDelivery.setVisibility(View.GONE);
-//                    postReadSellType2.setVisibility(View.GONE);
-//                } else {
-//                    postReadSellType1.setVisibility(View.GONE);
-//                }
-//
-//                if (info.getPostDelivery().equals("Y")) {
-//                    postReadDelivery.setText("배송비 포함");
-//                } else {
-//                    postReadDelivery.setText("배송비 별도");
-//                }
-//
-//                Log.e("123", "통신성공");
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<PostInfo> call, Throwable t) {
-//                Log.e("123", "통신실패");
-//            }
-//        });
-
 
         sliderViewPager = findViewById(R.id.viewpager_post_image);
         layoutIndicator = findViewById(R.id.layoutIndicators);
@@ -331,7 +219,7 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
         postReadSellerFrame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("123", "판매자 프레임 선택");
+
 
                 Intent intent = new Intent(Activity_post_read.this, Activity_seller_info.class);
                 intent.putExtra("nickname", postReadNickname.getText().toString());
@@ -351,7 +239,7 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
         postReadLocationInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Log.e("123",postReadLocationInfo.getText().toString());
+
                 Intent intent = new Intent(Activity_post_read.this, Activity_location_map.class);
                 if (postReadLocationInfo.getText().toString().equals(" 장소정보 없음")) {
                     return;
@@ -370,10 +258,8 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
             public void onClick(View v) {
                 // shared 값 가져오기
 
-//                id=sharedPreferences.getString("userId","");
                 PopupMenu popup = new PopupMenu(Activity_post_read.this, updateDeleteImage);
-                Log.e("123", "sellerId : " + sellerId);
-                Log.e("123", "userId : " + id);
+
                 if (sellerId.equals(id)) {
                     MenuInflater inflate = popup.getMenuInflater();
                     inflate.inflate(R.menu.post_update_menu, popup.getMenu());
@@ -399,13 +285,13 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
                             builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Log.e("123", "확인버튼");
+
                                     RetrofitService service = retrofit.create(RetrofitService.class);
                                     Call<DataMemberSignup> call = service.sendDeletePostInfo(postNum);
                                     call.enqueue(new Callback<DataMemberSignup>() {
                                         @Override
                                         public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
-                                            Log.e("123", "통신성공");
+
                                             if (response.isSuccessful() && response.body() != null) {
                                                 if (response.body().isSuccess()) {
                                                     Toast.makeText(Activity_post_read.this, "게시글 삭제완료", Toast.LENGTH_SHORT).show();
@@ -450,21 +336,19 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
     protected void onResume() {
         super.onResume();
 
-        Log.e("123","이게 두번 쨰");
+
         //retrofit 통신
         RetrofitService service = retrofit.create(RetrofitService.class);
         Call<PostInfo> call = service.getPostInfo(postNum, "read", id);
-        Log.e("456", id);
+
         call.enqueue(new Callback<PostInfo>() {
             @Override
             public void onResponse(Call<PostInfo> call, Response<PostInfo> response) {
-                Log.e("123","이게 두번째");
+
                 sellerId = response.body().getMemberId();
 
-                //System.out.println("isClientLike"+response.body().isClientIsLike());
-                // shared 값 가져오기
-                Log.e("123", "확인" + response.body().getPostLocationDetail());
 
+                // shared 값 가져오기
                 // client 가 좋아요 눌렀던 게시글 이면, 하트에 색칠해놔야함 like boolean 값도 변경;
                 if (response.body().isClientIsLike()) {
                     postReadLikeImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_baseline_favorite_24));
@@ -545,8 +429,7 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
                 postLocationName = info.getPostLocationName();
                 postLocationAddress = info.getPostLocationAddress();
 
-                //
-                Log.e("123", info.getProductNum());
+
                 postReadProductNum.setText(info.getProductNum());
                 //postReadView.setText(info.getPostViewNum());
                 postReadLike.setText(info.getPostLikeNum());
@@ -579,13 +462,13 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
                     postReadDelivery.setText("배송비 별도");
                 }
 
-                Log.e("123", "통신성공");
+
 
             }
 
             @Override
             public void onFailure(Call<PostInfo> call, Throwable t) {
-                Log.e("123", "통신실패");
+
             }
         });
 
@@ -600,7 +483,7 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
             @Override
             public void onResponse(Call<DataMemberSignup> call, Response<DataMemberSignup> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.e("456", "통신 응답옴");
+
                     //찜목록  추가
                     if (response.body().isSuccess() && state.equals("insert")) {
                         postReadLike.setText(String.valueOf(Integer.parseInt(postReadLike.getText().toString()) + 1));
@@ -632,7 +515,7 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
                         like = false;
                         //좋아요 처리 후에 상품 판매자에게 알림 보내기..
                         if(response.body().isLikeNotification()){
-                            Log.e("123","noti 보냄? "+response.body().isLikeNotification());
+
                             Intent intent = new Intent("chatDataToServer");
                             intent.putExtra("type", 2);
                             intent.putExtra("purpose", "sendNotification");
@@ -642,7 +525,7 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
                             LocalBroadcastManager.getInstance(Activity_post_read.this).sendBroadcast(intent);
                         }
                         else{
-                            Log.e("123","noti 보냄? "+response.body().isLikeNotification());
+
                         }
 
                     }
@@ -752,7 +635,7 @@ public class Activity_post_read extends AppCompatActivity implements Dialog_bott
         View parent = (Activity_post_read.this).getWindow().getDecorView();
         View layout = inflater.inflate(R.layout.toast_custon_like_list, null, false);
         LinearLayout linearLayout = layout.findViewById(R.id.inner_linearLayout);
-        Log.e("123", String.valueOf(parent.getWidth()));
+
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(parent.getWidth() - 200, ViewGroup.LayoutParams.WRAP_CONTENT);
         linearLayout.setLayoutParams(params);
         TextView toastText = layout.findViewById(R.id.toast_textview);

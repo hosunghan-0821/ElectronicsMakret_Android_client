@@ -115,7 +115,7 @@ public class Activity_alarm_collect extends AppCompatActivity {
 
                                 @Override
                                 public void onFailure(Call<DataNotificationAllInfo> call, Throwable t) {
-                                    Log.e("123", t.getMessage());
+
                                 }
                             });
 
@@ -148,7 +148,7 @@ public class Activity_alarm_collect extends AppCompatActivity {
                     }
                     @Override
                     public void onFailure(Call<DataNotificationAllInfo> call, Throwable t) {
-                        Log.e("123", t.getMessage());
+
                     }
                 });
             }

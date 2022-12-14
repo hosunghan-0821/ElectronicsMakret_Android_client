@@ -194,13 +194,13 @@ public class Activity_review_write extends AppCompatActivity {
                         public void onResponse(Call<PostInfo> call, Response<PostInfo> response) {
 
                             if (response.isSuccessful() && response.body() != null) {
-                                Log.e("123", "통신성공");
+
 
                                 if (response.body().isSuccess()) {
 
                                     String sendToNickname=response.body().getSellerNickname();
                                     Toast.makeText(getApplicationContext(), "리뷰작성 성공", Toast.LENGTH_SHORT).show();
-                                    Log.e("123","review작성");
+
                                     Intent intent = new Intent("chatDataToServer");
                                     intent.putExtra("type",1);
                                     intent.putExtra("purpose", "sendNotification");

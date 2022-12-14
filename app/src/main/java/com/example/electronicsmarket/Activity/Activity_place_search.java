@@ -292,15 +292,11 @@ public class Activity_place_search extends AppCompatActivity implements OnMapRea
                     public void onResponse(Call<DataSearchResult> call, Response<DataSearchResult> response) {
                         dataSearchList.clear();
                         placeSearchKeyword.clearFocus();
-                        Log.e("123","성공");
+
                         DataSearchResult searchResult = response.body();
                         try{
                             for(int i=0; i<searchResult.getPlaceAllInfo().size();i++){
-                                Log.e("123", searchResult.getPlaceAllInfo().get(i).getPlaceName());
-                                Log.e("123", searchResult.getPlaceAllInfo().get(i).getRoadAddress());
-                                Log.e("123", searchResult.getPlaceAllInfo().get(i).getAddressName());
-                                Log.e("123",searchResult.getPlaceAllInfo().get(i).getLatitude());
-                                Log.e("123",searchResult.getPlaceAllInfo().get(i).getLongitude());
+
                                 dataSearchList.add(searchResult.getPlaceAllInfo().get(i));
                             }
                         }catch (Exception e){
@@ -317,7 +313,7 @@ public class Activity_place_search extends AppCompatActivity implements OnMapRea
 
                     @Override
                     public void onFailure(Call<DataSearchResult> call, Throwable t) {
-                        Log.e("123","실패");
+
                     }
                 });
 
